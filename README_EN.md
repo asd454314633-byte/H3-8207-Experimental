@@ -21,6 +21,8 @@ Write a story as six independently editable prompts, submit video jobs, and cont
 | Other experimental tracks | Guide/Pose/Depth, V2V/RV2V, optional image generation/editing/Qwen workflows | Partial/bypassed or independent; historical Qwen **4/4 GPU** not repeated |
 | Multi-segment merge | Selection and merge hooks | **Mixed-resolution automatic merge remains HOLD** |
 
+**Voice-reference evidence update:** The project owner explicitly confirms that the voice timbre referencing capability has been tested with actual generation and has remained reliable in ongoing use (`OWNER_CONFIRMED_LONG_TERM_USE`). Three independent voice-reference slots, reference-video soundtrack, speaker/role mapping, and input validation are present in source. This prior operational evidence is **not the same as a fresh full GPU E2E acceptance of the sanitized 8207 preview**. See [details](docs/CAPABILITIES_AND_EVIDENCE.md).
+
 **Verified preview regression: 48 CPU/JavaScript PASS / 0 FAIL** (11 spatial Native + 11 PreBake + 9 release guards + 16 workflow helpers + 1 frontend/backend bridge). **193 sanitized JSON workflows** = 12 current + 181 history; these are *files statically checked*, **not GPU generations**. Public preview's complete six-segment GPU and browser/live queue E2E remain **NOT_TESTED**.
 
 See [the complete evidence-scoped catalog](docs/CAPABILITIES_AND_EVIDENCE.md) and [publication gate](PUBLIC_RELEASE_GATE.md).
