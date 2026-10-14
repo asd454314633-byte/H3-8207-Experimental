@@ -2,7 +2,7 @@
 
 **MiniMax-H3 six-segment video generation with a Chinese ComfyUI director console** · `v0.1.0-preview` experimental pre-release
 
-[中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Browse workflows](workflows/current)
+[中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Browse workflows](workflows/current) · [8197 frozen production repository](https://github.com/asd454314633-byte/H3-Chinese-Director)
 
 Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
