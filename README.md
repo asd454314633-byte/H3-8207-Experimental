@@ -15,6 +15,7 @@
 | 六段中文创作 | 分别编辑提示词、独立或连续执行、从选定段落恢复 | 工作流/前端源码存在；完整 GPU E2E **未测** |
 | 运行中继续编辑 | **Story / Execution 独立快照**、已提交任务不可被后续草稿覆盖、独立 attempt 和排队 | CPU/JavaScript 合同回归；实际浏览器队列 E2E **未测** |
 | 真实 latent 跨段接续 | Native masked continuation、前序回执与哈希校验；跨分辨率时有明确的视频 latent 空间重采样记录 | **11 项 Native CPU PASS**；视频效果 E2E **未测** |
+| **音色克隆参考** | **3 路独立参考音色 + 视频原音轨**，`<Audio N>` 说话人映射、第三音色角色描述、时长与格式预检 | Ref2VA/8步分支有公开源码；**当前 8207 候选未做音色效果 GPU E2E**，音频预检不代表音色保真验收 |
 | 缓存与恢复 | Conditioning PreBake 精确依赖补建、缓存身份门禁、合法旧版本保护 | **11 项 PreBake CPU PASS** |
 | 视频模式矩阵 | Ref2VA 多参考 / FL2VA 单图及首尾帧、不同 4/8 步与注意力分支、可选音视频参考 | 需要分别核对当前真实路由；**不是所有模式均有 GPU PASS** |
 | 扩展实验 | 关键帧 Guide / Pose-Depth / V2V-RV2V；单独的 Lustify/Krea2、Qwen 图像工作流 | 部分为默认旁路或候选；Qwen 历史 GPU **4/4** 不等于当前版重测 |
