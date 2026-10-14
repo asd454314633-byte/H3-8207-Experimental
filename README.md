@@ -14,9 +14,9 @@
 
 ![H3 历史真实视频动态预览](assets/showcase/demo-preview.gif)
 
-**[▶ 打开完整 MP4 演示](https://github.com/asd454314633-byte/H3-8207-Experimental/raw/refs/heads/main/assets/showcase/h3-six-segment-demo-github.mp4)**
+**[▶ 打开完整 MP4 演示](https://github.com/asd454314633-byte/H3-8207-Experimental/blob/main/assets/showcase/h3-six-segment-demo-github.mp4)**
 
-此链接打开或下载真实 MP4 文件；README 不承诺内嵌视频播放器。
+此链接打开真实 MP4 的仓库文件页，可通过 Download raw file 下载；README 不承诺内嵌视频播放器。
 
 ### 六段中文编辑框
 

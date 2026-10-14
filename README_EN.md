@@ -14,9 +14,9 @@ Write a story as six independently editable prompts, submit video jobs, and cont
 
 ![Historical real H3 video animated preview](assets/showcase/demo-preview.gif)
 
-**[▶ Open the complete MP4 demonstration](https://github.com/asd454314633-byte/H3-8207-Experimental/raw/refs/heads/main/assets/showcase/h3-six-segment-demo-github.mp4)**
+**[▶ Open the complete MP4 demonstration](https://github.com/asd454314633-byte/H3-8207-Experimental/blob/main/assets/showcase/h3-six-segment-demo-github.mp4)**
 
-This link opens or downloads an actual MP4 file; it does not promise an embedded README video player.
+This link opens the actual MP4 repository file page; use Download raw file to download it. It does not promise an embedded README video player.
 
 ### Six-segment Chinese editor
 
