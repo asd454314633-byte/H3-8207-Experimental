@@ -1,0 +1,838 @@
+{
+ "id": "lustify-v10-krea2-style-reference-8207",
+ "revision": 0,
+ "last_node_id": 203,
+ "last_link_id": 18,
+ "nodes": [
+  {
+   "id": 1,
+   "type": "UNETLoader",
+   "pos": [
+    40,
+    40
+   ],
+   "size": [
+    330,
+    148
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      1
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Lustify v10 Krea 2 Turbo INT8 ConvRot",
+   "properties": {
+    "Node name for S&R": "UNETLoader"
+   },
+   "widgets_values": [
+    "lustify-v10-krea-turbo-int8_convrot.safetensors",
+    "default"
+   ]
+  },
+  {
+   "id": 3,
+   "type": "CLIPLoader",
+   "pos": [
+    40,
+    258
+   ],
+   "size": [
+    330,
+    178
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      2
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Qwen3-VL 4B (krea2)",
+   "properties": {
+    "Node name for S&R": "CLIPLoader"
+   },
+   "widgets_values": [
+    "qwen3vl_4b_fp8_scaled.safetensors",
+    "krea2",
+    "default"
+   ]
+  },
+  {
+   "id": 16,
+   "type": "VAELoader",
+   "pos": [
+    40,
+    1032
+   ],
+   "size": [
+    330,
+    120
+   ],
+   "flags": {},
+   "order": 16,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      6,
+      15
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Wan 2.1 VAE",
+   "properties": {
+    "Node name for S&R": "VAELoader"
+   },
+   "widgets_values": [
+    "wan_2.1_vae.safetensors"
+   ]
+  },
+  {
+   "id": 30,
+   "type": "Power Lora Loader (rgthree)",
+   "pos": [
+    490,
+    682
+   ],
+   "size": [
+    330,
+    232
+   ],
+   "flags": {},
+   "order": 30,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 1
+    },
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 2
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      17
+     ],
+     "slot_index": 0
+    },
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      4
+     ],
+     "slot_index": 1
+    }
+   ],
+   "title": "LoRA (empty — 作者默认)",
+   "properties": {
+    "Node name for S&R": "Power Lora Loader (rgthree)"
+   },
+   "widgets_values": [
+    {},
+    {
+     "type": "PowerLoraLoaderHeaderWidget"
+    },
+    {},
+    ""
+   ]
+  },
+  {
+   "id": 11,
+   "type": "EmptyLatentImage",
+   "pos": [
+    40,
+    506
+   ],
+   "size": [
+    330,
+    178
+   ],
+   "flags": {},
+   "order": 11,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      13
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Empty Latent 1024x1024",
+   "properties": {
+    "Node name for S&R": "EmptyLatentImage"
+   },
+   "widgets_values": [
+    1024,
+    1024,
+    1
+   ]
+  },
+  {
+   "id": 12,
+   "type": "Seed (rgthree)",
+   "pos": [
+    40,
+    754
+   ],
+   "size": [
+    330,
+    208
+   ],
+   "flags": {},
+   "order": 12,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "SEED",
+     "type": "INT",
+     "links": [
+      9
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Seed (rgthree)",
+   "properties": {
+    "Node name for S&R": "Seed (rgthree)"
+   },
+   "widgets_values": [
+    613058509760467,
+    "",
+    "",
+    "okay"
+   ]
+  },
+  {
+   "id": 119,
+   "type": "PrimitiveStringMultiline",
+   "pos": [
+    40,
+    1222
+   ],
+   "size": [
+    330,
+    120
+   ],
+   "flags": {},
+   "order": 119,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "STRING",
+     "type": "STRING",
+     "links": [
+      5
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "User Prompt",
+   "properties": {
+    "Node name for S&R": "PrimitiveStringMultiline"
+   },
+   "widgets_values": [
+    "A person walks along a quiet street in daylight."
+   ]
+  },
+  {
+   "id": 189,
+   "type": "ModelSamplingAuraFlow",
+   "pos": [
+    1390,
+    636
+   ],
+   "size": [
+    330,
+    120
+   ],
+   "flags": {},
+   "order": 189,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 3
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      10
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "ModelSamplingAuraFlow shift=4",
+   "properties": {
+    "Node name for S&R": "ModelSamplingAuraFlow"
+   },
+   "widgets_values": [
+    4
+   ]
+  },
+  {
+   "id": 8,
+   "type": "TextEncodeQwenImageEditPlus",
+   "pos": [
+    940,
+    811
+   ],
+   "size": [
+    330,
+    238
+   ],
+   "flags": {},
+   "order": 8,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 4
+    },
+    {
+     "name": "prompt",
+     "type": "STRING",
+     "link": 5,
+     "widget": {
+      "name": "prompt"
+     }
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 6
+    },
+    {
+     "name": "image1",
+     "type": "IMAGE",
+     "link": 7
+    },
+    {
+     "name": "image2",
+     "type": "IMAGE",
+     "link": null
+    },
+    {
+     "name": "image3",
+     "type": "IMAGE",
+     "link": null
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      18
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "Single reference: style / skin / lighting",
+   "properties": {
+    "Node name for S&R": "TextEncodeQwenImageEditPlus"
+   },
+   "widgets_values": [
+    ""
+   ]
+  },
+  {
+   "id": 29,
+   "type": "ConditioningZeroOut",
+   "pos": [
+    1840,
+    738
+   ],
+   "size": [
+    330,
+    120
+   ],
+   "flags": {},
+   "order": 29,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 8
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      12
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "ConditioningZeroOut (Negative)",
+   "properties": {
+    "Node name for S&R": "ConditioningZeroOut"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 6,
+   "type": "KSampler",
+   "pos": [
+    2290,
+    601
+   ],
+   "size": [
+    330,
+    394
+   ],
+   "flags": {},
+   "order": 6,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 10
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 11
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 12
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 13
+    },
+    {
+     "name": "seed",
+     "type": "INT",
+     "link": 9
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      14
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "KSampler 8/euler/beta/cfg1",
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    0,
+    "fixed",
+    8,
+    1,
+    "euler",
+    "beta",
+    1
+   ]
+  },
+  {
+   "id": 102,
+   "type": "VAEDecode",
+   "pos": [
+    2740,
+    738
+   ],
+   "size": [
+    330,
+    120
+   ],
+   "flags": {},
+   "order": 102,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 14
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 15
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      16
+     ],
+     "slot_index": 0
+    }
+   ],
+   "title": "VAE Decode",
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": []
+  },
+  {
+   "id": 200,
+   "type": "SaveImage",
+   "pos": [
+    3190,
+    609
+   ],
+   "size": [
+    330,
+    378
+   ],
+   "flags": {},
+   "order": 200,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 16
+    }
+   ],
+   "outputs": [],
+   "title": "SaveImage (内置)",
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "lustify_style_reference"
+   ]
+  },
+  {
+   "id": 201,
+   "type": "LoraLoaderModelOnly",
+   "title": "Style Reference LoRA strength 1.0",
+   "pos": [
+    940,
+    591
+   ],
+   "size": [
+    330,
+    150
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 17
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      3
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoraLoaderModelOnly"
+   },
+   "widgets_values": [
+    "krea2_turbo_style_reference.safetensors",
+    1.0
+   ]
+  },
+  {
+   "id": 202,
+   "type": "LoadImage",
+   "title": "Single reference image",
+   "pos": [
+    40,
+    1412
+   ],
+   "size": [
+    330,
+    432
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      7
+     ]
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+    "image"
+   ]
+  },
+  {
+   "id": 203,
+   "type": "FluxKontextMultiReferenceLatentMethod",
+   "title": "Reference latent: index_timestep_zero",
+   "pos": [
+    1390,
+    826
+   ],
+   "size": [
+    330,
+    150
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "conditioning",
+     "type": "CONDITIONING",
+     "link": 18
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      8,
+      11
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "FluxKontextMultiReferenceLatentMethod"
+   },
+   "widgets_values": [
+    "index_timestep_zero"
+   ]
+  }
+ ],
+ "links": [
+  [
+   1,
+   1,
+   0,
+   30,
+   0,
+   "MODEL"
+  ],
+  [
+   2,
+   3,
+   0,
+   30,
+   1,
+   "CLIP"
+  ],
+  [
+   3,
+   201,
+   0,
+   189,
+   0,
+   "MODEL"
+  ],
+  [
+   4,
+   30,
+   1,
+   8,
+   0,
+   "CLIP"
+  ],
+  [
+   5,
+   119,
+   0,
+   8,
+   1,
+   "STRING"
+  ],
+  [
+   6,
+   16,
+   0,
+   8,
+   2,
+   "VAE"
+  ],
+  [
+   7,
+   202,
+   0,
+   8,
+   3,
+   "IMAGE"
+  ],
+  [
+   8,
+   203,
+   0,
+   29,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   9,
+   12,
+   0,
+   6,
+   4,
+   "INT"
+  ],
+  [
+   10,
+   189,
+   0,
+   6,
+   0,
+   "MODEL"
+  ],
+  [
+   11,
+   203,
+   0,
+   6,
+   1,
+   "CONDITIONING"
+  ],
+  [
+   12,
+   29,
+   0,
+   6,
+   2,
+   "CONDITIONING"
+  ],
+  [
+   13,
+   11,
+   0,
+   6,
+   3,
+   "LATENT"
+  ],
+  [
+   14,
+   6,
+   0,
+   102,
+   0,
+   "LATENT"
+  ],
+  [
+   15,
+   16,
+   0,
+   102,
+   1,
+   "VAE"
+  ],
+  [
+   16,
+   102,
+   0,
+   200,
+   0,
+   "IMAGE"
+  ],
+  [
+   17,
+   30,
+   0,
+   201,
+   0,
+   "MODEL"
+  ],
+  [
+   18,
+   8,
+   0,
+   203,
+   0,
+   "CONDITIONING"
+  ]
+ ],
+ "groups": [
+  {
+   "title": "Lustify v10 — Single Style Reference / 8207",
+   "bounding": [
+    -5,
+    -51,
+    3570,
+    1940
+   ],
+   "color": "#335159",
+   "font_size": 24
+  }
+ ],
+ "config": {},
+ "extra": {
+  "ds": {
+   "scale": 0.7,
+   "offset": [
+    0,
+    0
+   ]
+  }
+ },
+ "version": 0.4
+}

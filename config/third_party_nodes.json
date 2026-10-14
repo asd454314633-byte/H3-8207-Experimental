@@ -1,0 +1,167 @@
+[
+  {
+    "node": "ComfyUI-H3-Motion-Context",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "按上游仓库声明（LICENSE 署名 NikoDemon80）",
+    "upstream_author": "NikoDemon80",
+    "upstream_url": "https://github.com/NikoDemon80/ComfyUI-H3-Motion-Context.git",
+    "upstream_ref": "本地 HEAD 5335715abe54",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "ComfyUI-KJNodes",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "GPL-3.0（上游 LICENSE 经 GitHub API 核实 2026-10-12；v1.0 误标 MIT 已修正）",
+    "upstream_author": "kijai",
+    "upstream_url": "https://github.com/kijai/ComfyUI-KJNodes.git",
+    "upstream_ref": "本地 HEAD d3cfe21625e5",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "ComfyUI-MAINodes",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "按上游仓库声明（LICENSE 署名 MATLOWAI）",
+    "upstream_author": "matlowai",
+    "upstream_url": "https://github.com/matlowai/ComfyUI-MAINodes.git",
+    "upstream_ref": "本地 HEAD b99bb83f1b02",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "ComfyUI-MiniMax-H3-PDD-Acc",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "Apache-2.0（经 GitHub API 核实 2026-10-12；本地 LICENSE 为 Apache-2.0 文本）",
+    "upstream_author": "Jalen-Brunson",
+    "upstream_url": "https://github.com/Jalen-Brunson/ComfyUI-MiniMax-H3-PDD-Acc",
+    "upstream_ref": "本地 HEAD 993566bd49a4",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "ComfyUI-Ref2VA-VSA",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "Custom LICENSE / SPDX NOASSERTION; dependency only",
+    "upstream_author": "Kablex",
+    "upstream_url": "https://github.com/Kablex/ComfyUI-Ref2VA-VSA.git",
+    "upstream_ref": "本地 HEAD 92e3f8357c62",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "H3-Optimizations",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "native/ Apache-2.0 (Comfy Org); root node source has no verified LICENSE; dependency only",
+    "upstream_author": "Zironic",
+    "upstream_url": "https://github.com/Zironic/H3-Optimizations.git",
+    "upstream_ref": "本地 HEAD 862774944a33",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "MiniMax-H3-Combined-Image-And-Reference-to-Video",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "GPL-3.0 (verified upstream; dependency only)",
+    "upstream_author": "（上游作者未标识）",
+    "upstream_url": "https://github.com/entropicnoise/MiniMax-H3-Combined-Image-And-Reference-to-Video.git",
+    "upstream_ref": "40c74969fd805174bf3e1aed1f83f66ef7de6838",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "anthropic-claude",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "MIT © 2026 Alex Munteanu",
+    "upstream_author": "alexmunteanu",
+    "upstream_url": "https://github.com/alexmunteanu/comfyui-anthropic-claude.git",
+    "upstream_ref": "本地 HEAD cc4ff8a1d091",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "comfyui-krea2edit",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "Apache-2.0",
+    "upstream_author": "conradlocke / lbouaraba",
+    "upstream_url": "https://github.com/lbouaraba/comfyui-krea2edit.git",
+    "upstream_ref": "bdfa8b267fdb13730868d435b277dcfe696ec083",
+    "manifest_status": "UNKNOWN_HOLD",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "comfyui-obvpm",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "按上游仓库声明（Apache-2.0 文本）",
+    "upstream_author": "obvpm",
+    "upstream_url": "https://github.com/obvpm/comfyui-obvpm.git",
+    "upstream_ref": "本地 HEAD 7d5b977add00",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "comfyui_claude_prompt_generator",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "MIT © 2024 Paul de Lavallaz",
+    "upstream_author": "PauldeLavallaz",
+    "upstream_url": "https://github.com/PauldeLavallaz/comfyui_claude_prompt_generator.git",
+    "upstream_ref": "本地 HEAD 8a0c75357151",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "example_node.py.example",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "GPL-3.0 (ComfyUI host)",
+    "upstream_author": "",
+    "upstream_url": "",
+    "upstream_ref": "",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "krea-reference",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "MIT © 2026 Kevin Gilper",
+    "upstream_author": "kgilper",
+    "upstream_url": "https://github.com/kgilper/krea-reference.git",
+    "upstream_ref": "本地 HEAD b1062390d9a4",
+    "manifest_status": "UNKNOWN_HOLD",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "rgthree-comfy",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "MIT",
+    "upstream_author": "rgthree",
+    "upstream_url": "https://github.com/rgthree/rgthree-comfy.git",
+    "upstream_ref": "本地 HEAD 13b4399c00b5",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  },
+  {
+    "node": "websocket_image_save.py",
+    "attribution": "原版第三方（不搬运源码）",
+    "license": "GPL-3.0 (ComfyUI host)",
+    "upstream_author": "",
+    "upstream_url": "",
+    "upstream_ref": "",
+    "manifest_status": "REUSE_PASS",
+    "bundle_source": false,
+    "install": "git clone <upstream_url> into ComfyUI/custom_nodes/ (do NOT copy source into this repo)"
+  }
+]

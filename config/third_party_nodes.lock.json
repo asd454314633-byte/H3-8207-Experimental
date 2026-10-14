@@ -1,0 +1,107 @@
+[
+  {
+    "node": "ComfyUI-H3-Motion-Context",
+    "upstream_url": "https://github.com/NikoDemon80/ComfyUI-H3-Motion-Context.git",
+    "pin_kind": "commit",
+    "pin": "5335715abe54c1a9bfbe3494da29aae3e8635ce3",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "ComfyUI-KJNodes",
+    "upstream_url": "https://github.com/kijai/ComfyUI-KJNodes.git",
+    "pin_kind": "commit",
+    "pin": "d3cfe21625e5170126ce06fbfcfe1d88108688c3",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "ComfyUI-MAINodes",
+    "upstream_url": "https://github.com/matlowai/ComfyUI-MAINodes.git",
+    "pin_kind": "commit",
+    "pin": "b99bb83f1b024c5b1c6e5368f7b38c9add6d74cf",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "ComfyUI-MiniMax-H3-PDD-Acc",
+    "upstream_url": "https://github.com/Jalen-Brunson/ComfyUI-MiniMax-H3-PDD-Acc",
+    "pin_kind": "commit",
+    "pin": "993566bd49a4776e3b15f617a0b207d75dccaed7",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "ComfyUI-Ref2VA-VSA",
+    "upstream_url": "https://github.com/Kablex/ComfyUI-Ref2VA-VSA.git",
+    "pin_kind": "commit",
+    "pin": "92e3f8357c626f63cfe3813ec914f2cf3fbc500c",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "H3-Optimizations",
+    "upstream_url": "https://github.com/Zironic/H3-Optimizations.git",
+    "pin_kind": "commit",
+    "pin": "862774944a331bc1a66cee1cf805b94bd138ebbe",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "MiniMax-H3-Combined-Image-And-Reference-to-Video",
+    "upstream_url": "https://github.com/entropicnoise/MiniMax-H3-Combined-Image-And-Reference-to-Video.git",
+    "pin_kind": "commit",
+    "pin": "40c74969fd805174bf3e1aed1f83f66ef7de6838",
+    "note": "Verified upstream source: Krea2Edit 10/10 files match; Combined 2/2 source files match, use upstream GPL-3.0 license rather than local differing text"
+  },
+  {
+    "node": "anthropic-claude",
+    "upstream_url": "https://github.com/alexmunteanu/comfyui-anthropic-claude.git",
+    "pin_kind": "commit",
+    "pin": "cc4ff8a1d091971463e4bd7863f77733ddaaf31c",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "comfyui-krea2edit",
+    "upstream_url": "https://github.com/lbouaraba/comfyui-krea2edit.git",
+    "pin_kind": "commit",
+    "pin": "bdfa8b267fdb13730868d435b277dcfe696ec083",
+    "note": "Verified upstream source: Krea2Edit 10/10 files match; Combined 2/2 source files match, use upstream GPL-3.0 license rather than local differing text"
+  },
+  {
+    "node": "comfyui-obvpm",
+    "upstream_url": "https://github.com/obvpm/comfyui-obvpm.git",
+    "pin_kind": "commit",
+    "pin": "7d5b977add00c2fb9690dca9a5f20023a47c8a80",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "comfyui_claude_prompt_generator",
+    "upstream_url": "https://github.com/PauldeLavallaz/comfyui_claude_prompt_generator.git",
+    "pin_kind": "commit",
+    "pin": "8a0c753571512b6daa0cb1cbf657465a271cb0d1",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "example_node.py.example",
+    "upstream_url": "",
+    "pin_kind": "host_builtin",
+    "pin": "ee71d5c4993f29086b27fde1629a945ae48425bf",
+    "note": "ComfyUI GPL-3.0 built-in; no copied source"
+  },
+  {
+    "node": "krea-reference",
+    "upstream_url": "https://github.com/kgilper/krea-reference.git",
+    "pin_kind": "commit",
+    "pin": "b1062390d9a4eeac8a249db18ea5bb826002821b",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "rgthree-comfy",
+    "upstream_url": "https://github.com/rgthree/rgthree-comfy.git",
+    "pin_kind": "commit",
+    "pin": "13b4399c00b5ef5a97b1b6800fc1185874740f5d",
+    "note": "Exact existing dependency Git root/HEAD verified; same baseline source reused, no source re-audit"
+  },
+  {
+    "node": "websocket_image_save.py",
+    "upstream_url": "",
+    "pin_kind": "host_builtin",
+    "pin": "ee71d5c4993f29086b27fde1629a945ae48425bf",
+    "note": "ComfyUI GPL-3.0 built-in; no copied source"
+  }
+]

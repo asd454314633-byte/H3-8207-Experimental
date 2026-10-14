@@ -1,0 +1,40 @@
+"""H3 Prompt 来源适配器；编译规则全部由现有 Sidecar 管理。"""
+import importlib.util
+from pathlib import Path
+
+SIDECAR_PATH = Path(r"<H3_PROJECT_DIR>\H3_PROMPT_SIDECAR_20261002\prompt_sidecar.py")
+
+
+class H3PromptSidecar:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "enabled": ("BOOLEAN", {"default": False, "label_on": "使用AI导演", "label_off": "手工模式"}),
+            "delta": ("STRING", {"multiline": True, "default": ""}),
+            "manual_prompt": ("STRING", {"multiline": True, "forceInput": True}),
+        }}
+
+    CATEGORY = "H3"
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("最终Prompt",)
+    FUNCTION = "compile"
+    DESCRIPTION = "关闭：原样返回手工提示词。开启：调用 Sidecar，180秒超时；失败直接报错。"
+
+    @classmethod
+    def IS_CHANGED(cls, enabled, delta, manual_prompt):
+        # global/state 人工变更后同一句 delta 也要重新编译。
+        return float("nan") if enabled else manual_prompt
+
+    def compile(self, enabled, delta, manual_prompt):
+        if not enabled:
+            return (manual_prompt,)
+        spec = importlib.util.spec_from_file_location("h3_prompt_sidecar_compiler", SIDECAR_PATH)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        result = module.compile_prompt(delta, timeout=180)
+        return {"ui": {"text": [result["prompt"]], "run_id": [result["run_id"]],
+                       "latency_ms": [result["latency_ms"]]}, "result": (result["prompt"],)}
+
+
+NODE_CLASS_MAPPINGS = {"H3PromptSidecar": H3PromptSidecar}
+NODE_DISPLAY_NAME_MAPPINGS = {"H3PromptSidecar": "H3 提示词导演"}

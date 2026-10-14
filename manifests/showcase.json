@@ -1,0 +1,26 @@
+[
+  {
+    "path": "assets/showcase/demo-preview.gif",
+    "sha256": "d8f9e94dd0710ab6f68e06ba7d37db99ecb6f60cb6e0bbc830fde798fe37f635",
+    "source": "https://github.com/asd454314633-byte/H3-Chinese-Director/tree/main/assets/showcase",
+    "scope": "historical showcase only; not current 8207 acceptance"
+  },
+  {
+    "path": "assets/showcase/h3-six-segment-demo-github.mp4",
+    "sha256": "da7039a18f7c7afa15fcf96876d64fa874c6be6993c23829a7b245fdd42ae37b",
+    "source": "https://github.com/asd454314633-byte/H3-Chinese-Director/tree/main/assets/showcase",
+    "scope": "historical showcase only; not current 8207 acceptance"
+  },
+  {
+    "path": "assets/showcase/showcase-cover.jpg",
+    "sha256": "ab046de34540fb3f96079c63a43c12a4c9d783799bdfd624beecb09664d6710e",
+    "source": "https://github.com/asd454314633-byte/H3-Chinese-Director/tree/main/assets/showcase",
+    "scope": "historical showcase only; not current 8207 acceptance"
+  },
+  {
+    "path": "assets/showcase/six-segment-panel-redacted.png",
+    "sha256": "19ba3f40fa328d5848e02cf5d34264544c87b2a06052d7e61accf67f6d5c015c",
+    "source": "https://github.com/asd454314633-byte/H3-Chinese-Director/tree/main/assets/showcase",
+    "scope": "historical showcase only; not current 8207 acceptance"
+  }
+]

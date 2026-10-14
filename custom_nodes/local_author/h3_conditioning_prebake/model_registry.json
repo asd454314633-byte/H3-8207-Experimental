@@ -1,0 +1,30 @@
+[
+  {
+    "role": "h3",
+    "path": "models/diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+    "sha256": "",
+    "bytes": 0,
+    "mtime_ns": 0
+  },
+  {
+    "role": "te",
+    "path": "models/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sha256": "",
+    "bytes": 0,
+    "mtime_ns": 0
+  },
+  {
+    "role": "video_vae",
+    "path": "models/vae/minimax_h3_video_vae_int8_convrot.safetensors",
+    "sha256": "",
+    "bytes": 0,
+    "mtime_ns": 0
+  },
+  {
+    "role": "audio_vae",
+    "path": "models/vae/minimax_h3_audio_vae_fp32.safetensors",
+    "sha256": "",
+    "bytes": 0,
+    "mtime_ns": 0
+  }
+]

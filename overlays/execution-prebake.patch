@@ -1,0 +1,103 @@
+--- a/execution.py
++++ b/execution.py
+@@ -108,6 +108,62 @@
+ class CacheEntry(NamedTuple):
+     ui: dict
+     outputs: list
++
++
++def _h3_prebake_inactive_headroom(prompt, registered_nodes, active_headroom, inactive_headroom):
++    """Let the existing Adaptive hook budget H3 before TE loads in formal PreBake.
++
++    Outputs retain their normal cache ownership. Real RAM pressure can still evict
++    them; no ModelPatcher is pinned or moved into an external retention registry.
++    """
++    if not 6 * (1024 ** 3) <= active_headroom <= inactive_headroom:
++        return inactive_headroom
++    official = registered_nodes.get("MiniMaxH3ReferenceToVideo")
++    if (getattr(official, "_H3_ADAPTIVE_HOST_WARM_PATCHED", False) is not True
++            or getattr(official, "_H3_ADAPTIVE_HOST_WARM_PATCH_INSTALL_COUNT", 0) != 1
++            or not callable(getattr(official, "_H3_ADAPTIVE_HOST_WARM_ORIGINAL_EXECUTE", None))):
++        return inactive_headroom
++    allowed = {"MiniMaxH3ReferenceToVideo", "CLIPLoader", "VAELoader",
++               "Any Switch (rgthree)", "ResolutionSelector", "PrimitiveFloat",
++               "PrimitiveInt", "PrimitiveBoolean", "PrimitiveStringMultiline",
++               "ComfyMathExpression", "LoadImageCrop", "LoadImage",
++               "H3ConditioningBake", "H3SelectiveTEUnload"}
++    if (not prompt or any(n.get("class_type") not in allowed for n in prompt.values())
++            or prompt.get("136", {}).get("class_type") != "MiniMaxH3ReferenceToVideo"):
++        return inactive_headroom
++    bakes = [n for n in prompt.values() if n.get("class_type") == "H3ConditioningBake"]
++    if len(bakes) != 1:
++        return inactive_headroom
++    bake = bakes[0].get("inputs", {})
++    te_link = bake.get("conditioning")
++    if (bake.get("require_te_released") is not True or bake.get("latent") != ["136", 1]
++            or not isinstance(te_link, list) or len(te_link) != 2 or te_link[1] != 0):
++        return inactive_headroom
++    te = prompt.get(te_link[0], {})
++    if (te.get("class_type") != "H3SelectiveTEUnload"
++            or te.get("inputs", {}).get("conditioning") != ["136", 0]):
++        return inactive_headroom
++    return active_headroom
++
++
++def _h3_prebake_release_before_te(prompt_id):
++    # Reuse the installed Adaptive ownership checks and RAM/Commit budget.
++    # No new model owner or pin is introduced here.
++    from pathlib import Path
++    expected = Path(__file__).resolve().parent / "custom_nodes/h3_adaptive_host_warm_inplace/__init__.py"
++    matches = [m for m in tuple(sys.modules.values())
++               if getattr(m, "__file__", None)
++               and Path(m.__file__).resolve() == expected]
++    if len(matches) != 1 or not callable(getattr(matches[0], "release_exact", None)):
++        raise RuntimeError("Pre-TE Adaptive safety module unavailable; TE blocked")
++    record = {"prompt_id": prompt_id, "node_id": "128", "status": "FAIL_CLOSED",
++              "handoff": "BEFORE_TE_LOADER128"}
++    matches[0].write(dict(record), "PRE_TE_LOADER_ENTER")
++    try:
++        matches[0].release_exact(record)
++    except Exception as ex:
++        matches[0].write({**record, "error": str(ex)}, "PRE_TE_FAIL_CLOSED")
++        raise
+ 
+ 
+ class CacheType(Enum):
+@@ -435,7 +491,7 @@
+     return getattr(class_def, 'HAS_INTERMEDIATE_OUTPUT', False)
+ 
+ 
+-async def execute(server: "ExecutionServer", dynprompt, caches, current_item, extra_data, executed, prompt_id, execution_list, pending_subgraph_results, pending_async_nodes, ui_outputs, asset_manager: AssetManager):
++async def execute(server: "ExecutionServer", dynprompt, caches, current_item, extra_data, executed, prompt_id, execution_list, pending_subgraph_results, pending_async_nodes, ui_outputs, asset_manager: AssetManager, h3_prebake_handoff=False):
+     unique_id = current_item
+     real_node_id = dynprompt.get_real_node_id(unique_id)
+     display_node_id = dynprompt.get_display_node_id(unique_id)
+@@ -544,6 +600,8 @@
+                 GraphBuilder.set_default_prefix(unique_id, call_index, 0)
+ 
+             try:
++                if h3_prebake_handoff and unique_id == "128" and class_type == "CLIPLoader":
++                    _h3_prebake_release_before_te(prompt_id)
+                 output_data, output_ui, has_subgraph, has_pending_tasks = await get_output_data(prompt_id, unique_id, obj, input_data_all, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb, v3_data=v3_data)
+             finally:
+                 if comfy.memory_management.aimdo_enabled:
+@@ -744,6 +802,10 @@
+         self._notify_prompt_lifecycle("start", prompt_id)
+         ram_headroom = int(self.cache_args["ram"] * (1024 ** 3))
+         ram_inactive_headroom = int(self.cache_args["ram_inactive"] * (1024 ** 3))
++        original_ram_inactive_headroom = ram_inactive_headroom
++        ram_inactive_headroom = _h3_prebake_inactive_headroom(
++            prompt, nodes.NODE_CLASS_MAPPINGS, ram_headroom, ram_inactive_headroom)
++        h3_prebake_handoff = ram_inactive_headroom != original_ram_inactive_headroom
+         ram_release_callback = self.caches.outputs.ram_release if self.cache_type == CacheType.RAM_PRESSURE else None
+         comfy.memory_management.set_ram_cache_release_state(ram_release_callback, ram_headroom)
+ 
+@@ -786,7 +848,7 @@
+                         break
+ 
+                     assert node_id is not None, "Node ID should not be None at this point"
+-                    result, error, ex = await execute(self.server, dynamic_prompt, self.caches, node_id, extra_data, executed, prompt_id, execution_list, pending_subgraph_results, pending_async_nodes, ui_node_outputs, self.asset_manager)
++                    result, error, ex = await execute(self.server, dynamic_prompt, self.caches, node_id, extra_data, executed, prompt_id, execution_list, pending_subgraph_results, pending_async_nodes, ui_node_outputs, self.asset_manager, h3_prebake_handoff=h3_prebake_handoff)
+                     self.success = result != ExecutionResult.FAILURE
+                     if result == ExecutionResult.FAILURE:
+                         self.handle_execution_error(prompt_id, dynamic_prompt.original_prompt, current_outputs, executed, error, ex)

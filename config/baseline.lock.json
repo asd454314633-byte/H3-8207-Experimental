@@ -1,0 +1,76 @@
+{
+  "repository": "https://github.com/asd454314633-byte/H3-Chinese-Director.git",
+  "commit": "88ccf86f2ed2a638451c864b4358a6ef7adc965d",
+  "host_repository": "https://github.com/comfyanonymous/ComfyUI.git",
+  "host_commit": "ee71d5c4993f29086b27fde1629a945ae48425bf",
+  "execution_before_sha256": "c9ef8ea11b8cb7aa80d05f670ca457211869d27623991b66d0014fb9b33fb246",
+  "execution_after_sha256": "0f335a49ed362146598299401044bb0c52012160c355eec08f09304919b95006",
+  "patch": "overlays/execution-prebake.patch",
+  "host_license": "GPL-3.0",
+  "qwen21_host_extension": "EXACT_SOURCE_REBUILD_PASS; MODEL_EXECUTION_E2E_NOT_TESTED",
+  "qwen21_backport": {
+    "patch": "overlays/qwen21-backport.patch",
+    "sha256": "028d26a33bcfa8d88f2305d81f9d5f461e2b9427c8fc3fde0b0946ea0f15feaa",
+    "target_local_commit": "ffc9d49e487ed269a2394ed597ad29d36f9646a4",
+    "upstream_feature_repository": "https://github.com/comfyanonymous/ComfyUI.git",
+    "upstream_feature_ref": "1b0b848d4e148cb5dae28a636b07af7f8caa5264",
+    "license": "GPL-3.0",
+    "files": [
+      {
+        "path": "comfy/latent_formats.py",
+        "base_sha256": "44622396b0d737b62fed441eeb6cf88ced5f8a330a62219f9900a04da9ad8a2a",
+        "target_sha256": "cec40f70867921f956b2f5c40d8f294f0fc34cb39eb7c74bc95493723bca827d"
+      },
+      {
+        "path": "comfy/ldm/qwen_image21/model.py",
+        "base_sha256": null,
+        "target_sha256": "81a43c55e2292889d8b77d79cf4cb56fd3dfb717baf5e40f1d31f7700100c039"
+      },
+      {
+        "path": "comfy/ldm/wan/model_animate2.py",
+        "base_sha256": "0249deb27442d3e9b6178b00960a6ab4fd374f4a99603ab66cc76c618e5b20b2",
+        "target_sha256": "342f8ef56312e981d2230488b3b0016a2651c881e3800e3c9f56ec62bd6f7705"
+      },
+      {
+        "path": "comfy/ldm/wan/vae2_2.py",
+        "base_sha256": "951acd5ef15de85a923ca471659acf02adb281a13ce754bdf7ff0d4c547214a5",
+        "target_sha256": "a211180534d08b9cdc487697f151333d710d74bff145754c815c30a7816fff41"
+      },
+      {
+        "path": "comfy/lora.py",
+        "base_sha256": "502b0118ff179d9c167a8fb5b05b72a7736eb69d948750c0137f57461686d6ff",
+        "target_sha256": "c0f001d81348e873b5d7c767ef0d77730143e1c0b74dfaee70ac429ec59f6c52"
+      },
+      {
+        "path": "comfy/model_base.py",
+        "base_sha256": "6280712f8315f00f19a1ada53e48bf243c818b017fa751b3412092fa0f381e68",
+        "target_sha256": "3f1cfa32c1e863f7ec69c2a596d7b322a7d1506daa1e2bd78c8b8c21c3fbb471"
+      },
+      {
+        "path": "comfy/model_detection.py",
+        "base_sha256": "bb3995fe6f977fbac4f0d424d6a773b9b81d35f5f0f92c841db9cf250d088a32",
+        "target_sha256": "5b8c69002e7d1f05c3d94ffb8c58b8d442a780f1c9e7f119dd88ffab94b8b373"
+      },
+      {
+        "path": "comfy/sd.py",
+        "base_sha256": "3eba634a7311bc51cf19c54b12c91149306fe71ae28fa37744e36cfb9290f00a",
+        "target_sha256": "e0ea197ea8bf57e2e79239da27988bf1ba4b245d479281af54545cd502cba9b9"
+      },
+      {
+        "path": "comfy/supported_models.py",
+        "base_sha256": "007f8d1cc2e0d11c0b16c538f79c8f9a9d4e7513c79df405a7457435d14ee0b5",
+        "target_sha256": "b6c543ef410b751aee6c8916382353b8340611e158c6db55d4a31fd062c0487d"
+      },
+      {
+        "path": "comfy/text_encoders/qwen_image21.py",
+        "base_sha256": null,
+        "target_sha256": "c64016aa703f913859c9afb7efe5d1e5120c8fa2820f9f7acc00792987d39136"
+      },
+      {
+        "path": "comfy_extras/nodes_qwen.py",
+        "base_sha256": "b8d18d9f897c4bd5a4b2651b30643bed277f1808e033c9c376dc21025fed00a5",
+        "target_sha256": "fd0fb2b1c168fad1d722cad360dcf189aaea207751e6785739072bdc0b5200e7"
+      }
+    ]
+  }
+}

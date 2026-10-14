@@ -1,0 +1,83 @@
+# Modified environment example derived from ComfyUI configuration; GPL-3.0. See overlays/LICENSE-GPL-3.0.txt.
+# =============================================================================
+# extra_model_paths.example.yaml  —  H3-8207-Experimental 配置模板
+# -----------------------------------------------------------------------------
+# 这是 8207 实验环境 extra_model_paths.yaml 的「脱敏示例」。原始文件中硬编码了
+# 作者本机/生产环境的绝对路径（<COMFYUI_DIR>/...、<USER_HOME>/...、<H3_PROJECT_DIR>/...），
+# 这些路径已在公开候选包中全部替换为占位符，绝不会出现在任何发布物里。
+#
+# 使用方式：
+#   1) 复制本文件为 ComfyUI 根目录下的 extra_model_paths.yaml
+#   2) 将下方所有 <...> 占位符替换为你自己的真实路径
+#   3) 本文件引用的全部为「只读模型目录」，运行时不会向这些目录写入任何权重；
+#      也不向 8207 树内复制任何权重（符合「不搬运大文件」约束）。
+# =============================================================================
+
+# ---- 生产模型库（只读复用，与冻结基线 8193 的引用机制一致） ----
+comfyui_production_models:
+  base_path: <COMFYUI_DIR>/ComfyUI
+  diffusion_models: models/diffusion_models
+  text_encoders: models/text_encoders
+  vae: models/vae
+  loras: models/loras
+  vae_approx: models/vae_approx
+  frame_interpolation: models/frame_interpolation
+  latent_upscale_models: models/latent_upscale_models
+  model_patcher: models/model_patcher
+  audio_encoders: models/audio_encoders
+  clip: models/clip
+  controlnet: models/controlnet
+  embeddings: models/embeddings
+  gligen: models/gligen
+  hypernetworks: models/hypernetworks
+  photomaker: models/photomaker
+  style_models: models/style_models
+  upscale_models: models/upscale_models
+  vae_decode: models/vae_decode
+  vae_encode: models/vae_encode
+
+# ---- FastH3 / FastVideo VSA 权重（位于生产树之外，与基线 8193 共用同一共享目录） ----
+h3_fl2va_fastvsa:
+  base_path: <USER_HOME>/Desktop/<your_project_dir>/H3_FL2VA_四方案对比_20260907/05_FastH3_FL2VA
+  diffusion_models: .
+
+# ---- PDD 8-Step Acc LoRA 库（只读；原生 LoRA 加载器路径，详见发行说明） ----
+h3_pdd_acc_native:
+  base_path: <COMFYUI_DIR>/ComfyUI/models/pdd_acc
+  loras: .
+
+# ---- MiniMaxH3PDDAccApply 的 pdd_acc 类型映射（只读复用生产目录） ----
+h3_pdd_acc_apply:
+  base_path: <COMFYUI_DIR>/ComfyUI/models/pdd_acc
+  pdd_acc: .
+
+# ---- NextGen 验证过的共享模型路径（只读；不复制权重） ----
+h3_nextgen_shared_models:
+  base_path: <H3_PROJECT_DIR>/_parallel_nextgen_controls_8207/models
+  model_patches: model_patches
+  checkpoints: checkpoints
+  diffusion_models: diffusion_models
+  geometry_estimation: geometry_estimation
+
+# ---- Lustify v10 Krea 2 Turbo INT8 ConvRot（8207 独立部署，只读素材库） ----
+lustify_v10_krea2_library:
+  base_path: <COMFYUI_DIR>/Lustify_v10_Krea2_独立素材库
+  diffusion_models: models/diffusion_models
+  text_encoders: models/text_encoders
+  vae: models/vae
+
+# ---- Identity Edit v1.2（只读模型查找；输出保留在 runtime） ----
+lustify_v10_identity_edit_library:
+  base_path: <COMFYUI_DIR>/Lustify_v10_Krea2_独立素材库
+  loras: models/loras
+
+# ---- 千问 Qwen Image 2.1 INT8 ConvRot（8207 双图像模型集成，只读引用，零字节复制） ----
+#   unet : qwen_image_2.1_int8_convrot.safetensors
+#   clip : qwen3vl_8b_int8_convrot.safetensors
+#   vae  : qwen_image_2.1_vae_bf16.safetensors
+# 仅映射工作流实际需要的三个类型；未映射 loras，以避免无关 LoRA 混入 8207 枚举。
+qwen21_v26_lab_models:
+  base_path: <COMFYUI_DIR>/ComfyUI_H3_V26_Lab
+  diffusion_models: models/diffusion_models
+  text_encoders: models/text_encoders
+  vae: models/vae

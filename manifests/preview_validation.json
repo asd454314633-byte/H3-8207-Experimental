@@ -1,0 +1,14 @@
+{
+  "version": "v0.1.0-preview",
+  "scope": "sanitized experimental source publication",
+  "cpu_javascript_tests": {"native_spatial": 11, "prebake_state": 11, "release_guards": 9, "workflow_helpers": 16, "frontend_backend_bridge": 1, "total_passed": 48, "failed": 0},
+  "static_integrity": "PASS",
+  "workflow_privacy": "PASS (193 workflows)",
+  "source_inventory": "PASS (140 source files)",
+  "clean_pinned_source_rebuild": "PASS",
+  "runtime_equivalence": "HOLD",
+  "current_build_gpu_e2e": "NOT_TESTED",
+  "current_build_live_browser_acceptance": "NOT_TESTED",
+  "mixed_resolution_auto_merge": "HOLD",
+  "showcase_scope": "four historical redacted 8197 assets, not current-build acceptance"
+}

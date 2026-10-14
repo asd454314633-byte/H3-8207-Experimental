@@ -1,0 +1,2159 @@
+{
+ "id": "lustify-v10-krea2-identity-edit-8207",
+ "revision": 1,
+ "last_node_id": 218,
+ "last_link_id": 69,
+ "nodes": [
+  {
+   "id": 55,
+   "type": "UNETLoader",
+   "pos": [
+    40,
+    40
+   ],
+   "size": [
+    420,
+    110
+   ],
+   "flags": {},
+   "order": 0,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      1
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "UNETLoader"
+   },
+   "widgets_values": [
+    "lustify-v10-krea-turbo-int8_convrot.safetensors",
+    "default"
+   ],
+   "title": "Lustify v10 Turbo INT8（保持原模型）"
+  },
+  {
+   "id": 71,
+   "type": "LoraLoaderModelOnly",
+   "pos": [
+    40,
+    190
+   ],
+   "size": [
+    420,
+    130
+   ],
+   "flags": {},
+   "order": 1,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 1
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      8,
+      24,
+      40,
+      56
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoraLoaderModelOnly"
+   },
+   "widgets_values": [
+    "krea2_identity_edit_v1_2.safetensors",
+    1
+   ],
+   "title": "Identity Edit v1.2 LoRA"
+  },
+  {
+   "id": 56,
+   "type": "CLIPLoader",
+   "pos": [
+    40,
+    360
+   ],
+   "size": [
+    420,
+    130
+   ],
+   "flags": {},
+   "order": 2,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "CLIP",
+     "type": "CLIP",
+     "links": [
+      4,
+      13,
+      29,
+      45,
+      61
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "CLIPLoader"
+   },
+   "widgets_values": [
+    "qwen3vl_4b_fp8_scaled.safetensors",
+    "krea2",
+    "default"
+   ],
+   "title": "Qwen3-VL 4B 编码器（保持原模型）"
+  },
+  {
+   "id": 57,
+   "type": "VAELoader",
+   "pos": [
+    40,
+    530
+   ],
+   "size": [
+    420,
+    90
+   ],
+   "flags": {},
+   "order": 3,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "VAE",
+     "type": "VAE",
+     "links": [
+      7,
+      10,
+      20,
+      23,
+      26,
+      36,
+      39,
+      42,
+      52,
+      55,
+      58,
+      68
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAELoader"
+   },
+   "widgets_values": [
+    "wan_2.1_vae.safetensors"
+   ],
+   "title": "VAE（沿用已验收的原配置）"
+  },
+  {
+   "id": 83,
+   "type": "ResolutionSelector",
+   "pos": [
+    40,
+    660
+   ],
+   "size": [
+    420,
+    130
+   ],
+   "flags": {},
+   "order": 4,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "WIDTH",
+     "type": "INT",
+     "links": [
+      2,
+      3
+     ]
+    },
+    {
+     "name": "HEIGHT",
+     "type": "INT",
+     "links": []
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "ResolutionSelector"
+   },
+   "widgets_values": [
+    "1:1 (Square)",
+    1,
+    8
+   ],
+   "title": "统一画面比例：四帧共用"
+  },
+  {
+   "id": 82,
+   "type": "EmptySD3LatentImage",
+   "pos": [
+    40,
+    830
+   ],
+   "size": [
+    420,
+    130
+   ],
+   "flags": {},
+   "order": 5,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "width",
+     "type": "INT",
+     "link": 2
+    },
+    {
+     "name": "height",
+     "type": "INT",
+     "link": 3
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      12,
+      18,
+      28,
+      34,
+      44,
+      50,
+      60,
+      66
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "EmptySD3LatentImage"
+   },
+   "widgets_values": [
+    1024,
+    1024,
+    1
+   ],
+   "title": "统一目标 Latent（与补丁 target_latent 共用）"
+  },
+  {
+   "id": 72,
+   "type": "LoadImage",
+   "pos": [
+    520,
+    40
+   ],
+   "size": [
+    520,
+    440
+   ],
+   "flags": {},
+   "order": 6,
+   "mode": 0,
+   "inputs": [],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      5,
+      6,
+      11,
+      14
+     ]
+    },
+    {
+     "name": "MASK",
+     "type": "MASK",
+     "links": null
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "LoadImage"
+   },
+   "widgets_values": [
+    "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+    "image"
+   ],
+   "title": "母图：双人客厅（仅 KF1 的起点）"
+  },
+  {
+   "id": 85,
+   "type": "Krea2EditGroundedEncode",
+   "pos": [
+    520,
+    540
+   ],
+   "size": [
+    560,
+    260
+   ],
+   "flags": {},
+   "order": 7,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 4
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 5,
+     "shape": 7
+    },
+    {
+     "name": "image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      17,
+      33,
+      49,
+      65
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditGroundedEncode"
+   },
+   "widgets_values": [
+    "",
+    768,
+    ""
+   ],
+   "title": "四帧共享负面条件（留空）"
+  },
+  {
+   "id": 73,
+   "type": "VAEEncode",
+   "pos": [
+    520,
+    900
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 8,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 6
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      9
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "01 上一帧 VAE 编码"
+  },
+  {
+   "id": 79,
+   "type": "Krea2EditModelPatch",
+   "pos": [
+    520,
+    1030
+   ],
+   "size": [
+    430,
+    330
+   ],
+   "flags": {},
+   "order": 9,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 8
+    },
+    {
+     "name": "source_latent",
+     "type": "LATENT",
+     "link": 9
+    },
+    {
+     "name": "source_latent_b",
+     "type": "LATENT",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "ref_boost_mask",
+     "type": "MASK",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 10,
+     "shape": 7
+    },
+    {
+     "name": "source_image",
+     "type": "IMAGE",
+     "link": 11,
+     "shape": 7
+    },
+    {
+     "name": "source_image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "target_latent",
+     "type": "LATENT",
+     "link": 12,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      15
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditModelPatch"
+   },
+   "widgets_values": [
+    2.0,
+    1,
+    "fit"
+   ],
+   "title": "01 参考补丁 ref_boost=2.0（源=上一帧）"
+  },
+  {
+   "id": 84,
+   "type": "Krea2EditGroundedEncode",
+   "pos": [
+    520,
+    1400
+   ],
+   "size": [
+    620,
+    330
+   ],
+   "flags": {},
+   "order": 10,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 13
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 14,
+     "shape": 7
+    },
+    {
+     "name": "image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      16
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditGroundedEncode"
+   },
+   "widgets_values": [
+    "保持同一对成年人、同一套服装、同一客厅场景、同一房间布局、同一灯光氛围和同一画面风格。继续上一张画面的剧情推进。现在让男性向前靠近女性，站到女性面前偏左位置，两人面对面靠近，女性身体转向男性，男性右手扶在女性上臂位置，女性左手轻放在男性胸前，两人形成更近距离的对视互动。保持白色短袖上衣、浅蓝色短裙、白色短袜、白色运动鞋不变；保持男性黑色短袖T恤、浅灰色休闲长裤、白色运动鞋不变；保持沙发、茶几、地毯、门和墙面位置尽量一致。允许人物姿态和站位变化，但不要换装，不要改变客厅结构，不要减少人物数量。",
+    768,
+    ""
+   ],
+   "title": "01 KF01 近距离对视｜编辑指令"
+  },
+  {
+   "id": 53,
+   "type": "KSampler",
+   "pos": [
+    520,
+    1770
+   ],
+   "size": [
+    340,
+    430
+   ],
+   "flags": {},
+   "order": 11,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 15
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 16
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 17
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 18
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      19
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    1088049369132323,
+    "fixed",
+    10,
+    1,
+    "euler",
+    "simple",
+    1
+   ],
+   "title": "01 采样 10/euler/simple/cfg1"
+  },
+  {
+   "id": 54,
+   "type": "VAEDecode",
+   "pos": [
+    520,
+    2230
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 12,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 19
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 20
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      21,
+      22,
+      27,
+      30
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "01 解码"
+  },
+  {
+   "id": 29,
+   "type": "SaveImage",
+   "pos": [
+    520,
+    2360
+   ],
+   "size": [
+    340,
+    420
+   ],
+   "flags": {},
+   "order": 13,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 21
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "lustify_edit/keyframes/KF01_closeup"
+   ],
+   "title": "01 保存"
+  },
+  {
+   "id": 213,
+   "type": "VAEEncode",
+   "pos": [
+    990,
+    900
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 14,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 22
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 23
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      25
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "02 上一帧 VAE 编码"
+  },
+  {
+   "id": 214,
+   "type": "Krea2EditModelPatch",
+   "pos": [
+    990,
+    1030
+   ],
+   "size": [
+    430,
+    330
+   ],
+   "flags": {},
+   "order": 15,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 24
+    },
+    {
+     "name": "source_latent",
+     "type": "LATENT",
+     "link": 25
+    },
+    {
+     "name": "source_latent_b",
+     "type": "LATENT",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "ref_boost_mask",
+     "type": "MASK",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 26,
+     "shape": 7
+    },
+    {
+     "name": "source_image",
+     "type": "IMAGE",
+     "link": 27,
+     "shape": 7
+    },
+    {
+     "name": "source_image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "target_latent",
+     "type": "LATENT",
+     "link": 28,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      31
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditModelPatch"
+   },
+   "widgets_values": [
+    2.0,
+    1,
+    "fit"
+   ],
+   "title": "02 参考补丁 ref_boost=2.0（源=上一帧）"
+  },
+  {
+   "id": 104,
+   "type": "Krea2EditGroundedEncode",
+   "pos": [
+    990,
+    1400
+   ],
+   "size": [
+    620,
+    330
+   ],
+   "flags": {},
+   "order": 16,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 29
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 30,
+     "shape": 7
+    },
+    {
+     "name": "image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      32
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditGroundedEncode"
+   },
+   "widgets_values": [
+    "保持同一对成年人、同一套服装、同一客厅场景、同一房间布局、同一灯光氛围和同一画面风格。继续上一张画面的剧情推进。现在让女性自然坐到沙发上，身体略向后靠，双腿自然摆放；男性站在沙发前方靠近女性的位置，身体略微前倾，与女性近距离互动，男性一只手撑在沙发靠背或沙发边缘，另一只手靠近女性肩部附近。两人仍然都清晰可见，保持白色短袖上衣、浅蓝色短裙、白色短袜、白色运动鞋不变；保持男性黑色短袖T恤、浅灰色休闲长裤、白色运动鞋不变；保持客厅的沙发、茶几、地毯、门和室内布局尽量不变。允许人物姿态和机位略微变化，但不要换装，不要改变客厅结构，不要减少人物数量。",
+    768,
+    ""
+   ],
+   "title": "02 KF02 女性坐下，男性俯身互动｜编辑指令"
+  },
+  {
+   "id": 105,
+   "type": "KSampler",
+   "pos": [
+    990,
+    1770
+   ],
+   "size": [
+    340,
+    430
+   ],
+   "flags": {},
+   "order": 17,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 31
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 32
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 33
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 34
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      35
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    1088049369132324,
+    "fixed",
+    10,
+    1,
+    "euler",
+    "simple",
+    1
+   ],
+   "title": "02 采样 10/euler/simple/cfg1"
+  },
+  {
+   "id": 106,
+   "type": "VAEDecode",
+   "pos": [
+    990,
+    2230
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 18,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 35
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 36
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      37,
+      38,
+      43,
+      46
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "02 解码"
+  },
+  {
+   "id": 107,
+   "type": "SaveImage",
+   "pos": [
+    990,
+    2360
+   ],
+   "size": [
+    340,
+    420
+   ],
+   "flags": {},
+   "order": 19,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 37
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "lustify_edit/keyframes/KF02_sit"
+   ],
+   "title": "02 保存"
+  },
+  {
+   "id": 215,
+   "type": "VAEEncode",
+   "pos": [
+    1460,
+    900
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 20,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 38
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 39
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      41
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "03 上一帧 VAE 编码"
+  },
+  {
+   "id": 216,
+   "type": "Krea2EditModelPatch",
+   "pos": [
+    1460,
+    1030
+   ],
+   "size": [
+    430,
+    330
+   ],
+   "flags": {},
+   "order": 21,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 40
+    },
+    {
+     "name": "source_latent",
+     "type": "LATENT",
+     "link": 41
+    },
+    {
+     "name": "source_latent_b",
+     "type": "LATENT",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "ref_boost_mask",
+     "type": "MASK",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 42,
+     "shape": 7
+    },
+    {
+     "name": "source_image",
+     "type": "IMAGE",
+     "link": 43,
+     "shape": 7
+    },
+    {
+     "name": "source_image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "target_latent",
+     "type": "LATENT",
+     "link": 44,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      47
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditModelPatch"
+   },
+   "widgets_values": [
+    2.0,
+    1,
+    "fit"
+   ],
+   "title": "03 参考补丁 ref_boost=2.0（源=上一帧）"
+  },
+  {
+   "id": 108,
+   "type": "Krea2EditGroundedEncode",
+   "pos": [
+    1460,
+    1400
+   ],
+   "size": [
+    620,
+    330
+   ],
+   "flags": {},
+   "order": 22,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 45
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 46,
+     "shape": 7
+    },
+    {
+     "name": "image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      48
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditGroundedEncode"
+   },
+   "widgets_values": [
+    "保持同一对成年人、同一套服装、同一客厅场景、同一房间布局、同一灯光氛围和同一画面风格。继续上一张画面的剧情推进。现在让男性在女性面前单膝跪地，身体略向上抬头看向女性；女性从沙发边缘略微俯身靠近男性，形成上下空间关系变化。女性一只手可以轻扶沙发边缘，另一只手靠近男性肩部或头侧；男性双手姿势自然，不要消失，不要畸形。保持白色短袖上衣、浅蓝色短裙、白色短袜、白色运动鞋不变；保持男性黑色短袖T恤、浅灰色休闲长裤、白色运动鞋不变；保持客厅中的沙发、茶几、地毯、门和整体空间布局尽量一致。允许人物姿态和镜头略微变化，但不要换装，不要改变客厅结构，不要减少人物数量。",
+    768,
+    ""
+   ],
+   "title": "03 KF03 男性单膝跪地，女性俯身｜编辑指令"
+  },
+  {
+   "id": 109,
+   "type": "KSampler",
+   "pos": [
+    1460,
+    1770
+   ],
+   "size": [
+    340,
+    430
+   ],
+   "flags": {},
+   "order": 23,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 47
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 48
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 49
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 50
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      51
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    1088049369132325,
+    "fixed",
+    10,
+    1,
+    "euler",
+    "simple",
+    1
+   ],
+   "title": "03 采样 10/euler/simple/cfg1"
+  },
+  {
+   "id": 110,
+   "type": "VAEDecode",
+   "pos": [
+    1460,
+    2230
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 24,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 51
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 52
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      53,
+      54,
+      59,
+      62
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "03 解码"
+  },
+  {
+   "id": 111,
+   "type": "SaveImage",
+   "pos": [
+    1460,
+    2360
+   ],
+   "size": [
+    340,
+    420
+   ],
+   "flags": {},
+   "order": 25,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 53
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "lustify_edit/keyframes/KF03_kneel"
+   ],
+   "title": "03 保存"
+  },
+  {
+   "id": 217,
+   "type": "VAEEncode",
+   "pos": [
+    1930,
+    900
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 26,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "pixels",
+     "type": "IMAGE",
+     "link": 54
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 55
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      57
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEEncode"
+   },
+   "widgets_values": [],
+   "title": "04 上一帧 VAE 编码"
+  },
+  {
+   "id": 218,
+   "type": "Krea2EditModelPatch",
+   "pos": [
+    1930,
+    1030
+   ],
+   "size": [
+    430,
+    330
+   ],
+   "flags": {},
+   "order": 27,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 56
+    },
+    {
+     "name": "source_latent",
+     "type": "LATENT",
+     "link": 57
+    },
+    {
+     "name": "source_latent_b",
+     "type": "LATENT",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "ref_boost_mask",
+     "type": "MASK",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 58,
+     "shape": 7
+    },
+    {
+     "name": "source_image",
+     "type": "IMAGE",
+     "link": 59,
+     "shape": 7
+    },
+    {
+     "name": "source_image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    },
+    {
+     "name": "target_latent",
+     "type": "LATENT",
+     "link": 60,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "MODEL",
+     "type": "MODEL",
+     "links": [
+      63
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditModelPatch"
+   },
+   "widgets_values": [
+    2.0,
+    1,
+    "fit"
+   ],
+   "title": "04 参考补丁 ref_boost=2.0（源=上一帧）"
+  },
+  {
+   "id": 112,
+   "type": "Krea2EditGroundedEncode",
+   "pos": [
+    1930,
+    1400
+   ],
+   "size": [
+    620,
+    330
+   ],
+   "flags": {},
+   "order": 28,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "clip",
+     "type": "CLIP",
+     "link": 61
+    },
+    {
+     "name": "image",
+     "type": "IMAGE",
+     "link": 62,
+     "shape": 7
+    },
+    {
+     "name": "image_b",
+     "type": "IMAGE",
+     "link": null,
+     "shape": 7
+    }
+   ],
+   "outputs": [
+    {
+     "name": "CONDITIONING",
+     "type": "CONDITIONING",
+     "links": [
+      64
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "Krea2EditGroundedEncode"
+   },
+   "widgets_values": [
+    "保持同一对成年人、同一套服装、同一客厅场景、同一房间布局、同一灯光氛围和同一画面风格。继续上一张画面的剧情推进。现在让两人都从沙发区域起身，开始朝房间门口方向移动。女性走在前方偏右位置，男性跟在后方偏左位置，两人身体朝向门口，但女性回头看向男性，男性也略微转头看向女性，形成离开前的回望互动。保持白色短袖上衣、浅蓝色短裙、白色短袜、白色运动鞋不变；保持男性黑色短袖T恤、浅灰色休闲长裤、白色运动鞋不变；保持客厅的沙发、茶几、地毯、门和墙面布局尽量一致。允许人物站位和步态变化，但不要换装，不要改变客厅结构，不要减少人物数量。",
+    768,
+    ""
+   ],
+   "title": "04 KF04 两人起身走向门口并回头｜编辑指令"
+  },
+  {
+   "id": 113,
+   "type": "KSampler",
+   "pos": [
+    1930,
+    1770
+   ],
+   "size": [
+    340,
+    430
+   ],
+   "flags": {},
+   "order": 29,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "model",
+     "type": "MODEL",
+     "link": 63
+    },
+    {
+     "name": "positive",
+     "type": "CONDITIONING",
+     "link": 64
+    },
+    {
+     "name": "negative",
+     "type": "CONDITIONING",
+     "link": 65
+    },
+    {
+     "name": "latent_image",
+     "type": "LATENT",
+     "link": 66
+    }
+   ],
+   "outputs": [
+    {
+     "name": "LATENT",
+     "type": "LATENT",
+     "links": [
+      67
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "KSampler"
+   },
+   "widgets_values": [
+    1088049369132326,
+    "fixed",
+    10,
+    1,
+    "euler",
+    "simple",
+    1
+   ],
+   "title": "04 采样 10/euler/simple/cfg1"
+  },
+  {
+   "id": 114,
+   "type": "VAEDecode",
+   "pos": [
+    1930,
+    2230
+   ],
+   "size": [
+    300,
+    90
+   ],
+   "flags": {},
+   "order": 30,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "samples",
+     "type": "LATENT",
+     "link": 67
+    },
+    {
+     "name": "vae",
+     "type": "VAE",
+     "link": 68
+    }
+   ],
+   "outputs": [
+    {
+     "name": "IMAGE",
+     "type": "IMAGE",
+     "links": [
+      69
+     ]
+    }
+   ],
+   "properties": {
+    "Node name for S&R": "VAEDecode"
+   },
+   "widgets_values": [],
+   "title": "04 解码"
+  },
+  {
+   "id": 115,
+   "type": "SaveImage",
+   "pos": [
+    1930,
+    2360
+   ],
+   "size": [
+    340,
+    420
+   ],
+   "flags": {},
+   "order": 31,
+   "mode": 0,
+   "inputs": [
+    {
+     "name": "images",
+     "type": "IMAGE",
+     "link": 69
+    }
+   ],
+   "outputs": [],
+   "properties": {
+    "Node name for S&R": "SaveImage"
+   },
+   "widgets_values": [
+    "lustify_edit/keyframes/KF04_leave"
+   ],
+   "title": "04 保存"
+  }
+ ],
+ "links": [
+  [
+   1,
+   55,
+   0,
+   71,
+   0,
+   "MODEL"
+  ],
+  [
+   2,
+   83,
+   0,
+   82,
+   0,
+   "INT"
+  ],
+  [
+   3,
+   83,
+   1,
+   82,
+   0,
+   "INT"
+  ],
+  [
+   4,
+   56,
+   0,
+   85,
+   0,
+   "CLIP"
+  ],
+  [
+   5,
+   72,
+   0,
+   85,
+   0,
+   "IMAGE"
+  ],
+  [
+   6,
+   72,
+   0,
+   73,
+   0,
+   "IMAGE"
+  ],
+  [
+   7,
+   57,
+   0,
+   73,
+   0,
+   "VAE"
+  ],
+  [
+   8,
+   71,
+   0,
+   79,
+   0,
+   "MODEL"
+  ],
+  [
+   9,
+   73,
+   0,
+   79,
+   0,
+   "LATENT"
+  ],
+  [
+   10,
+   57,
+   0,
+   79,
+   0,
+   "VAE"
+  ],
+  [
+   11,
+   72,
+   0,
+   79,
+   0,
+   "IMAGE"
+  ],
+  [
+   12,
+   82,
+   0,
+   79,
+   0,
+   "LATENT"
+  ],
+  [
+   13,
+   56,
+   0,
+   84,
+   0,
+   "CLIP"
+  ],
+  [
+   14,
+   72,
+   0,
+   84,
+   0,
+   "IMAGE"
+  ],
+  [
+   15,
+   79,
+   0,
+   53,
+   0,
+   "MODEL"
+  ],
+  [
+   16,
+   84,
+   0,
+   53,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   17,
+   85,
+   0,
+   53,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   18,
+   82,
+   0,
+   53,
+   0,
+   "LATENT"
+  ],
+  [
+   19,
+   53,
+   0,
+   54,
+   0,
+   "LATENT"
+  ],
+  [
+   20,
+   57,
+   0,
+   54,
+   0,
+   "VAE"
+  ],
+  [
+   21,
+   54,
+   0,
+   29,
+   0,
+   "IMAGE"
+  ],
+  [
+   22,
+   54,
+   0,
+   213,
+   0,
+   "IMAGE"
+  ],
+  [
+   23,
+   57,
+   0,
+   213,
+   0,
+   "VAE"
+  ],
+  [
+   24,
+   71,
+   0,
+   214,
+   0,
+   "MODEL"
+  ],
+  [
+   25,
+   213,
+   0,
+   214,
+   0,
+   "LATENT"
+  ],
+  [
+   26,
+   57,
+   0,
+   214,
+   0,
+   "VAE"
+  ],
+  [
+   27,
+   54,
+   0,
+   214,
+   0,
+   "IMAGE"
+  ],
+  [
+   28,
+   82,
+   0,
+   214,
+   0,
+   "LATENT"
+  ],
+  [
+   29,
+   56,
+   0,
+   104,
+   0,
+   "CLIP"
+  ],
+  [
+   30,
+   54,
+   0,
+   104,
+   0,
+   "IMAGE"
+  ],
+  [
+   31,
+   214,
+   0,
+   105,
+   0,
+   "MODEL"
+  ],
+  [
+   32,
+   104,
+   0,
+   105,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   33,
+   85,
+   0,
+   105,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   34,
+   82,
+   0,
+   105,
+   0,
+   "LATENT"
+  ],
+  [
+   35,
+   105,
+   0,
+   106,
+   0,
+   "LATENT"
+  ],
+  [
+   36,
+   57,
+   0,
+   106,
+   0,
+   "VAE"
+  ],
+  [
+   37,
+   106,
+   0,
+   107,
+   0,
+   "IMAGE"
+  ],
+  [
+   38,
+   106,
+   0,
+   215,
+   0,
+   "IMAGE"
+  ],
+  [
+   39,
+   57,
+   0,
+   215,
+   0,
+   "VAE"
+  ],
+  [
+   40,
+   71,
+   0,
+   216,
+   0,
+   "MODEL"
+  ],
+  [
+   41,
+   215,
+   0,
+   216,
+   0,
+   "LATENT"
+  ],
+  [
+   42,
+   57,
+   0,
+   216,
+   0,
+   "VAE"
+  ],
+  [
+   43,
+   106,
+   0,
+   216,
+   0,
+   "IMAGE"
+  ],
+  [
+   44,
+   82,
+   0,
+   216,
+   0,
+   "LATENT"
+  ],
+  [
+   45,
+   56,
+   0,
+   108,
+   0,
+   "CLIP"
+  ],
+  [
+   46,
+   106,
+   0,
+   108,
+   0,
+   "IMAGE"
+  ],
+  [
+   47,
+   216,
+   0,
+   109,
+   0,
+   "MODEL"
+  ],
+  [
+   48,
+   108,
+   0,
+   109,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   49,
+   85,
+   0,
+   109,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   50,
+   82,
+   0,
+   109,
+   0,
+   "LATENT"
+  ],
+  [
+   51,
+   109,
+   0,
+   110,
+   0,
+   "LATENT"
+  ],
+  [
+   52,
+   57,
+   0,
+   110,
+   0,
+   "VAE"
+  ],
+  [
+   53,
+   110,
+   0,
+   111,
+   0,
+   "IMAGE"
+  ],
+  [
+   54,
+   110,
+   0,
+   217,
+   0,
+   "IMAGE"
+  ],
+  [
+   55,
+   57,
+   0,
+   217,
+   0,
+   "VAE"
+  ],
+  [
+   56,
+   71,
+   0,
+   218,
+   0,
+   "MODEL"
+  ],
+  [
+   57,
+   217,
+   0,
+   218,
+   0,
+   "LATENT"
+  ],
+  [
+   58,
+   57,
+   0,
+   218,
+   0,
+   "VAE"
+  ],
+  [
+   59,
+   110,
+   0,
+   218,
+   0,
+   "IMAGE"
+  ],
+  [
+   60,
+   82,
+   0,
+   218,
+   0,
+   "LATENT"
+  ],
+  [
+   61,
+   56,
+   0,
+   112,
+   0,
+   "CLIP"
+  ],
+  [
+   62,
+   110,
+   0,
+   112,
+   0,
+   "IMAGE"
+  ],
+  [
+   63,
+   218,
+   0,
+   113,
+   0,
+   "MODEL"
+  ],
+  [
+   64,
+   112,
+   0,
+   113,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   65,
+   85,
+   0,
+   113,
+   0,
+   "CONDITIONING"
+  ],
+  [
+   66,
+   82,
+   0,
+   113,
+   0,
+   "LATENT"
+  ],
+  [
+   67,
+   113,
+   0,
+   114,
+   0,
+   "LATENT"
+  ],
+  [
+   68,
+   57,
+   0,
+   114,
+   0,
+   "VAE"
+  ],
+  [
+   69,
+   114,
+   0,
+   115,
+   0,
+   "IMAGE"
+  ]
+ ],
+ "groups": [],
+ "config": {},
+ "extra": {
+  "frontendVersion": "1.52.7",
+  "lustify_edit": {
+   "chain_mode": true,
+   "note": "母图->KF1->KF2->KF3->KF4 真链式：每帧 source_image/source_latent 均来自上一帧 VAEDecode 输出",
+   "ref_boost": 2.0,
+   "steps": 10,
+   "cfg": 1,
+   "sampler": "euler",
+   "scheduler": "simple",
+   "denoise": 1,
+   "grounding_px": 768
+  },
+  "keyframe_workflow": {
+   "purpose": "one fixed mother image to four independent keyframes in a single queue",
+   "strategy": "parallel branches refer to same mother image, not chain outputs; intended to reduce cumulative drift",
+   "model_keep": "Original Lustify v10 Turbo INT8 ConvRot, Krea2 Edit v1.2, original VAE and sampler unchanged",
+   "ref_boost_note": "Preserved original ref_boost=4; if actions are overly constrained, test a lower value separately. Not quality tested on the target GPU.",
+   "source_workflow": "lustify_v10_krea2_identity_edit_8207(2).json",
+   "no_gpu_validation": true,
+   "frames": 4,
+   "branch_seed_mode": "fixed, 4 distinct seeds",
+   "output_prefix": "lustify_edit/keyframes/KFxx_*"
+  }
+ },
+ "version": 0.4
+}

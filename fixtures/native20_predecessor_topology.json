@@ -1,0 +1,2570 @@
+{
+  "schema": "H3-Native20-predecessor-topology/1",
+  "ownership": "Project-authored workflow topology; all widgets/properties/material names omitted",
+  "source_sha256": "6547c07fb426a0f33f3e27d9b4cf096f0210ca9513e735ecf2211062fd532bba",
+  "original_acceptance": "HOLD (archived baseline; topology fixture is not runtime acceptance)",
+  "nodes": [
+    {
+      "id": 115,
+      "type": "ResolutionSelector"
+    },
+    {
+      "id": 117,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 119,
+      "type": "VAELoader"
+    },
+    {
+      "id": 120,
+      "type": "VAELoader"
+    },
+    {
+      "id": 121,
+      "type": "VAEDecodeAudio"
+    },
+    {
+      "id": 122,
+      "type": "VAEDecode"
+    },
+    {
+      "id": 123,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 124,
+      "type": "BasicScheduler"
+    },
+    {
+      "id": 125,
+      "type": "SamplerCustomAdvanced"
+    },
+    {
+      "id": 126,
+      "type": "BasicGuider"
+    },
+    {
+      "id": 128,
+      "type": "CLIPLoader"
+    },
+    {
+      "id": 129,
+      "type": "RandomNoise"
+    },
+    {
+      "id": 131,
+      "type": "ComfyMathExpression"
+    },
+    {
+      "id": 132,
+      "type": "PrimitiveFloat"
+    },
+    {
+      "id": 136,
+      "type": "MiniMaxH3ReferenceToVideo"
+    },
+    {
+      "id": 138,
+      "type": "PrimitiveStringMultiline"
+    },
+    {
+      "id": 140,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 142,
+      "type": "SeedNode"
+    },
+    {
+      "id": 143,
+      "type": "LoadAudio"
+    },
+    {
+      "id": 146,
+      "type": "PrimitiveFloat"
+    },
+    {
+      "id": 148,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 149,
+      "type": "PrimitiveFloat"
+    },
+    {
+      "id": 150,
+      "type": "H3ReferenceSourceSelector"
+    },
+    {
+      "id": 159,
+      "type": "H3OperationSelector"
+    },
+    {
+      "id": 620,
+      "type": "UNETLoader"
+    },
+    {
+      "id": 624,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 625,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 626,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 627,
+      "type": "H3SizeModeSelector"
+    },
+    {
+      "id": 628,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 635,
+      "type": "Note"
+    },
+    {
+      "id": 637,
+      "type": "Note"
+    },
+    {
+      "id": 638,
+      "type": "LoadVideo"
+    },
+    {
+      "id": 639,
+      "type": "Note"
+    },
+    {
+      "id": 642,
+      "type": "Note"
+    },
+    {
+      "id": 644,
+      "type": "MiniMaxH3ImageToVideo"
+    },
+    {
+      "id": 645,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 646,
+      "type": "UNETLoader"
+    },
+    {
+      "id": 647,
+      "type": "H3GenerationModeSelector"
+    },
+    {
+      "id": 648,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 650,
+      "type": "Note"
+    },
+    {
+      "id": 656,
+      "type": "ImageResizeKJv2"
+    },
+    {
+      "id": 657,
+      "type": "SetLatentNoiseMask"
+    },
+    {
+      "id": 658,
+      "type": "VAEEncodeAudio"
+    },
+    {
+      "id": 659,
+      "type": "LTXVSeparateAVLatent"
+    },
+    {
+      "id": 660,
+      "type": "LTXVConcatAVLatent"
+    },
+    {
+      "id": 661,
+      "type": "SolidMask"
+    },
+    {
+      "id": 663,
+      "type": "MiniMaxH3MemoryEfficientSageAttentionPatch"
+    },
+    {
+      "id": 666,
+      "type": "ImageResizeKJv2"
+    },
+    {
+      "id": 669,
+      "type": "ImageScaleToMaxDimension"
+    },
+    {
+      "id": 673,
+      "type": "ComfyMathExpression"
+    },
+    {
+      "id": 674,
+      "type": "LoraLoaderModelOnly"
+    },
+    {
+      "id": 675,
+      "type": "Note"
+    },
+    {
+      "id": 682,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 685,
+      "type": "LoadAudio"
+    },
+    {
+      "id": 686,
+      "type": "MiniMaxH3SigmaShift"
+    },
+    {
+      "id": 687,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 688,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 689,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 690,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 691,
+      "type": "ModelPreviewOverrideKJ"
+    },
+    {
+      "id": 698,
+      "type": "SamplerCustomAdvanced"
+    },
+    {
+      "id": 699,
+      "type": "RandomNoise"
+    },
+    {
+      "id": 700,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 703,
+      "type": "VAEDecode"
+    },
+    {
+      "id": 721,
+      "type": "BasicGuider"
+    },
+    {
+      "id": 725,
+      "type": "H3JerkOracle"
+    },
+    {
+      "id": 726,
+      "type": "H3TimeSmear"
+    },
+    {
+      "id": 727,
+      "type": "VAEEncode"
+    },
+    {
+      "id": 728,
+      "type": "H3V2VInit"
+    },
+    {
+      "id": 729,
+      "type": "H3ExactRecover"
+    },
+    {
+      "id": 744,
+      "type": "H3InjectSchedule"
+    },
+    {
+      "id": 745,
+      "type": "Note"
+    },
+    {
+      "id": 747,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 750,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 761,
+      "type": "H3ImageModeSelector"
+    },
+    {
+      "id": 762,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 764,
+      "type": "CreateVideo"
+    },
+    {
+      "id": 765,
+      "type": "H3WindowLoop"
+    },
+    {
+      "id": 766,
+      "type": "PrimitiveBoolean"
+    },
+    {
+      "id": 770,
+      "type": "VAEEncode"
+    },
+    {
+      "id": 771,
+      "type": "H3ManualHoldMap"
+    },
+    {
+      "id": 772,
+      "type": "CreateVideo"
+    },
+    {
+      "id": 778,
+      "type": "PreviewAny"
+    },
+    {
+      "id": 779,
+      "type": "StringCompare"
+    },
+    {
+      "id": 780,
+      "type": "PrimitiveString"
+    },
+    {
+      "id": 781,
+      "type": "H3WindowLoop"
+    },
+    {
+      "id": 783,
+      "type": "CreateVideo"
+    },
+    {
+      "id": 785,
+      "type": "PrimitiveString"
+    },
+    {
+      "id": 786,
+      "type": "PrimitiveString"
+    },
+    {
+      "id": 787,
+      "type": "StringCompare"
+    },
+    {
+      "id": 789,
+      "type": "CreateVideo"
+    },
+    {
+      "id": 792,
+      "type": "PreviewAny"
+    },
+    {
+      "id": 800,
+      "type": "UNETLoader"
+    },
+    {
+      "id": 803,
+      "type": "LTXVSeparateAVLatent"
+    },
+    {
+      "id": 805,
+      "type": "LTXVConcatAVLatent"
+    },
+    {
+      "id": 809,
+      "type": "RandomNoise"
+    },
+    {
+      "id": 810,
+      "type": "BasicGuider"
+    },
+    {
+      "id": 811,
+      "type": "SamplerCustomAdvanced"
+    },
+    {
+      "id": 812,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 861,
+      "type": "LoraLoaderModelOnly"
+    },
+    {
+      "id": 862,
+      "type": "VAELoader"
+    },
+    {
+      "id": 863,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 864,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 865,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 866,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 867,
+      "type": "PrimitiveInt"
+    },
+    {
+      "id": 870,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 871,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 872,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 873,
+      "type": "H3SpeedModeSelector"
+    },
+    {
+      "id": 874,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 875,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 878,
+      "type": "MiniMaxH3SigmaShift"
+    },
+    {
+      "id": 880,
+      "type": "BasicScheduler"
+    },
+    {
+      "id": 881,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 885,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 886,
+      "type": "H3Fl2vRouteSelector"
+    },
+    {
+      "id": 911,
+      "type": "Note"
+    },
+    {
+      "id": 914,
+      "type": "PrimitiveStringMultiline"
+    },
+    {
+      "id": 915,
+      "type": "H3VideoPromptRole"
+    },
+    {
+      "id": 916,
+      "type": "Note"
+    },
+    {
+      "id": 917,
+      "type": "LoraLoaderModelOnly"
+    },
+    {
+      "id": 918,
+      "type": "Ref2VAVSAGatePatch"
+    },
+    {
+      "id": 919,
+      "type": "MiniMaxH3SigmaShift"
+    },
+    {
+      "id": 920,
+      "type": "BasicScheduler"
+    },
+    {
+      "id": 921,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 930,
+      "type": "Any Switch (rgthree)"
+    },
+    {
+      "id": 931,
+      "type": "H3Ref2vaBackendSelector"
+    },
+    {
+      "id": 940,
+      "type": "LoraLoaderModelOnly"
+    },
+    {
+      "id": 941,
+      "type": "MiniMaxH3SigmaShift"
+    },
+    {
+      "id": 942,
+      "type": "BasicScheduler"
+    },
+    {
+      "id": 943,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 944,
+      "type": "Note"
+    },
+    {
+      "id": 950,
+      "type": "ModelAttentionBackend"
+    },
+    {
+      "id": 951,
+      "type": "Note"
+    },
+    {
+      "id": 952,
+      "type": "H3Ref2vaAttentionSelector"
+    },
+    {
+      "id": 960,
+      "type": "GetVideoComponents"
+    },
+    {
+      "id": 961,
+      "type": "SaveVideo"
+    },
+    {
+      "id": 962,
+      "type": "SaveVideo"
+    },
+    {
+      "id": 963,
+      "type": "SaveVideo"
+    },
+    {
+      "id": 964,
+      "type": "SaveVideo"
+    },
+    {
+      "id": 965,
+      "type": "MiniMaxH3AddGuide"
+    },
+    {
+      "id": 966,
+      "type": "BlockSparseAttention"
+    },
+    {
+      "id": 970,
+      "type": "Note"
+    },
+    {
+      "id": 971,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 972,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 973,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 974,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 975,
+      "type": "MarkdownNote"
+    },
+    {
+      "id": 976,
+      "type": "Note"
+    },
+    {
+      "id": 977,
+      "type": "UNETLoader"
+    },
+    {
+      "id": 978,
+      "type": "MiniMaxH3SigmaShift"
+    },
+    {
+      "id": 979,
+      "type": "ModelAttentionBackend"
+    },
+    {
+      "id": 980,
+      "type": "BlockSparseAttention"
+    },
+    {
+      "id": 981,
+      "type": "BasicScheduler"
+    },
+    {
+      "id": 982,
+      "type": "KSamplerSelect"
+    },
+    {
+      "id": 983,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 984,
+      "type": "H3GuideImageGuard"
+    },
+    {
+      "id": 985,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 986,
+      "type": "H3GuideImageGuard"
+    },
+    {
+      "id": 987,
+      "type": "MiniMaxH3AddGuide"
+    },
+    {
+      "id": 988,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 989,
+      "type": "H3GuideImageGuard"
+    },
+    {
+      "id": 990,
+      "type": "MiniMaxH3AddGuide"
+    },
+    {
+      "id": 991,
+      "type": "H3GuideModeSelector"
+    },
+    {
+      "id": 992,
+      "type": "H3ContinuationSelector"
+    },
+    {
+      "id": 993,
+      "type": "MiniMaxH3MotionContext"
+    },
+    {
+      "id": 994,
+      "type": "MiniMaxH3MotionContextTrim"
+    },
+    {
+      "id": 995,
+      "type": "MiniMaxH3MotionContextSaveLatent"
+    },
+    {
+      "id": 996,
+      "type": "MiniMaxH3MotionContextLoadLatent"
+    },
+    {
+      "id": 997,
+      "type": "MiniMaxH3MotionContextChain"
+    },
+    {
+      "id": 998,
+      "type": "H3MemoryOptimization"
+    },
+    {
+      "id": 999,
+      "type": "H3MemoryOptimizationSelector"
+    },
+    {
+      "id": 1000,
+      "type": "H3V28DirectorConsole"
+    },
+    {
+      "id": 1001,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 1002,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 1003,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 1004,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 1005,
+      "type": "LoadImageCrop"
+    },
+    {
+      "id": 1006,
+      "type": "MiniMaxH3PDDAccApply"
+    },
+    {
+      "id": 1007,
+      "type": "H3MemoryOptimization"
+    },
+    {
+      "id": 1008,
+      "type": "ModelAttentionBackend"
+    },
+    {
+      "id": 1009,
+      "type": "KSamplerSelect"
+    }
+  ],
+  "links": [
+    [
+      250,
+      120,
+      0,
+      121,
+      1,
+      "VAE"
+    ],
+    [
+      251,
+      872,
+      0,
+      122,
+      1,
+      "VAE"
+    ],
+    [
+      261,
+      132,
+      0,
+      131,
+      0,
+      "FLOAT"
+    ],
+    [
+      273,
+      872,
+      0,
+      136,
+      1,
+      "VAE"
+    ],
+    [
+      274,
+      120,
+      0,
+      136,
+      2,
+      "VAE"
+    ],
+    [
+      275,
+      131,
+      1,
+      136,
+      21,
+      "INT"
+    ],
+    [
+      285,
+      142,
+      0,
+      129,
+      0,
+      "INT"
+    ],
+    [
+      293,
+      146,
+      0,
+      148,
+      0,
+      "FLOAT"
+    ],
+    [
+      294,
+      149,
+      0,
+      148,
+      1,
+      "FLOAT"
+    ],
+    [
+      308,
+      128,
+      0,
+      136,
+      0,
+      "CLIP"
+    ],
+    [
+      1156,
+      626,
+      0,
+      136,
+      19,
+      "INT"
+    ],
+    [
+      1157,
+      628,
+      0,
+      136,
+      20,
+      "INT"
+    ],
+    [
+      1158,
+      115,
+      0,
+      626,
+      0,
+      "INT"
+    ],
+    [
+      1159,
+      624,
+      0,
+      626,
+      1,
+      "INT"
+    ],
+    [
+      1160,
+      115,
+      1,
+      628,
+      0,
+      "INT"
+    ],
+    [
+      1161,
+      625,
+      0,
+      628,
+      1,
+      "INT"
+    ],
+    [
+      1180,
+      872,
+      0,
+      644,
+      1,
+      "VAE"
+    ],
+    [
+      1181,
+      128,
+      0,
+      644,
+      0,
+      "CLIP"
+    ],
+    [
+      1182,
+      620,
+      0,
+      645,
+      0,
+      "MODEL"
+    ],
+    [
+      1185,
+      626,
+      0,
+      644,
+      5,
+      "INT"
+    ],
+    [
+      1186,
+      628,
+      0,
+      644,
+      6,
+      "INT"
+    ],
+    [
+      1187,
+      131,
+      1,
+      644,
+      7,
+      "INT"
+    ],
+    [
+      1190,
+      136,
+      0,
+      648,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      1201,
+      656,
+      0,
+      644,
+      2,
+      "IMAGE"
+    ],
+    [
+      1203,
+      143,
+      0,
+      658,
+      0,
+      "AUDIO"
+    ],
+    [
+      1206,
+      661,
+      0,
+      657,
+      1,
+      "MASK"
+    ],
+    [
+      1209,
+      659,
+      0,
+      660,
+      0,
+      "LATENT"
+    ],
+    [
+      1210,
+      658,
+      0,
+      657,
+      0,
+      "LATENT"
+    ],
+    [
+      1217,
+      120,
+      0,
+      658,
+      1,
+      "VAE"
+    ],
+    [
+      1222,
+      657,
+      0,
+      660,
+      1,
+      "LATENT"
+    ],
+    [
+      1226,
+      626,
+      0,
+      656,
+      2,
+      "INT"
+    ],
+    [
+      1227,
+      628,
+      0,
+      656,
+      3,
+      "INT"
+    ],
+    [
+      1228,
+      626,
+      0,
+      666,
+      2,
+      "INT"
+    ],
+    [
+      1229,
+      628,
+      0,
+      666,
+      3,
+      "INT"
+    ],
+    [
+      1246,
+      626,
+      0,
+      673,
+      0,
+      "INT"
+    ],
+    [
+      1247,
+      628,
+      0,
+      673,
+      1,
+      "INT"
+    ],
+    [
+      1248,
+      673,
+      1,
+      669,
+      2,
+      "INT"
+    ],
+    [
+      1259,
+      644,
+      1,
+      682,
+      0,
+      "LATENT"
+    ],
+    [
+      1260,
+      136,
+      1,
+      682,
+      1,
+      "LATENT"
+    ],
+    [
+      1261,
+      682,
+      0,
+      659,
+      0,
+      "LATENT"
+    ],
+    [
+      1271,
+      687,
+      0,
+      136,
+      3,
+      "IMAGE"
+    ],
+    [
+      1272,
+      688,
+      0,
+      136,
+      4,
+      "IMAGE"
+    ],
+    [
+      1273,
+      689,
+      0,
+      136,
+      5,
+      "IMAGE"
+    ],
+    [
+      1274,
+      690,
+      0,
+      136,
+      6,
+      "IMAGE"
+    ],
+    [
+      1281,
+      131,
+      1,
+      691,
+      6,
+      "INT"
+    ],
+    [
+      1283,
+      872,
+      0,
+      691,
+      1,
+      "VAE"
+    ],
+    [
+      1448,
+      698,
+      0,
+      747,
+      0,
+      "LATENT"
+    ],
+    [
+      1450,
+      125,
+      0,
+      747,
+      1,
+      "LATENT"
+    ],
+    [
+      1454,
+      871,
+      0,
+      124,
+      2,
+      "INT"
+    ],
+    [
+      1458,
+      867,
+      0,
+      744,
+      2,
+      "INT"
+    ],
+    [
+      1473,
+      666,
+      0,
+      644,
+      3,
+      "IMAGE"
+    ],
+    [
+      1476,
+      645,
+      0,
+      691,
+      0,
+      "MODEL"
+    ],
+    [
+      1480,
+      861,
+      0,
+      124,
+      0,
+      "MODEL"
+    ],
+    [
+      1481,
+      861,
+      0,
+      744,
+      0,
+      "MODEL"
+    ],
+    [
+      1504,
+      872,
+      0,
+      770,
+      1,
+      "VAE"
+    ],
+    [
+      1517,
+      725,
+      1,
+      779,
+      0,
+      "STRING"
+    ],
+    [
+      1518,
+      780,
+      0,
+      779,
+      1,
+      "STRING"
+    ],
+    [
+      1522,
+      779,
+      0,
+      778,
+      0,
+      "BOOLEAN"
+    ],
+    [
+      1524,
+      861,
+      0,
+      765,
+      0,
+      "MODEL"
+    ],
+    [
+      1525,
+      648,
+      0,
+      765,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1526,
+      872,
+      0,
+      765,
+      2,
+      "VAE"
+    ],
+    [
+      1527,
+      120,
+      0,
+      765,
+      3,
+      "VAE"
+    ],
+    [
+      1528,
+      700,
+      0,
+      765,
+      4,
+      "SAMPLER"
+    ],
+    [
+      1529,
+      744,
+      0,
+      765,
+      5,
+      "SIGMAS"
+    ],
+    [
+      1530,
+      142,
+      0,
+      765,
+      10,
+      "INT"
+    ],
+    [
+      1532,
+      771,
+      0,
+      765,
+      7,
+      "STRING"
+    ],
+    [
+      1561,
+      785,
+      0,
+      771,
+      3,
+      "STRING"
+    ],
+    [
+      1562,
+      785,
+      0,
+      787,
+      0,
+      "STRING"
+    ],
+    [
+      1563,
+      786,
+      0,
+      787,
+      1,
+      "STRING"
+    ],
+    [
+      1578,
+      726,
+      2,
+      792,
+      0,
+      "INT"
+    ],
+    [
+      1579,
+      726,
+      0,
+      727,
+      0,
+      "IMAGE"
+    ],
+    [
+      1580,
+      872,
+      0,
+      727,
+      1,
+      "VAE"
+    ],
+    [
+      1581,
+      727,
+      0,
+      728,
+      0,
+      "LATENT"
+    ],
+    [
+      1582,
+      142,
+      0,
+      699,
+      0,
+      "INT"
+    ],
+    [
+      1583,
+      861,
+      0,
+      721,
+      0,
+      "MODEL"
+    ],
+    [
+      1584,
+      648,
+      0,
+      721,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1585,
+      699,
+      0,
+      698,
+      0,
+      "NOISE"
+    ],
+    [
+      1586,
+      721,
+      0,
+      698,
+      1,
+      "GUIDER"
+    ],
+    [
+      1587,
+      700,
+      0,
+      698,
+      2,
+      "SAMPLER"
+    ],
+    [
+      1588,
+      744,
+      0,
+      698,
+      3,
+      "SIGMAS"
+    ],
+    [
+      1589,
+      728,
+      0,
+      698,
+      4,
+      "LATENT"
+    ],
+    [
+      1590,
+      698,
+      0,
+      703,
+      0,
+      "LATENT"
+    ],
+    [
+      1591,
+      872,
+      0,
+      703,
+      1,
+      "VAE"
+    ],
+    [
+      1592,
+      703,
+      0,
+      729,
+      0,
+      "IMAGE"
+    ],
+    [
+      1593,
+      726,
+      1,
+      729,
+      1,
+      "STRING"
+    ],
+    [
+      1601,
+      129,
+      0,
+      125,
+      0,
+      "NOISE"
+    ],
+    [
+      1602,
+      126,
+      0,
+      125,
+      1,
+      "GUIDER"
+    ],
+    [
+      1603,
+      870,
+      0,
+      125,
+      2,
+      "SAMPLER"
+    ],
+    [
+      1605,
+      682,
+      0,
+      125,
+      4,
+      "LATENT"
+    ],
+    [
+      1606,
+      125,
+      0,
+      121,
+      0,
+      "LATENT"
+    ],
+    [
+      1607,
+      125,
+      0,
+      803,
+      0,
+      "LATENT"
+    ],
+    [
+      1610,
+      803,
+      1,
+      805,
+      1,
+      "LATENT"
+    ],
+    [
+      1623,
+      124,
+      0,
+      885,
+      0,
+      "SIGMAS"
+    ],
+    [
+      1624,
+      125,
+      0,
+      122,
+      0,
+      "LATENT"
+    ],
+    [
+      1626,
+      142,
+      0,
+      809,
+      0,
+      "INT"
+    ],
+    [
+      1628,
+      648,
+      0,
+      810,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1629,
+      809,
+      0,
+      811,
+      0,
+      "NOISE"
+    ],
+    [
+      1630,
+      810,
+      0,
+      811,
+      1,
+      "GUIDER"
+    ],
+    [
+      1631,
+      870,
+      0,
+      811,
+      2,
+      "SAMPLER"
+    ],
+    [
+      1633,
+      805,
+      0,
+      811,
+      4,
+      "LATENT"
+    ],
+    [
+      1636,
+      861,
+      0,
+      781,
+      0,
+      "MODEL"
+    ],
+    [
+      1637,
+      648,
+      0,
+      781,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1638,
+      872,
+      0,
+      781,
+      2,
+      "VAE"
+    ],
+    [
+      1639,
+      120,
+      0,
+      781,
+      3,
+      "VAE"
+    ],
+    [
+      1640,
+      700,
+      0,
+      781,
+      4,
+      "SAMPLER"
+    ],
+    [
+      1641,
+      744,
+      0,
+      781,
+      5,
+      "SIGMAS"
+    ],
+    [
+      1642,
+      142,
+      0,
+      781,
+      10,
+      "INT"
+    ],
+    [
+      1644,
+      725,
+      0,
+      781,
+      7,
+      "STRING"
+    ],
+    [
+      1652,
+      669,
+      0,
+      136,
+      12,
+      "IMAGE"
+    ],
+    [
+      1653,
+      143,
+      0,
+      136,
+      15,
+      "AUDIO"
+    ],
+    [
+      1654,
+      685,
+      0,
+      136,
+      16,
+      "AUDIO"
+    ],
+    [
+      1657,
+      123,
+      0,
+      870,
+      0,
+      "SAMPLER"
+    ],
+    [
+      1658,
+      863,
+      0,
+      870,
+      1,
+      "SAMPLER"
+    ],
+    [
+      1659,
+      864,
+      0,
+      870,
+      2,
+      "SAMPLER"
+    ],
+    [
+      1660,
+      750,
+      0,
+      871,
+      0,
+      "INT"
+    ],
+    [
+      1661,
+      865,
+      0,
+      871,
+      1,
+      "INT"
+    ],
+    [
+      1662,
+      866,
+      0,
+      871,
+      2,
+      "INT"
+    ],
+    [
+      1663,
+      119,
+      0,
+      872,
+      0,
+      "VAE"
+    ],
+    [
+      1664,
+      862,
+      0,
+      872,
+      1,
+      "VAE"
+    ],
+    [
+      1665,
+      874,
+      0,
+      656,
+      0,
+      "IMAGE"
+    ],
+    [
+      1666,
+      875,
+      0,
+      666,
+      0,
+      "IMAGE"
+    ],
+    [
+      1671,
+      881,
+      0,
+      870,
+      3,
+      "SAMPLER"
+    ],
+    [
+      1674,
+      861,
+      0,
+      880,
+      0,
+      "MODEL"
+    ],
+    [
+      1676,
+      880,
+      0,
+      885,
+      1,
+      "SIGMAS"
+    ],
+    [
+      1677,
+      885,
+      0,
+      125,
+      3,
+      "SIGMAS"
+    ],
+    [
+      1689,
+      914,
+      0,
+      644,
+      4,
+      "STRING"
+    ],
+    [
+      1690,
+      138,
+      0,
+      915,
+      0,
+      "STRING"
+    ],
+    [
+      1691,
+      915,
+      0,
+      136,
+      18,
+      "STRING"
+    ],
+    [
+      1692,
+      646,
+      0,
+      878,
+      0,
+      "MODEL"
+    ],
+    [
+      1694,
+      691,
+      0,
+      663,
+      0,
+      "MODEL"
+    ],
+    [
+      1696,
+      644,
+      0,
+      648,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1697,
+      691,
+      0,
+      917,
+      0,
+      "MODEL"
+    ],
+    [
+      1698,
+      917,
+      0,
+      918,
+      0,
+      "MODEL"
+    ],
+    [
+      1699,
+      918,
+      0,
+      919,
+      0,
+      "MODEL"
+    ],
+    [
+      1700,
+      919,
+      0,
+      930,
+      1,
+      "MODEL"
+    ],
+    [
+      1701,
+      919,
+      0,
+      920,
+      0,
+      "MODEL"
+    ],
+    [
+      1702,
+      861,
+      0,
+      930,
+      0,
+      "MODEL"
+    ],
+    [
+      1703,
+      930,
+      0,
+      126,
+      0,
+      "MODEL"
+    ],
+    [
+      1704,
+      920,
+      0,
+      885,
+      2,
+      "SIGMAS"
+    ],
+    [
+      1705,
+      921,
+      0,
+      870,
+      4,
+      "SAMPLER"
+    ],
+    [
+      1706,
+      691,
+      0,
+      940,
+      0,
+      "MODEL"
+    ],
+    [
+      1710,
+      943,
+      0,
+      870,
+      5,
+      "SAMPLER"
+    ],
+    [
+      1711,
+      941,
+      0,
+      942,
+      0,
+      "MODEL"
+    ],
+    [
+      1713,
+      663,
+      0,
+      686,
+      0,
+      "MODEL"
+    ],
+    [
+      1714,
+      686,
+      0,
+      674,
+      0,
+      "MODEL"
+    ],
+    [
+      1715,
+      122,
+      0,
+      765,
+      6,
+      "IMAGE"
+    ],
+    [
+      1716,
+      122,
+      0,
+      726,
+      0,
+      "IMAGE"
+    ],
+    [
+      1717,
+      122,
+      0,
+      781,
+      6,
+      "IMAGE"
+    ],
+    [
+      1718,
+      125,
+      0,
+      725,
+      0,
+      "LATENT"
+    ],
+    [
+      1719,
+      131,
+      1,
+      725,
+      1,
+      "INT"
+    ],
+    [
+      1720,
+      131,
+      1,
+      771,
+      1,
+      "INT"
+    ],
+    [
+      1721,
+      121,
+      0,
+      765,
+      9,
+      "AUDIO"
+    ],
+    [
+      1723,
+      121,
+      0,
+      781,
+      9,
+      "AUDIO"
+    ],
+    [
+      1727,
+      771,
+      0,
+      726,
+      2,
+      "STRING"
+    ],
+    [
+      1728,
+      686,
+      0,
+      810,
+      0,
+      "MODEL"
+    ],
+    [
+      1729,
+      803,
+      0,
+      805,
+      0,
+      "LATENT"
+    ],
+    [
+      1730,
+      674,
+      0,
+      861,
+      0,
+      "MODEL"
+    ],
+    [
+      1731,
+      878,
+      0,
+      645,
+      1,
+      "MODEL"
+    ],
+    [
+      1732,
+      638,
+      0,
+      960,
+      0,
+      "VIDEO"
+    ],
+    [
+      1733,
+      960,
+      0,
+      669,
+      0,
+      "IMAGE"
+    ],
+    [
+      1734,
+      960,
+      0,
+      770,
+      0,
+      "IMAGE"
+    ],
+    [
+      1735,
+      764,
+      0,
+      961,
+      0,
+      "VIDEO"
+    ],
+    [
+      1738,
+      148,
+      0,
+      764,
+      2,
+      "FLOAT"
+    ],
+    [
+      1739,
+      772,
+      0,
+      962,
+      0,
+      "VIDEO"
+    ],
+    [
+      1740,
+      729,
+      0,
+      772,
+      0,
+      "IMAGE"
+    ],
+    [
+      1741,
+      121,
+      0,
+      772,
+      1,
+      "AUDIO"
+    ],
+    [
+      1742,
+      148,
+      0,
+      772,
+      2,
+      "FLOAT"
+    ],
+    [
+      1743,
+      783,
+      0,
+      963,
+      0,
+      "VIDEO"
+    ],
+    [
+      1744,
+      781,
+      0,
+      783,
+      0,
+      "IMAGE"
+    ],
+    [
+      1745,
+      121,
+      0,
+      783,
+      1,
+      "AUDIO"
+    ],
+    [
+      1746,
+      148,
+      0,
+      783,
+      2,
+      "FLOAT"
+    ],
+    [
+      1747,
+      789,
+      0,
+      964,
+      0,
+      "VIDEO"
+    ],
+    [
+      1748,
+      726,
+      0,
+      789,
+      0,
+      "IMAGE"
+    ],
+    [
+      1749,
+      148,
+      0,
+      789,
+      2,
+      "FLOAT"
+    ],
+    [
+      1750,
+      648,
+      0,
+      965,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      1751,
+      965,
+      0,
+      987,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      1752,
+      682,
+      0,
+      965,
+      1,
+      "LATENT"
+    ],
+    [
+      1753,
+      872,
+      0,
+      965,
+      2,
+      "VAE"
+    ],
+    [
+      1754,
+      120,
+      0,
+      965,
+      3,
+      "VAE"
+    ],
+    [
+      1756,
+      977,
+      0,
+      978,
+      0,
+      "MODEL"
+    ],
+    [
+      1757,
+      978,
+      0,
+      979,
+      0,
+      "MODEL"
+    ],
+    [
+      1758,
+      979,
+      0,
+      980,
+      0,
+      "MODEL"
+    ],
+    [
+      1759,
+      980,
+      0,
+      981,
+      0,
+      "MODEL"
+    ],
+    [
+      1760,
+      980,
+      0,
+      645,
+      2,
+      "MODEL"
+    ],
+    [
+      1761,
+      981,
+      0,
+      885,
+      4,
+      "SIGMAS"
+    ],
+    [
+      1762,
+      982,
+      0,
+      870,
+      6,
+      "SAMPLER"
+    ],
+    [
+      1763,
+      983,
+      0,
+      984,
+      0,
+      "IMAGE"
+    ],
+    [
+      1764,
+      984,
+      0,
+      965,
+      4,
+      "IMAGE"
+    ],
+    [
+      1765,
+      985,
+      0,
+      986,
+      0,
+      "IMAGE"
+    ],
+    [
+      1766,
+      986,
+      0,
+      987,
+      4,
+      "IMAGE"
+    ],
+    [
+      1767,
+      988,
+      0,
+      989,
+      0,
+      "IMAGE"
+    ],
+    [
+      1768,
+      989,
+      0,
+      990,
+      4,
+      "IMAGE"
+    ],
+    [
+      1769,
+      987,
+      0,
+      990,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      1771,
+      682,
+      0,
+      987,
+      1,
+      "LATENT"
+    ],
+    [
+      1772,
+      682,
+      0,
+      990,
+      1,
+      "LATENT"
+    ],
+    [
+      1773,
+      872,
+      0,
+      987,
+      2,
+      "VAE"
+    ],
+    [
+      1774,
+      872,
+      0,
+      990,
+      2,
+      "VAE"
+    ],
+    [
+      1775,
+      120,
+      0,
+      987,
+      3,
+      "VAE"
+    ],
+    [
+      1776,
+      120,
+      0,
+      990,
+      3,
+      "VAE"
+    ],
+    [
+      1777,
+      990,
+      0,
+      993,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      1778,
+      872,
+      0,
+      993,
+      1,
+      "VAE"
+    ],
+    [
+      1779,
+      682,
+      0,
+      993,
+      2,
+      "LATENT"
+    ],
+    [
+      1780,
+      996,
+      0,
+      993,
+      4,
+      "LATENT"
+    ],
+    [
+      1781,
+      120,
+      0,
+      993,
+      5,
+      "VAE"
+    ],
+    [
+      1782,
+      993,
+      0,
+      126,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      1783,
+      122,
+      0,
+      994,
+      0,
+      "IMAGE"
+    ],
+    [
+      1784,
+      121,
+      0,
+      994,
+      1,
+      "AUDIO"
+    ],
+    [
+      1785,
+      148,
+      0,
+      994,
+      3,
+      "FLOAT"
+    ],
+    [
+      1786,
+      993,
+      1,
+      994,
+      2,
+      "INT"
+    ],
+    [
+      1787,
+      994,
+      0,
+      764,
+      0,
+      "IMAGE"
+    ],
+    [
+      1788,
+      994,
+      1,
+      764,
+      1,
+      "AUDIO"
+    ],
+    [
+      1789,
+      125,
+      0,
+      995,
+      0,
+      "LATENT"
+    ],
+    [
+      1790,
+      998,
+      0,
+      950,
+      0,
+      "MODEL"
+    ],
+    [
+      1791,
+      1001,
+      0,
+      136,
+      7,
+      "IMAGE"
+    ],
+    [
+      1792,
+      1002,
+      0,
+      136,
+      8,
+      "IMAGE"
+    ],
+    [
+      1793,
+      1003,
+      0,
+      136,
+      9,
+      "IMAGE"
+    ],
+    [
+      1794,
+      1004,
+      0,
+      136,
+      10,
+      "IMAGE"
+    ],
+    [
+      1795,
+      1005,
+      0,
+      136,
+      11,
+      "IMAGE"
+    ],
+    [
+      1796,
+      691,
+      0,
+      1006,
+      0,
+      "MODEL"
+    ],
+    [
+      1797,
+      1006,
+      0,
+      998,
+      0,
+      "MODEL"
+    ],
+    [
+      1798,
+      1006,
+      1,
+      885,
+      3,
+      "SIGMAS"
+    ],
+    [
+      1799,
+      950,
+      0,
+      930,
+      2,
+      "MODEL"
+    ],
+    [
+      1800,
+      940,
+      0,
+      1007,
+      0,
+      "MODEL"
+    ],
+    [
+      1801,
+      1007,
+      0,
+      1008,
+      0,
+      "MODEL"
+    ],
+    [
+      1802,
+      1008,
+      0,
+      941,
+      0,
+      "MODEL"
+    ],
+    [
+      1803,
+      941,
+      0,
+      930,
+      3,
+      "MODEL"
+    ],
+    [
+      1804,
+      942,
+      0,
+      885,
+      6,
+      "SIGMAS"
+    ],
+    [
+      1805,
+      1009,
+      0,
+      870,
+      8,
+      "SAMPLER"
+    ]
+  ]
+}

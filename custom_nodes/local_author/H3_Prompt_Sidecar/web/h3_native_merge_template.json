@@ -1,0 +1,532 @@
+{
+  "output": {
+    "1": {
+      "_meta": {
+        "title": "Load Video — segment 1"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "2": {
+      "_meta": {
+        "title": "Load Video — segment 2"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "3": {
+      "_meta": {
+        "title": "Load Video — segment 3"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "4": {
+      "_meta": {
+        "title": "Load Video — segment 4"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "5": {
+      "_meta": {
+        "title": "Load Video — segment 5"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "6": {
+      "_meta": {
+        "title": "Load Video — segment 6"
+      },
+      "class_type": "LoadVideo",
+      "inputs": {
+        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+      }
+    },
+    "7": {
+      "_meta": {
+        "title": "Concatenate Video"
+      },
+      "class_type": "ConcatenateVideo",
+      "inputs": {
+        "codec": "auto",
+        "videos.video0": [
+          "1",
+          0
+        ],
+        "videos.video1": [
+          "2",
+          0
+        ],
+        "videos.video2": [
+          "3",
+          0
+        ],
+        "videos.video3": [
+          "4",
+          0
+        ],
+        "videos.video4": [
+          "5",
+          0
+        ],
+        "videos.video5": [
+          "6",
+          0
+        ]
+      }
+    },
+    "8": {
+      "_meta": {
+        "title": "保存视频"
+      },
+      "class_type": "SaveVideo",
+      "inputs": {
+        "codec": "auto",
+        "filename_prefix": "H3_WAIT_VALID_6SEG_MERGED",
+        "format": "mp4",
+        "format.codec": "auto",
+        "video": [
+          "7",
+          0
+        ]
+      }
+    }
+  },
+  "workflow": {
+    "config": {},
+    "extra": {
+      "ds": {
+        "offset": [
+          1010.0755084832052,
+          105.60328554952548
+        ],
+        "scale": 0.5054470284992955
+      },
+      "frontendVersion": "1.52.7"
+    },
+    "groups": [],
+    "id": "cf183e6c-7d7e-438a-b217-2d75769c1596",
+    "last_link_id": 7,
+    "last_node_id": 8,
+    "links": [
+      [
+        1,
+        1,
+        0,
+        7,
+        0,
+        "VIDEO"
+      ],
+      [
+        2,
+        2,
+        0,
+        7,
+        1,
+        "VIDEO"
+      ],
+      [
+        3,
+        3,
+        0,
+        7,
+        2,
+        "VIDEO"
+      ],
+      [
+        4,
+        4,
+        0,
+        7,
+        3,
+        "VIDEO"
+      ],
+      [
+        5,
+        5,
+        0,
+        7,
+        4,
+        "VIDEO"
+      ],
+      [
+        6,
+        6,
+        0,
+        7,
+        5,
+        "VIDEO"
+      ],
+      [
+        7,
+        7,
+        0,
+        8,
+        0,
+        "VIDEO"
+      ]
+    ],
+    "nodes": [
+      {
+        "flags": {},
+        "id": 1,
+        "inputs": [],
+        "mode": 0,
+        "order": 0,
+        "outputs": [
+          {
+            "links": [
+              1
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          70
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 1",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 2,
+        "inputs": [],
+        "mode": 0,
+        "order": 1,
+        "outputs": [
+          {
+            "links": [
+              2
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          280
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 2",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 3,
+        "inputs": [],
+        "mode": 0,
+        "order": 2,
+        "outputs": [
+          {
+            "links": [
+              3
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          490
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 3",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 4,
+        "inputs": [],
+        "mode": 0,
+        "order": 3,
+        "outputs": [
+          {
+            "links": [
+              4
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          700
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 4",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 5,
+        "inputs": [],
+        "mode": 0,
+        "order": 4,
+        "outputs": [
+          {
+            "links": [
+              5
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          910
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 5",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 6,
+        "inputs": [],
+        "mode": 0,
+        "order": 5,
+        "outputs": [
+          {
+            "links": [
+              6
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          70,
+          1120
+        ],
+        "properties": {
+          "Node name for S&R": "LoadVideo"
+        },
+        "size": [
+          270,
+          82
+        ],
+        "title": "Load Video — segment 6",
+        "type": "LoadVideo",
+        "widgets_values": [
+          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "image"
+        ],
+        "widgets_values_named": {
+          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "upload": "image"
+        }
+      },
+      {
+        "flags": {},
+        "id": 7,
+        "inputs": [
+          {
+            "link": 1,
+            "name": "videos.video0",
+            "type": "VIDEO"
+          },
+          {
+            "link": 2,
+            "name": "videos.video1",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": 3,
+            "name": "videos.video2",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": 4,
+            "name": "videos.video3",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": 5,
+            "name": "videos.video4",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": 6,
+            "name": "videos.video5",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": null,
+            "name": "videos.video6",
+            "shape": 7,
+            "type": "VIDEO"
+          },
+          {
+            "link": null,
+            "name": "complete_audio",
+            "shape": 7,
+            "type": "AUDIO"
+          }
+        ],
+        "mode": 0,
+        "order": 6,
+        "outputs": [
+          {
+            "links": [
+              7
+            ],
+            "name": "VIDEO",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          470,
+          280
+        ],
+        "properties": {
+          "Node name for S&R": "ConcatenateVideo"
+        },
+        "size": [
+          270,
+          218
+        ],
+        "type": "ConcatenateVideo",
+        "widgets_values": [
+          "auto"
+        ],
+        "widgets_values_named": {
+          "codec": "auto"
+        }
+      },
+      {
+        "flags": {},
+        "id": 8,
+        "inputs": [
+          {
+            "link": 7,
+            "name": "video",
+            "type": "VIDEO"
+          }
+        ],
+        "mode": 0,
+        "order": 7,
+        "outputs": [
+          {
+            "links": null,
+            "name": "video",
+            "type": "VIDEO"
+          }
+        ],
+        "pos": [
+          850,
+          280
+        ],
+        "properties": {},
+        "size": [
+          270,
+          106
+        ],
+        "type": "SaveVideo",
+        "widgets_values": [
+          "H3_WAIT_VALID_6SEG_MERGED",
+          "mp4",
+          "auto",
+          "auto"
+        ],
+        "widgets_values_named": {
+          "codec": "auto",
+          "filename_prefix": "H3_WAIT_VALID_6SEG_MERGED",
+          "format": "mp4",
+          "format.codec": "auto"
+        }
+      }
+    ],
+    "revision": 0,
+    "version": 0.4
+  }
+}

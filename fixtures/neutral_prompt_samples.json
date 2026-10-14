@@ -1,0 +1,20 @@
+{
+  "_comment": "脱敏时用于替换私人创作提示词的中性占位样本。详见 scripts/sanitize/sanitize_workflows.py。这些字符串本身会被 ALLOWED 集合放行，不会被视为私密内容。",
+  "NEUTRAL_MEDIA": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+  "NEUTRAL_PROMPT": "一个人物在晴朗的街道上自然行走，镜头缓慢平移，白天，自然光，电影感",
+  "NEUTRAL_NEG": "模糊，低质量，变形，多余肢体，水印，文字",
+  "ALLOWED_SENTINELS": [
+    "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+    "一个人物在晴朗的街道上自然行走，镜头缓慢平移，白天，自然光，电影感",
+    "模糊，低质量，变形，多余肢体，水印，文字",
+    "<REDACTED_PRIVATE_PATH>",
+    "<REDACTED_EMBEDDED_DATA>",
+    "__H3_GUIDE_NOT_SET__"
+  ],
+  "redaction_rules": {
+    "media_filename": "图片/视频/音频扩展名文件名 -> REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+    "abs_path": "绝对文件系统路径 -> <REDACTED_PRIVATE_PATH>",
+    "embedded_data": "内嵌 Base64 / data URI -> <REDACTED_EMBEDDED_DATA>",
+    "creative_prompt": "长度>40 且含中文或长英文（>=4空格且>60字符）-> 中性提示词/负向词"
+  }
+}
