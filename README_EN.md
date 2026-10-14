@@ -2,7 +2,7 @@
 
 **MiniMax-H3 six-segment video generation with a Chinese ComfyUI director console** · `v0.1.0-preview` experimental pre-release
 
-[中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Browse workflows](workflows/current) · [8197 frozen production repository](https://github.com/asd454314633-byte/H3-Chinese-Director)
+[中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Choose a workflow: 12-file guide](workflows/current/README.md) · [8197 frozen production repository](https://github.com/asd454314633-byte/H3-Chinese-Director)
 
 Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
@@ -72,7 +72,7 @@ Arbitrary historical videos or Latents are not valid predecessors. Cross-resolut
 ## Installation, downloads and source reconstruction
 
 - **[Release downloads and SHA256 attachments](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview):** Source ZIP, complete file manifest and `SHA256SUMS.txt`. The existing tag/assets remain unchanged; homepage changes on main do not alter that frozen source archive.
-- **[Current workflow JSON files](workflows/current):** Open the relevant file and use GitHub Raw / Download. Templates are sanitized; replace placeholder references and paths.
+- **[Workflow selector: all 12 JSON files](workflows/current/README.md):** **wf_05** is the six-segment H3 video workflow; most other files are independent image experiments. Select by actual purpose, not numeric order. Open the relevant file with GitHub Raw / Download; replace sanitized placeholders and paths.
 - **[Reconstruction and configuration guide](REPRODUCIBILITY_REPORT.md):** [Pinned versions](config/baseline.lock.json), [rebuild script](scripts/rebuild/rebuild_from_8197.py), [dependency setup script](scripts/setup/install_deps.py) and [model-path example](config/examples/extra_model_paths.example.yaml). Use separate empty directories; do not overwrite production.
 - **[Dependency sources](config/third_party_nodes.json)** and [locked versions](config/third_party_nodes.lock.json): Obtain model weights, third-party runtime dependencies and optional services separately. Source acquisition/reconstruction is not runtime installation acceptance.
 
