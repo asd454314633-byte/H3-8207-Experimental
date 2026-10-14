@@ -6,7 +6,7 @@
 
 Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
-**Explore:** [All experimental capabilities, modes, 48 tests and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
+**Explore:** **[Full catalog: 76 capabilities, including long-used voice references](docs/FULL_FUNCTION_INVENTORY.md)** · [Modes, 48 tests, and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
 
 ### Experimental capabilities beyond the six-prompt panel
 
@@ -21,7 +21,7 @@ Write a story as six independently editable prompts, submit video jobs, and cont
 | Other experimental tracks | Guide/Pose/Depth, V2V/RV2V, optional image generation/editing/Qwen workflows | Partial/bypassed or independent; historical Qwen **4/4 GPU** not repeated |
 | Multi-segment merge | Selection and merge hooks | **Mixed-resolution automatic merge remains HOLD** |
 
-**Voice-reference evidence update:** The project owner explicitly confirms that the voice timbre referencing capability has been tested with actual generation and has remained reliable in ongoing use (`OWNER_CONFIRMED_LONG_TERM_USE`). Three independent voice-reference slots, reference-video soundtrack, speaker/role mapping, and input validation are present in source. This prior operational evidence is **not the same as a fresh full GPU E2E acceptance of the sanitized 8207 preview**. See [details](docs/CAPABILITIES_AND_EVIDENCE.md).
+**Voice-reference evidence update:** The project owner explicitly confirms that the voice timbre referencing capability has been used successfully in real generation and remained reliable in the owner's local workflow for **at least one month** (`OWNER_CONFIRMED_LONG_TERM_USE`). Three independent voice-reference slots, reference-video soundtrack, speaker/role mapping, and input validation are present in source. This prior operational evidence is **not the same as a fresh full GPU E2E acceptance of the sanitized 8207 preview**. See [details](docs/CAPABILITIES_AND_EVIDENCE.md).
 
 **Verified preview regression: 48 CPU/JavaScript PASS / 0 FAIL** (11 spatial Native + 11 PreBake + 9 release guards + 16 workflow helpers + 1 frontend/backend bridge). **193 sanitized JSON workflows** = 12 current + 181 history; these are *files statically checked*, **not GPU generations**. Public preview's complete six-segment GPU and browser/live queue E2E remain **NOT_TESTED**.
 
