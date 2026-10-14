@@ -1,33 +1,106 @@
 # H3-8207 Experimental
 
-[v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview) · experimental, source-only pre-release.
+**MiniMax-H3 six-segment video generation with a Chinese ComfyUI director console** · `v0.1.0-preview` experimental pre-release
 
-![Historical redacted showcase](assets/showcase/showcase-cover.jpg)
+[中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Browse workflows](workflows/current)
 
-[Video demonstration](assets/showcase/h3-six-segment-demo-github.mp4) · [animated preview](assets/showcase/demo-preview.gif) · [redacted six-segment panel](assets/showcase/six-segment-panel-redacted.png)
+Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
-These four assets reuse historical 8197 demonstrations. They are not proof that this 8207 preview passed GPU end-to-end acceptance.
+![Historical H3 Chinese director showcase cover](assets/showcase/showcase-cover.jpg)
 
-This preview adds immutable Story/Execution snapshots, editable queued work, per-segment cache planning, and explicitly audited cross-resolution Native latent continuation. [Release notes and limitations](docs/PREVIEW_RELEASE_NOTES.md).
+## Real interface and video showcase
 
-# H3-8207 Experimental
+### Animated video preview
 
-An experimental source package for the H3 Chinese Director. **EXPERIMENTAL_PUBLICATION_READY = PASS** for an experimental, source-only release. This does not claim production readiness or current-candidate automated GPU end-to-end acceptance.
+![Historical real H3 video animated preview](assets/showcase/demo-preview.gif)
 
-The package separates four layers:
+**[▶ Open the complete MP4 demonstration](https://github.com/asd454314633-byte/H3-8207-Experimental/raw/refs/heads/main/assets/showcase/h3-six-segment-demo-github.mp4)**
 
-1. **H3 six-segment generation** is the core video workflow. Users can enter all six segment prompts manually.
-2. **AI Director** is optional. It can help draft or coordinate segment prompts with a compatible language-model provider; no single provider is required.
-3. **MiniMax-H3's internal Qwen3-VL encoder** is part of the H3 model stack used by H3 workflows. It is distinct from the standalone Qwen Image 2.1 image-generation model.
-4. **Qwen Image 2.1** is a separate optional set of four still-image workflows: text-to-image, single-image edit, multi-image edit, and background removal. It is not required for H3 six-segment video generation.
+This link opens or downloads an actual MP4 file; it does not promise an embedded README video player.
 
-## Acceptance status
+### Six-segment Chinese editor
 
-- Historical evidence is version-scoped: 8197 V29 has an automated six-segment generation-and-merge `PASS`; the 8207 historical experimental environment has user-confirmed manual acceptance plus partial automated GPU evidence. These records remain in the private audit with their original limits.
-- Current-candidate CPU contract, source reconstruction, integrity, and release-guard checks passed within their recorded scope. They do not establish current-candidate video generation or live UI/queue behavior.
-- The four Qwen Image 2.1 workflows have historical GPU `PASS` records. The sanitized workflows in this candidate have not been dynamically revalidated: `CURRENT_CANDIDATE_QWEN_GPU = NOT_RETESTED`.
-- `GPU E2E = NOT_TESTED` refers specifically to a complete same-version retest of the current 8207 sanitized release candidate. It does not erase the historical 8197 PASS or partial 8207 GPU evidence, and it is not reported as a current-candidate PASS.
+[![Redacted six-segment editor screenshot — click for original size](assets/showcase/six-segment-panel-redacted.png)](https://raw.githubusercontent.com/asd454314633-byte/H3-8207-Experimental/main/assets/showcase/six-segment-panel-redacted.png)
 
-See [Feature and Evidence Matrix](docs/FEATURE_MATRIX.md), [Publication Gate](PUBLIC_RELEASE_GATE.md), [Build and Reproducibility](REPRODUCIBILITY_REPORT.md), [Blocker Resolution](docs/BLOCKER_RESOLUTION.md), [Third-Party Notices](THIRD_PARTY_NOTICES.md), and [Privacy Sanitization](PRIVACY_SANITIZATION_REPORT.md).
+Click the screenshot for its original dimensions. Story text is redacted; the interface comes from a real recording.
 
-The source package contains no model weights, private reference media, or runtime caches. Each third-party component retains its own license and notices. Experimental readiness is limited to the audited source package, its documented reconstruction path, and the evidence distinctions above. No production promotion is claimed. This repository is the independent experimental preview.
+> **Provenance and evidence boundary:** These four assets reuse historical real 8197 recordings and redacted demonstrations. They show the real interface and video output, **not same-version GPU E2E acceptance of the current public 8207 candidate**. Other features or captions appearing in the full recording do not automatically count as this project's acceptance results. No new operating screenshots were generated or fabricated.
+
+## Core six-segment capabilities
+
+| Capability | Behavior and boundary |
+|---|---|
+| Chinese interface and six-prompt management | Write, edit and manage each prompt separately. Manual writing needs no AI Director model. |
+| Single-segment and continuous scheduling | Start a selected segment independently or continue from a valid predecessor. Edit future drafts and click execute to queue jobs while another job runs. |
+| Previous-segment Latent continuation | Real Native masked continuation preserves predecessor identity, model and receipt checks. Independent start remains available without a valid predecessor. |
+| Conditioning PreBake | Reuse valid conditioning and handle missing or stale caches according to submitted content and actual dependencies. Cache hits do not replace data validation. |
+| Continuation state and execution receipts | Story, execution snapshots, task identity and successful results are recorded separately for recovery, retries and predecessor eligibility. |
+| Six-segment automatic merge | Merge selected valid results without mixing other stories or old attempts. **Mixed-resolution automatic merge remains HOLD.** |
+
+These are source/workflow capabilities. Historical success and current public-candidate acceptance are separated below; offline checks are not current GPU success.
+
+## Experimental changes relative to 8197
+
+8207 reuses a public 8197 baseline with experimental nodes and workflows. It is an independent line, not an automatic upgrade to production.
+
+- **Story / Execution separation:** Story identity can stay stable while each submission has an independent snapshot. Later draft edits do not rewrite submitted work.
+- **Editing and queueing during generation:** Keep editing unsubmitted prompts and submitting jobs. Queue waiting is separate from the 300-second execution budget.
+- **Per-segment PreBake recovery:** Plan caches from actual submitted content and dependencies, preserving successful historical versions and real predecessor checks.
+- **Explicitly audited spatial continuation:** For cross-resolution continuation, map the real predecessor's video Latent tail to the current sampling grid. Audio prefixes remain exact; same-grid continuation remains elementwise exact. The transform is recorded, without claiming raw tensor equality after resampling.
+- **Experimental workflows and extensions:** H3 experimental orchestration and separate Qwen Image 2.1 image workflows have their own dependencies, models and evidence boundaries.
+
+See the [current preview notes](docs/PREVIEW_RELEASE_NOTES.md). Older delta reports retain historical scope and do not establish dynamic acceptance of every experiment.
+
+## Using the six-segment workflow
+
+1. Prepare required nodes and models in a separate ComfyUI environment. Load a suitable JSON from [current workflows](workflows/current), then configure your own references and model paths.
+2. Fill the six Chinese prompt editors and set reference slots, generation parameters and starting segment. Write manually or use the optional AI Director to draft prompts.
+3. Choose independent generation or real continuation and execute the selected segment. Jobs can still be queued while another runs. Submitted jobs retain fixed snapshots; edits apply to the next submission.
+4. For continuation, use a matching successful predecessor Latent and receipt. Resume from a valid position after failure and preserve historical successes when redoing a segment. Check selected result versions and video dimensions before merging.
+
+Arbitrary historical videos or Latents are not valid predecessors. Cross-resolution Native continuation and mixed-resolution output merging are separate issues; the latter still requires a common output canvas.
+
+## AI Director, Qwen and the six prompt editors
+
+| Layer | Role | Relationship to six-segment video |
+|---|---|---|
+| **H3 six-segment director console** | Core video control: prompts, generation, continuation and results. | Manual prompt editing does not require an AI Director. |
+| **Optional AI Director** | Assist with drafting or improving story prompts. | Different compatible language-model services can be used; no single model is mandatory. |
+| **MiniMax-H3 internal Qwen3-VL encoder** | A required internal component of the H3 video model stack. | Distinct from the optional AI Director and Qwen Image. |
+| **Qwen Image 2.1** | Separate experimental text-to-image, single-image edit, multi-image edit and background-removal workflows. | **Not a prerequisite for H3 six-segment video.** Its acceptance gates do not block the six prompt editors. |
+
+## Installation, downloads and source reconstruction
+
+- **[Release downloads and SHA256 attachments](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview):** Source ZIP, complete file manifest and `SHA256SUMS.txt`. The existing tag/assets remain unchanged; homepage changes on main do not alter that frozen source archive.
+- **[Current workflow JSON files](workflows/current):** Open the relevant file and use GitHub Raw / Download. Templates are sanitized; replace placeholder references and paths.
+- **[Reconstruction and configuration guide](REPRODUCIBILITY_REPORT.md):** [Pinned versions](config/baseline.lock.json), [rebuild script](scripts/rebuild/rebuild_from_8197.py), [dependency setup script](scripts/setup/install_deps.py) and [model-path example](config/examples/extra_model_paths.example.yaml). Use separate empty directories; do not overwrite production.
+- **[Dependency sources](config/third_party_nodes.json)** and [locked versions](config/third_party_nodes.lock.json): Obtain model weights, third-party runtime dependencies and optional services separately. Source acquisition/reconstruction is not runtime installation acceptance.
+
+No model weights, private references, runtime caches or ready-made personal environment are bundled. Read older reconstruction blockers together with the [R2 corrections](docs/BLOCKER_RESOLUTION.md), [current publication gate](PUBLIC_RELEASE_GATE.md) and [preview notes](docs/PREVIEW_RELEASE_NOTES.md).
+
+## Version-scoped acceptance and limitations
+
+| Scope | Evidence and result |
+|---|---|
+| **8197 V29 production** | Historical Agent-automated six-segment generation and automatic merge have real **PASS** records. They do not transfer to this candidate. |
+| **Historical 8207 experimental environment** | User-confirmed successful manual acceptance and partial automated GPU evidence retain their original versions and scope. |
+| **Current sanitized public 8207 candidate** | `EXPERIMENTAL_PUBLICATION_READY = PASS`; `GPU E2E = NOT_TESTED`; `PRODUCTION_PROMOTION = HOLD`. |
+| **Qwen Image 2.1** | Four historical GPU **PASS** results remain valid; current-candidate dynamic validation is `NOT_RETESTED`, separate from H3 six-segment acceptance. |
+
+`NOT_TESTED` means the current public candidate has not repeated a **complete same-version GPU E2E** test. It does not mean six-segment generation never succeeded. The recorded 48 CPU/JavaScript checks, static integrity and pinned-source reconstruction passed; they do not establish current-candidate live browser, queue or video E2E acceptance. This homepage update adds no GPU acceptance.
+
+**Known limitations:** Mixed-resolution automatic merge remains **HOLD** and needs an explicit common output canvas. Complete current-candidate six-segment GPU E2E is untested; current Qwen dynamic validation has not been repeated; full runtime equivalence remains HOLD. Configure required sources, models and optional services before using their respective features.
+
+Evidence: [Publication gate](PUBLIC_RELEASE_GATE.md) · [Preview notes](docs/PREVIEW_RELEASE_NOTES.md) · [Recorded preview offline checks](manifests/preview_validation.json).
+
+## Licenses, provenance and privacy
+
+Independent project code is declared under [MIT](LICENSE). Third-party components retain their own licenses and attribution; the model, host and upstream nodes are not collectively claimed as original project code or MIT. ComfyUI host patches follow GPL-3.0; workflow-template derivatives and vendored nodes retain their respective sources and notices. No official MiniMax or ComfyUI endorsement is implied.
+
+Read [Third-party notices](THIRD_PARTY_NOTICES.md), [license report](THIRD_PARTY_LICENSE_REPORT.md), [GPL patch license](overlays/LICENSE-GPL-3.0.txt) and [workflow-template license](licenses/workflow_templates-MIT.txt). Model use is subject to each model's own license.
+
+Private paths, original story text, input references, ledgers, caches, logs, secrets and model weights are excluded. The four historical showcase assets are redacted and retain their original bytes. See [Sanitization report](PRIVACY_SANITIZATION_REPORT.md) and [Security and privacy](docs/SECURITY_AND_PRIVACY.md).
+
+## 中文文档
+
+[阅读完整中文版 README →](README.md)
