@@ -1,0 +1,398 @@
+{
+  "schema": "H3_8207_PUBLIC_ACCEPTANCE_V1",
+  "date": "2026-10-14",
+  "environment": "8207 experimental local environment",
+  "story_alias": "sha256:f4b193d2254e92a2",
+  "execution_alias": "sha256:d5c6e1932ee0539e",
+  "LOCAL_8207_GPU_E2E_PASS": "PASS",
+  "PUBLIC_SOURCE_MATCH": {
+    "status": "PASS",
+    "scope": "six listed Adaptive V1 files, byte-identical to locally promoted source; full environment equivalence not claimed"
+  },
+  "PUBLIC_BUILD_GPU_E2E": "NOT_TESTED",
+  "full_runtime_equivalence": "HOLD",
+  "runtime": {
+    "comfyui_version": "0.36.0",
+    "frontend_version": "1.52.7",
+    "pytorch_version": "2.12.0+cu130",
+    "gpu": "cuda:0 NVIDIA GeForce RTX 5090 D v2 : cudaMallocAsync"
+  },
+  "workflow_hash_policy": "SHA256 of UTF-8 sorted compact JSON for each exact submitted workflow; private workflow bodies not distributed",
+  "segments": [
+    {
+      "segment": 1,
+      "task_alias": "sha256:6ed58dab87464ef9",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 243,
+      "output_duration_seconds": 10.125,
+      "generation_seconds": 221.263794,
+      "start_time": "2026-10-14T19:26:18.822+08:00",
+      "end_time": "2026-10-14T19:30:00.085+08:00",
+      "native_context_frames": 0,
+      "clean_rebase": false,
+      "actual_overlap_removed_frames": 0,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "4b761fe335b7092b4f53a5f7bfadb661495834cc0884d435096f918c4a00d9d3",
+      "video_sha256": "d2e4d1174d83e472114e3dd15bfefa6409fe417650d1bfb27991b83a9a9c1bbe",
+      "native_sha256": "cf792dfe08529d50779488f2ec8e84ab43b82b24a2691bc2e6d1b5567e411ca1",
+      "history_sha256": "77d3c69e0c6bb4bc6cef18c0d173440580fbb8522acca8acd172cbaec8d9322a",
+      "snapshot_sha256": "7a5c2efb1b89eaad2a77ec9edd693c44e4feb7e440f2783f7fac3715b3aafb33",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    },
+    {
+      "segment": 2,
+      "task_alias": "sha256:484da30cb41f9c1a",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 204,
+      "output_duration_seconds": 8.5,
+      "generation_seconds": 158.350332,
+      "start_time": "2026-10-14T19:30:03.031+08:00",
+      "end_time": "2026-10-14T19:32:41.382+08:00",
+      "native_context_frames": 39,
+      "clean_rebase": false,
+      "actual_overlap_removed_frames": 39,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "7874d7d6683f9644fc5c5f5b8fceee8ebba863668b28c87bc6f405245724d3c3",
+      "video_sha256": "cd8fb7b4637dd0860ece82e2fac5b17c123a7df71f3655b866a18488d4c91657",
+      "native_sha256": "d25dd5f6bafcafdad953683e5fe094b7396dbba42a2cf6347ae8f367dc3381e8",
+      "history_sha256": "0369733bd1e47c6b0f5f90f0c78fc478160c45fee3d6fd031453ae1b49aae7bc",
+      "snapshot_sha256": "2ee5783866f17aca647b82c8aa6b208600bbe49caf1bcc0d4419d39470c10798",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    },
+    {
+      "segment": 3,
+      "task_alias": "sha256:eb72ae15244268e8",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 204,
+      "output_duration_seconds": 8.5,
+      "generation_seconds": 158.218391,
+      "start_time": "2026-10-14T19:32:45.138+08:00",
+      "end_time": "2026-10-14T19:35:23.356+08:00",
+      "native_context_frames": 39,
+      "clean_rebase": false,
+      "actual_overlap_removed_frames": 39,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "1676f6d7f05500a8f7038808d66a3340ad3ee22687041b79d5eeca38aa97693c",
+      "video_sha256": "73b99dee7c569a85059f77ef6f86e296a73cd83b5201cd7760272e69948fd45e",
+      "native_sha256": "fa9298fda3a1f6ce9c88fc4c6ea035ddede26a3cdba4e33a4f85d9d5eb902036",
+      "history_sha256": "878a3bcdfb05c5d9f9246d6b9ffd715409774b6a2c8e4eb5c6fdd0f7b8527852",
+      "snapshot_sha256": "5f7104bc4845fde6ec1cf64d6274d7af528d94c7dd3568d536d839e090335285",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    },
+    {
+      "segment": 4,
+      "task_alias": "sha256:b52aeed074d063c1",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 243,
+      "output_duration_seconds": 10.125,
+      "generation_seconds": 156.967291,
+      "start_time": "2026-10-14T19:35:26.061+08:00",
+      "end_time": "2026-10-14T19:38:03.028+08:00",
+      "native_context_frames": 0,
+      "clean_rebase": true,
+      "actual_overlap_removed_frames": 0,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "ae3880dfc4628cd74d4ac9ceb1392f1c7ba163f4f7cc86b09501c16012ff3232",
+      "video_sha256": "c75b77e63c462636dea83f46813cd7adc3d4204d5f86d36e35e8e28d776e7d7d",
+      "native_sha256": "497602704afcf75d67f0f027ffcb6c496deec1ff28b4935700af9fa25e0a1f68",
+      "history_sha256": "f4ba1f12d6798672d7aaaad87f733db192fe757ef8c0c72066a24f66e93846f5",
+      "snapshot_sha256": "79fa04dc40d06d7479f749a13bcf7ef70000ed0eeaa0d2c52a884aae05aa1a29",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    },
+    {
+      "segment": 5,
+      "task_alias": "sha256:84088cc8b59f73b0",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 204,
+      "output_duration_seconds": 8.5,
+      "generation_seconds": 160.881733,
+      "start_time": "2026-10-14T19:38:06.063+08:00",
+      "end_time": "2026-10-14T19:40:46.944+08:00",
+      "native_context_frames": 39,
+      "clean_rebase": false,
+      "actual_overlap_removed_frames": 39,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "f1dddbc4dd5e7c5595c664dbb37331089129c2f4e4ce09d11252bfdd89d1c2da",
+      "video_sha256": "d61726c6f4498b70a819e150e05d7778e085d426f92d43700a9df6c0ca7e6ba6",
+      "native_sha256": "6e80a4c09a4d0f3cb7dae067221548536ca43942e55f2b2c8a7f73604d438762",
+      "history_sha256": "d6389ef64d501a07802f08d43bd34964949b3848d4398c0c6def462b9390f60f",
+      "snapshot_sha256": "368a37755373ff580e0db463336a7e1dcf4ce6a6a9eae33de37623f59728ad8f",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    },
+    {
+      "segment": 6,
+      "task_alias": "sha256:0503ce39adaf8572",
+      "status": "SUCCESS",
+      "route": "INT8_CONVROT_PDD8",
+      "steps": 8,
+      "resolution": [
+        1056,
+        608
+      ],
+      "fps": 24,
+      "generated_frames": 243,
+      "output_frames": 204,
+      "output_duration_seconds": 8.5,
+      "generation_seconds": 160.197058,
+      "start_time": "2026-10-14T19:40:50.401+08:00",
+      "end_time": "2026-10-14T19:43:30.598+08:00",
+      "native_context_frames": 39,
+      "clean_rebase": false,
+      "actual_overlap_removed_frames": 39,
+      "player_refill": "PASS_CURRENT_BROWSER_READ_ONLY",
+      "workflow_sha256": "67070274a7752c3ff0aee90cc5d70f53739239f947351de44d538cba5199b161",
+      "video_sha256": "0cf2a0a158f9199319c996fe5da8fb4f90fd79578152580af721aabf47dfe4b4",
+      "native_sha256": "c77512f24c56f050177fc4aaae4f4e9f7a3c53de7d54f3421fe5de288a06d510",
+      "history_sha256": "32d4b82e5db0ab18174a3abc13b2fee29f6fe5a355d5704ce714568420ddbc10",
+      "snapshot_sha256": "24058aa55b430260dc87cc646d3761bd82295b49e34e010856d54d9d23650f49",
+      "gpu_vram_peak_mib": "NOT_RECORDED",
+      "gpu_utilization_peak_percent": "NOT_RECORDED",
+      "system_ram_peak_mib": "NOT_RECORDED",
+      "cpu_utilization_peak_percent": "NOT_RECORDED"
+    }
+  ],
+  "sampling_execution_total_seconds": 1015.878599,
+  "merged": {
+    "status": "SUCCESS",
+    "task_alias": "sha256:8a8e962aee3cbeac",
+    "resolution": [
+      1056,
+      608
+    ],
+    "fps": 24,
+    "frames": 1302,
+    "duration_seconds": 54.25,
+    "video_audio_stream_duration_alignment": "PASS",
+    "perceptual_audio_sync": "NOT_REVIEWED",
+    "player_loaded": "PASS_CURRENT_BROWSER_READ_ONLY",
+    "sha256": "d584b902ca0142ffd7a49eaaa5621a119168439d40ddc4b7ee1510a0219fe4ad"
+  },
+  "adaptive_v1": {
+    "local_promotion": "PASS",
+    "offline_previous_tests": 49,
+    "isolated_browser_recovery": "PASS",
+    "local_8207_history_player_and_complete_playback": "PASS",
+    "numeric_24_24_float": "PASS",
+    "new_six_task_snapshots": "PRESENT_VERIFIED",
+    "original_native_receipts_preserved": "PASS",
+    "promotion_handler_ms": 7.9778
+  },
+  "performance_limits": {
+    "gpu_vram_peak": "NOT_RECORDED",
+    "gpu_utilization_peak": "NOT_RECORDED",
+    "system_ram_peak": "NOT_RECORDED",
+    "cpu_utilization_peak": "NOT_RECORDED",
+    "reason": "Located hardware CSV belongs to earlier failed single-segment execution, not this successful six-segment run; not reused",
+    "memory_optimization": "H3MemoryOptimization is present in the executed PDD8 model ancestry; no controlled on/off comparison",
+    "speedup_percent": "NOT_RECORDED"
+  },
+  "continuation_limits": {
+    "trim_index_duplicate_rows": "Native index contains duplicate trim audit rows for segments 2/3/5/6. Compare actual output frames and merge source hashes; do not trim again or count duplicate audit rows twice.",
+    "clean_rebase": "Fourth segment has clean-rebase flag and no predecessor latent input; native output and 243-frame saved clip verified",
+    "visual_seam_quality": "NOT_REVIEWED"
+  },
+  "source_files": [
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_bridge.py",
+      "validated_local_sha256": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+      "public_sha256": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py",
+      "validated_local_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
+      "public_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/production.py",
+      "validated_local_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
+      "public_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/core.py",
+      "validated_local_sha256": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+      "public_sha256": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/__init__.py",
+      "validated_local_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+      "public_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/web/production.js",
+      "validated_local_sha256": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95",
+      "public_sha256": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95",
+      "match": "BYTE_IDENTICAL"
+    }
+  ],
+  "artifact_sha256_index": [
+    {
+      "artifact": "segment_01_video",
+      "sha256": "d2e4d1174d83e472114e3dd15bfefa6409fe417650d1bfb27991b83a9a9c1bbe"
+    },
+    {
+      "artifact": "segment_01_native",
+      "sha256": "cf792dfe08529d50779488f2ec8e84ab43b82b24a2691bc2e6d1b5567e411ca1"
+    },
+    {
+      "artifact": "segment_01_history",
+      "sha256": "77d3c69e0c6bb4bc6cef18c0d173440580fbb8522acca8acd172cbaec8d9322a"
+    },
+    {
+      "artifact": "segment_01_snapshot",
+      "sha256": "7a5c2efb1b89eaad2a77ec9edd693c44e4feb7e440f2783f7fac3715b3aafb33"
+    },
+    {
+      "artifact": "segment_02_video",
+      "sha256": "cd8fb7b4637dd0860ece82e2fac5b17c123a7df71f3655b866a18488d4c91657"
+    },
+    {
+      "artifact": "segment_02_native",
+      "sha256": "d25dd5f6bafcafdad953683e5fe094b7396dbba42a2cf6347ae8f367dc3381e8"
+    },
+    {
+      "artifact": "segment_02_history",
+      "sha256": "0369733bd1e47c6b0f5f90f0c78fc478160c45fee3d6fd031453ae1b49aae7bc"
+    },
+    {
+      "artifact": "segment_02_snapshot",
+      "sha256": "2ee5783866f17aca647b82c8aa6b208600bbe49caf1bcc0d4419d39470c10798"
+    },
+    {
+      "artifact": "segment_03_video",
+      "sha256": "73b99dee7c569a85059f77ef6f86e296a73cd83b5201cd7760272e69948fd45e"
+    },
+    {
+      "artifact": "segment_03_native",
+      "sha256": "fa9298fda3a1f6ce9c88fc4c6ea035ddede26a3cdba4e33a4f85d9d5eb902036"
+    },
+    {
+      "artifact": "segment_03_history",
+      "sha256": "878a3bcdfb05c5d9f9246d6b9ffd715409774b6a2c8e4eb5c6fdd0f7b8527852"
+    },
+    {
+      "artifact": "segment_03_snapshot",
+      "sha256": "5f7104bc4845fde6ec1cf64d6274d7af528d94c7dd3568d536d839e090335285"
+    },
+    {
+      "artifact": "segment_04_video",
+      "sha256": "c75b77e63c462636dea83f46813cd7adc3d4204d5f86d36e35e8e28d776e7d7d"
+    },
+    {
+      "artifact": "segment_04_native",
+      "sha256": "497602704afcf75d67f0f027ffcb6c496deec1ff28b4935700af9fa25e0a1f68"
+    },
+    {
+      "artifact": "segment_04_history",
+      "sha256": "f4ba1f12d6798672d7aaaad87f733db192fe757ef8c0c72066a24f66e93846f5"
+    },
+    {
+      "artifact": "segment_04_snapshot",
+      "sha256": "79fa04dc40d06d7479f749a13bcf7ef70000ed0eeaa0d2c52a884aae05aa1a29"
+    },
+    {
+      "artifact": "segment_05_video",
+      "sha256": "d61726c6f4498b70a819e150e05d7778e085d426f92d43700a9df6c0ca7e6ba6"
+    },
+    {
+      "artifact": "segment_05_native",
+      "sha256": "6e80a4c09a4d0f3cb7dae067221548536ca43942e55f2b2c8a7f73604d438762"
+    },
+    {
+      "artifact": "segment_05_history",
+      "sha256": "d6389ef64d501a07802f08d43bd34964949b3848d4398c0c6def462b9390f60f"
+    },
+    {
+      "artifact": "segment_05_snapshot",
+      "sha256": "368a37755373ff580e0db463336a7e1dcf4ce6a6a9eae33de37623f59728ad8f"
+    },
+    {
+      "artifact": "segment_06_video",
+      "sha256": "0cf2a0a158f9199319c996fe5da8fb4f90fd79578152580af721aabf47dfe4b4"
+    },
+    {
+      "artifact": "segment_06_native",
+      "sha256": "c77512f24c56f050177fc4aaae4f4e9f7a3c53de7d54f3421fe5de288a06d510"
+    },
+    {
+      "artifact": "segment_06_history",
+      "sha256": "32d4b82e5db0ab18174a3abc13b2fee29f6fe5a355d5704ce714568420ddbc10"
+    },
+    {
+      "artifact": "segment_06_snapshot",
+      "sha256": "24058aa55b430260dc87cc646d3761bd82295b49e34e010856d54d9d23650f49"
+    },
+    {
+      "artifact": "merged_video",
+      "sha256": "d584b902ca0142ffd7a49eaaa5621a119168439d40ddc4b7ee1510a0219fe4ad"
+    },
+    {
+      "artifact": "native_index",
+      "sha256": "0b7acf7a9143fd651a6426f21f83ad0767f091a57b9ff8b9a7bdf904660c1b94"
+    },
+    {
+      "artifact": "six_acceptance_receipts",
+      "sha256": "d4be10e571f4b87e7921375425ad6e46394a5f43f982974482327f1d9221d7cc"
+    }
+  ],
+  "privacy": "Only whitelist summary and hashes. No raw History, task snapshots, prompts, images, latent, video, full recording, or local paths."
+}

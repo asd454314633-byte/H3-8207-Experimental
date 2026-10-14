@@ -137,6 +137,11 @@ def story(payload,state_lock=None):
      video=Path(receipt['video_path']).resolve()
      if not video.is_relative_to(Path(folder_paths.get_output_directory()).resolve()) or not video.is_file() or codec.file_sha(video)!=receipt['video_sha256']:
       segment.update(video_status='UNAVAILABLE',recovery_error='Accepted video missing or SHA256 changed')
+   from .adaptive_bridge import recovery
+   from server import PromptServer
+   for key,segment in segments.items():
+    try:segment['adaptive_recovery']=recovery(binding,int(key),data['segments'][key],PromptServer.instance)
+    except Exception as ex:segment['adaptive_recovery_error']=str(ex)
    return {'state':'BOUND','receipt_state':receipt_state,'binding':binding,'segments':segments}
   if action!='bind':raise ValueError('Unknown story action')
   gid=token(payload['group_id']);requested=token(payload['project_id']);requested_settings=(read_state(ledger_path({'project_id':requested,'group_id':gid}).parent/'six_acceptance.json') or {}).get('_native_merge',{}).get('auto_merge_enabled',True);first=int(payload['start_index']);mode=payload['start_mode']
@@ -611,7 +616,7 @@ def accepted(payload,server,state_lock=None):
   if h['prompt'][1]!=pid:raise ValueError('History prompt_id mismatch')
   graph=h['prompt'][2];saves=[n for n in graph.values() if n['class_type']=='H3ContinuationSave' and n['inputs'].get('enabled') is True]
   if 'SEAM_GUIDE' in graph:
-   if attempt and attempt.get('guide_anchor_sha256') and attempt.get('graph_sha256')!=graph_digest(graph):raise ValueError('Guide submitted graph changed before acceptance')
+   if attempt and attempt.get('guide_anchor_sha256') and not __import__(__package__+'.adaptive_bridge',fromlist=['graph_matches']).graph_matches(attempt,graph):raise ValueError('Guide submitted graph changed before acceptance')
    verify_predecessor(ctx,i)
    source=(receipts or {}).get(str(i-1),{})
    expected='h3_rebase_composition/'+source['prompt_id']+'_'+source['video_sha256'][:16]+'.png'
@@ -624,7 +629,7 @@ def accepted(payload,server,state_lock=None):
   loads=[n['inputs'] for n in graph.values() if n['class_type']=='H3ConditioningLoad']
   guards=[n['inputs'] for n in graph.values() if n['class_type']=='H3AttemptGuard']
   if attempt and attempt.get('route')=='DYNAMIC_FALLBACK':
-   if len(guards)!=1 or graph_digest(graph)!=attempt['graph_sha256']:raise ValueError('Fallback history graph mismatch')
+   if len(guards)!=1 or not __import__(__package__+'.adaptive_bridge',fromlist=['graph_matches']).graph_matches(attempt,graph):raise ValueError('Fallback history semantic snapshot mismatch')
    claim=json.loads(guards[0]['execution_json'])
    if claim.get('attempt_id')!=attempt['attempt_id'] or any(claim.get('context',{}).get(k)!=ctx.get(k) for k in ('story_id','project_id','group_id','execution_version')) or claim.get('index')!=i:raise ValueError('Fallback execution binding mismatch')
   elif len(loads)!=1:raise ValueError('Video history has no unique PreBake load contract')

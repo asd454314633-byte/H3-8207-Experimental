@@ -3,3 +3,10 @@
 *.jpg -text
 *.gif -text
 *.mp4 -text
+# Preserve the exact bytes of the six locally verified Adaptive V1 source files.
+custom_nodes/local_author/h3_conditioning_prebake/adaptive_bridge.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/core.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/production.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/web/production.js -text whitespace=cr-at-eol

@@ -1,6 +1,17 @@
 # H3 8207 实验导演台｜功能、模式、证据与 48 项测试（v0.1.0-preview）
 
-> **独立实验源码预览，不是 8197 生产版升级。** 本页按 GitHub `main` 的公开文件、`v0.1.0-preview` 发布记录、[发布门禁](../PUBLIC_RELEASE_GATE.md)、[预览校验清单](../manifests/preview_validation.json)整理。2026-10-14 的这个说明更新**未进行任何 GPU 采样、真实 ComfyUI 浏览器 E2E 或生产晋升**。
+## 2026-10-14 main更新：自适应V1与本机六段实测
+
+**自适应V1已晋升8207并通过真实History恢复、原播放器回填及完整播放。** main同步6份已验收源码；元数据/类型/连接识别、24与24.0规范化、独立任务快照和语义版本比较，不把固定九图、私人六段剧情或固定节点编号作为核心条件。合法修改不会仅因原始JSON哈希改变就丢失旧任务结果；能力缺失仍会明确报告。
+
+**LOCAL_8207_GPU_E2E_PASS=PASS**：本机后来完成的独立六段PDD Ref2VA 8步任务有6份SUCCESS收据、History、Native、视频与自动合并证据。实测1056×608/24fps，最终1302帧、54.25秒；这不是首次失败单段，也不是早期约60秒方案。显存/RAM峰值没有与这次任务匹配的采样，标为NOT_RECORDED。
+
+**PUBLIC_SOURCE_MATCH=PASS（仅所列6文件逐字节一致）；PUBLIC_BUILD_GPU_E2E=NOT_TESTED。** 本机成功不保证所有用户的脱敏环境成功。既有48项公开回归、49项本机自适应离线与真实GPU任务是不同证据集合，不相加冒充GPU次数。v0.1.0-preview标签与附件保持冻结；新源码使用main。
+
+[自适应使用与原理](ADAPTIVE_V1.md) · [六段真实参数与验收范围](8207_SIX_SEGMENT_GPU_ACCEPTANCE_20261014.md) · [机器摘要](../benchmarks/8207_six_segment_20261014.json)
+
+
+> **独立实验源码预览，不是 8197 生产版升级。** 本页按 GitHub `main` 的公开文件、`v0.1.0-preview` 发布记录、[发布门禁](../PUBLIC_RELEASE_GATE.md)、[预览校验清单](../manifests/preview_validation.json)整理。早前预览说明未做新的GPU采样；本次更新复用已完成的8207本机晋升、浏览器恢复及六段GPU证据，脱敏构建未GPU重跑。
 >
 > `EXPERIMENTAL_PUBLICATION_READY=PASS` 只表示公开源码审查与指定离线测试通过；`CURRENT_BUILD_GPU_E2E=NOT_TESTED`、`PRODUCTION_PROMOTION=HOLD`。
 
@@ -23,10 +34,10 @@
 
 | 子系统 | 已有源码/合同描述 | 公开候选验证边界 |
 |---|---|---|
-| 全中文控制与六段编辑 | 六段提示词面板；每段独立草稿、提交与结果管理 | 源码与脱敏工作流存在；当前版浏览器端到端 **NOT_TESTED** |
+| 全中文控制与六段编辑 | 六段提示词面板；每段独立草稿、提交与结果管理 | 源码与脱敏工作流存在；本机六段回填与V1恢复PASS；公开构建未重新执行 |
 | Story / Execution 分离 | 故事身份与不可变提交快照独立；后续草稿编辑不能污染已提交任务 | 指定 CPU/前后端测试覆盖合同，不代表浏览器并发生产验收 |
 | 单段提交与排队 | 只对所选段落排队；各次执行有独立 attempt/提交身份；队列等待与执行计时分开 | JS/CPU 层回归；真实 ComfyUI 队列/网络传输未验 |
-| 自动续接与有效前序 | 检查合法前序 SUCCESS、prompt 身份、latent SHA，旧回执不允许冒用 | CPU 回执/缓存资格验证；未完成本公开候选完整六段 GPU E2E |
+| 自动续接与有效前序 | 检查合法前序 SUCCESS、prompt 身份、latent SHA，旧回执不允许冒用 | CPU 回执/缓存资格验证；本机指定六段已PASS；脱敏公开构建未GPU重跑 |
 | Native masked continuation | 从实际前段音视频潜空间续接；同分辨率保持原对应数据，跨分辨率时**重采样视频 latent 前缀**并在计划中记录变换；音频前缀保持原样 | 11 项 synthetic spatial 真实准备代码 CPU 测试；**不宣称跨分辨率输出画质等价或 latent 原始字节相等** |
 | Conditioning PreBake | 只对实际提交的段落按依赖补建或重用缓存；接受数据的身份/完整性校验 | 11 项 CPU 状态及 safetensors 测试；没有当前候选 GPU 缓存命中率 |
 | 安全恢复与失效 | 重做上游段只使**实际依赖它**的后继失效；保留合法历史 SUCCESS 版本；尝试身份避免重复派发 | 已记录源代码与离线合同；重启与真实 UI 全链仍待 GPU/浏览器验收 |

@@ -71,10 +71,13 @@ class AttemptManager:
     p.attempt_check(ctx,i,data,a)
     graph=p.clean_graph(payload['graph']);claims=[json.loads(n['inputs']['execution_json']) for n in graph.values() if n['class_type'] in ('H3ConditioningLoad','H3AttemptGuard') and n['inputs'].get('execution_json')]
     if len(claims)!=1 or claims[0]!={'context':ctx,'index':i,'attempt_id':aid}:raise ValueError('Submission graph claim mismatch')
-    if a.get('graph_sha256') and a['graph_sha256']!=p.graph_digest(graph):raise ValueError('Submission graph changed')
+    a['prepared_graph_sha256']=a.get('graph_sha256')
+    a['graph_changed_since_prepare']=a.get('graph_sha256')!=p.graph_digest(graph)
     now=self.clock();pid=str(uuid.uuid4());a.update(prompt_id=pid,status='PENDING',dispatch_started=True,submitted_at_epoch=now,deadline_epoch=now+300,graph_sha256=p.graph_digest(graph))
     a.update(timing_basis='execution_start',deadline_epoch=None)
     a.update(runtime_seconds=0,queue_submit_time=now,terminal_status=None)
+    from .adaptive_bridge import capture
+    capture(pid,graph,a)
     controller=getattr(self.server,'h3_native_merge_control',None)
     if controller:
      state=controller.read(ctx['project_id']).get('_native_merge',{})

@@ -1,5 +1,16 @@
 # H3-8207 Experimental
 
+## 2026-10-14 main update: Adaptive V1 and a real local six-segment run
+
+**Adaptive V1 is promoted on local 8207 and passed real History recovery, original-player refill and complete playback.** Six validated files are synchronized byte-for-byte. Metadata/types/topology discovery, 24 vs 24.0 normalization, immutable task snapshots and semantic workflow versions do not hardcode nine references, a private story or node IDs. Missing capabilities are still reported.
+
+**LOCAL_8207_GPU_E2E_PASS=PASS:** the later independent PDD Ref2VA 8-step six-segment run has six SUCCESS receipts, exact histories, Native outputs, clips and a successful automatic merge. Measured 1056×608/24fps; merged output is 1302 frames / 54.25 seconds, not the earlier failed single clip or planned approximately 60-second setup. Matching-window VRAM/RAM peaks are NOT_RECORDED.
+
+**PUBLIC_SOURCE_MATCH=PASS for the six listed files; PUBLIC_BUILD_GPU_E2E=NOT_TESTED.** Local success is not a guarantee for every sanitized installation. The existing 48 public regressions, 49 private Adaptive checks and actual GPU executions are separate evidence sets. The v0.1.0-preview tag/assets stay frozen; use main for the new source.
+
+[Adaptive V1 guide](docs/ADAPTIVE_V1.md) · [Measured acceptance report](docs/8207_SIX_SEGMENT_GPU_ACCEPTANCE_20261014.md) · [Machine-readable data](benchmarks/8207_six_segment_20261014.json)
+
+
 **MiniMax-H3 six-segment video generation with a Chinese ComfyUI director console** · `v0.1.0-preview` experimental pre-release
 
 [中文版 README](README.md) · **[Download v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [Choose a workflow: 12-file guide](workflows/current/README.md) · [8197 frozen production repository](https://github.com/asd454314633-byte/H3-Chinese-Director)
@@ -29,7 +40,7 @@ For **Ref2VA PDD 8-step** users: the Chinese console exposes **“H3 Memory Opti
 
 **Voice-reference evidence update:** The project owner explicitly confirms that the voice timbre referencing capability has been used successfully in real generation and remained reliable in the owner's local workflow for **at least one month** (`OWNER_CONFIRMED_LONG_TERM_USE`). Three independent voice-reference slots, reference-video soundtrack, speaker/role mapping, and input validation are present in source. This prior operational evidence is **not the same as a fresh full GPU E2E acceptance of the sanitized 8207 preview**. See [details](docs/CAPABILITIES_AND_EVIDENCE.md).
 
-**Verified preview regression: 48 CPU/JavaScript PASS / 0 FAIL** (11 spatial Native + 11 PreBake + 9 release guards + 16 workflow helpers + 1 frontend/backend bridge). **193 sanitized JSON workflows** = 12 current + 181 history; these are *files statically checked*, **not GPU generations**. Public preview's complete six-segment GPU and browser/live queue E2E remain **NOT_TESTED**.
+**Verified preview regression: 48 CPU/JavaScript PASS / 0 FAIL** (11 spatial Native + 11 PreBake + 9 release guards + 16 workflow helpers + 1 frontend/backend bridge). **193 sanitized JSON workflows** = 12 current + 181 history; these are *files statically checked*, **not GPU generations**. Local six-segment execution and browser refill passed; the sanitized public build's own GPU E2E remains NOT_TESTED.
 
 See [the complete evidence-scoped catalog](docs/CAPABILITIES_AND_EVIDENCE.md) and [publication gate](PUBLIC_RELEASE_GATE.md).
 
@@ -115,7 +126,7 @@ No model weights, private references, runtime caches or ready-made personal envi
 | **Current sanitized public 8207 candidate** | `EXPERIMENTAL_PUBLICATION_READY = PASS`; `GPU E2E = NOT_TESTED`; `PRODUCTION_PROMOTION = HOLD`. |
 | **Qwen Image 2.1** | Four historical GPU **PASS** results remain valid; current-candidate dynamic validation is `NOT_RETESTED`, separate from H3 six-segment acceptance. |
 
-`NOT_TESTED` means the current public candidate has not repeated a **complete same-version GPU E2E** test. It does not mean six-segment generation never succeeded. The recorded 48 CPU/JavaScript checks, static integrity and pinned-source reconstruction passed; they do not establish current-candidate live browser, queue or video E2E acceptance. This homepage update adds no GPU acceptance.
+`NOT_TESTED` means the current public candidate has not repeated a **complete same-version GPU E2E** test. It does not mean six-segment generation never succeeded. The recorded 48 CPU/JavaScript checks, static integrity and pinned-source reconstruction passed; they do not establish current-candidate live browser, queue or video E2E acceptance. This update verifies an already completed local run; it does not rerun GPU acceptance on the sanitized build.
 
 **Known limitations:** Mixed-resolution automatic merge remains **HOLD** and needs an explicit common output canvas. Complete current-candidate six-segment GPU E2E is untested; current Qwen dynamic validation has not been repeated; full runtime equivalence remains HOLD. Configure required sources, models and optional services before using their respective features.
 

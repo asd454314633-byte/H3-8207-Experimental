@@ -1,5 +1,10 @@
 # 8207 工作流选择指南 / Workflow selector
 
+### Adaptive V1 / 2026-10-14
+
+六段主图仍选wf_05，公开JSON与默认参数本轮不改。更新main节点源码后按[自适应说明](../../docs/ADAPTIVE_V1.md)使用；旧v0.1.0-preview ZIP不包含本次代码。作者本机PDD8六段与合并已PASS，[54.25秒实测记录](../../docs/8207_SIX_SEGMENT_GPU_ACCEPTANCE_20261014.md)不等于所有下载环境GPU PASS。Configure your own references; no private movie assets are bundled.
+
+
 > **实验预览仓库，不是 8197 正式生产版。** 此目录有 **12 份脱敏 JSON**，涵盖 H3 视频导演台与其它独立图像实验。文件名 `h3_8207_wf_XX.json` 是发布时的统一编号，**不代表每一份都是 H3 视频工作流，也不代表 01→12 的执行顺序**。这里的类别来自公开 JSON 中的节点结构与工作流标识；**不意味着每条工作流已通过当前预览版 GPU 端到端验收**。
 
 ## 从哪个文件开始？

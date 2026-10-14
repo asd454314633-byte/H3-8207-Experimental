@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-14",
+  "scope": "six Adaptive V1 source files",
+  "source_match": "BYTE_IDENTICAL",
+  "files": [
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_bridge.py",
+      "validated_local_sha256": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+      "public_sha256": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py",
+      "validated_local_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
+      "public_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/production.py",
+      "validated_local_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
+      "public_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/core.py",
+      "validated_local_sha256": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+      "public_sha256": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/__init__.py",
+      "validated_local_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+      "public_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+      "match": "BYTE_IDENTICAL"
+    },
+    {
+      "path": "custom_nodes/local_author/h3_conditioning_prebake/web/production.js",
+      "validated_local_sha256": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95",
+      "public_sha256": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95",
+      "match": "BYTE_IDENTICAL"
+    }
+  ]
+}

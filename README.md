@@ -1,5 +1,16 @@
 # H3 8207 实验导演台｜MiniMax-H3 六段连续视频生成
 
+## 2026-10-14 main更新：自适应V1与本机六段实测
+
+**自适应V1已晋升8207并通过真实History恢复、原播放器回填及完整播放。** main同步6份已验收源码；元数据/类型/连接识别、24与24.0规范化、独立任务快照和语义版本比较，不把固定九图、私人六段剧情或固定节点编号作为核心条件。合法修改不会仅因原始JSON哈希改变就丢失旧任务结果；能力缺失仍会明确报告。
+
+**LOCAL_8207_GPU_E2E_PASS=PASS**：本机后来完成的独立六段PDD Ref2VA 8步任务有6份SUCCESS收据、History、Native、视频与自动合并证据。实测1056×608/24fps，最终1302帧、54.25秒；这不是首次失败单段，也不是早期约60秒方案。显存/RAM峰值没有与这次任务匹配的采样，标为NOT_RECORDED。
+
+**PUBLIC_SOURCE_MATCH=PASS（仅所列6文件逐字节一致）；PUBLIC_BUILD_GPU_E2E=NOT_TESTED。** 本机成功不保证所有用户的脱敏环境成功。既有48项公开回归、49项本机自适应离线与真实GPU任务是不同证据集合，不相加冒充GPU次数。v0.1.0-preview标签与附件保持冻结；新源码使用main。
+
+[自适应使用与原理](docs/ADAPTIVE_V1.md) · [六段真实参数与验收范围](docs/8207_SIX_SEGMENT_GPU_ACCEPTANCE_20261014.md) · [机器摘要](benchmarks/8207_six_segment_20261014.json)
+
+
 **H3-8207 Experimental** · ComfyUI 中文实验导演台 · `v0.1.0-preview` 预发布版
 
 [English README](README_EN.md) · **[下载 v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [选择工作流：12 份 JSON 分类指南](workflows/current/README.md) · [8197 正式稳定仓库](https://github.com/asd454314633-byte/H3-Chinese-Director)
@@ -18,7 +29,7 @@
 
 | 实验方向 | 项目里提供什么 | 当前公开候选的证据 |
 |---|---|---|
-| 全中文导演台与六段创作 | **N159 五个操作阶段+全旁路**（一采、坏段检测、扩时、二采、自动检测修复实验）；六段分别编辑、执行、续跑 | 前端与节点源码存在；当前 8207 候选完整 GPU E2E **未测** |
+| 全中文导演台与六段创作 | **N159 五个操作阶段+全旁路**（一采、坏段检测、扩时、二采、自动检测修复实验）；六段分别编辑、执行、续跑 | 前端与节点源码存在；本机指定PDD8六段PASS；公开构建GPU未重跑 |
 | 运行中继续编辑 | **Story / Execution 独立快照**、已提交任务不可被后续草稿覆盖、独立 attempt 和排队 | CPU/JavaScript 合同回归；实际浏览器队列 E2E **未测** |
 | 真实 latent 跨段接续 | Native masked continuation、前序回执与哈希校验；跨分辨率时有明确的视频 latent 空间重采样记录 | **11 项 Native CPU PASS**；视频效果 E2E **未测** |
 | **音色克隆参考** | **3 路独立参考音色 + 视频原音轨**，`<Audio N>` 说话人映射、第三音色角色描述、时长与格式预检 | Ref2VA/8步分支有公开源码；**当前 8207 候选未做音色效果 GPU E2E**，音频预检不代表音色保真验收 |
@@ -29,7 +40,7 @@
 
 **音色参考真实使用状态更新：** 作者确认这一能力已通过实际生成，并在本机**稳定使用至少一个月**（`OWNER_CONFIRMED_LONG_TERM_USE`）；三路独立音色参考、视频原音轨、`<Audio N>` 角色映射及单条 2–15 秒/总计 ≤15 秒预检均有公开实现。此项**不属于当前 8207 预览版完整 GPU E2E 的替代验收**。参见 [音色与功能细目](docs/CAPABILITIES_AND_EVIDENCE.md)。
 
-**测试清单：48 项 CPU/JavaScript PASS（11 Native + 11 PreBake + 9 防护 + 16 JS + 1 前后端桥接），0 FAIL**；另有 **12 份当前 JSON + 181 份历史 JSON = 193 份工作流静态隐私检查**、固定源码重建通过。这些数字**不是 48 次 GPU 视频生成，也不是 193 次成功生成**。当前公开候选的完整六段 GPU E2E、浏览器/真实队列 E2E 仍为 **NOT_TESTED**。
+**测试清单：48 项 CPU/JavaScript PASS（11 Native + 11 PreBake + 9 防护 + 16 JS + 1 前后端桥接），0 FAIL**；另有 **12 份当前 JSON + 181 份历史 JSON = 193 份工作流静态隐私检查**、固定源码重建通过。这些数字**不是 48 次 GPU 视频生成，也不是 193 次成功生成**。本机指定六段及浏览器回填已PASS；脱敏公开构建自身的同版本GPU E2E仍为NOT_TESTED。
 
 完整的模式、状态、测试来源和 8197/8207 边界请阅读 **[详细索引](docs/CAPABILITIES_AND_EVIDENCE.md)**。
 
@@ -115,7 +126,7 @@
 | **当前 8207 脱敏公开候选** | `EXPERIMENTAL_PUBLICATION_READY = PASS`；`GPU E2E = NOT_TESTED`；`PRODUCTION_PROMOTION = HOLD`。 |
 | **Qwen Image 2.1** | 历史四项 GPU **PASS** 保留；当前候选动态验证为 `NOT_RETESTED`，独立于 H3 六段验收。 |
 
-`NOT_TESTED` 仅指当前公开候选没有重新完成**同版本完整 GPU E2E**，不代表六段功能从未成功生成。已记录的 48 项 CPU/JavaScript 回归、静态完整性和固定源码重建通过，不证明当前候选的真实浏览器、排队或视频端到端通过。本次首页完善没有新增 GPU 验收。
+`NOT_TESTED` 仅指当前公开候选没有重新完成**同版本完整 GPU E2E**，不代表六段功能从未成功生成。已记录的 48 项 CPU/JavaScript 回归、静态完整性和固定源码重建通过，不证明当前候选的真实浏览器、排队或视频端到端通过。本次发布复用并核实了新完成的本机六段GPU证据；没有为发布重跑GPU。
 
 **已知限制：**混尺寸自动合并仍为 **HOLD**，需要明确的共同输出画布；当前公开候选完整六段 GPU E2E 未测试，Qwen 当前动态验证未重测，完整运行环境等价性仍为 HOLD。来源、模型和可选服务缺失时，相应功能需先按说明配置。
 

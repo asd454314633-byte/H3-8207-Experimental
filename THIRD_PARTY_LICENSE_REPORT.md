@@ -15,3 +15,7 @@
 - krea-reference 171 文件和 comfyui-krea2edit 10 文件：不分发其节点源码；仅登记来源/安装信息。7 份额外 Krea 历史模板也已隔离。
 
 第三方依赖表保存在 `config/third_party_nodes.json`。H3-Optimizations 的 Apache-2.0 仅覆盖 native 子树，不能覆盖整个节点包；两个宿主示例是 ComfyUI GPL-3.0，旧报告中的 MIT 错误已纠正。MiniMax Combined 缺少上游身份，继续 HOLD。对运行时调用的法律衍生关系不作推定。
+
+## 2026-10-14 Adaptive V1增量
+
+新增adaptive_bridge.py与adaptive_v1包为本项目独立恢复/适配代码，沿用根MIT声明，标准库实现，无新增vendored第三方源码或依赖。三份宿主整合文件保留原有许可/来源；ComfyUI、模型与其他节点许可证不变。仅同步6份已验收源码，未搬运CPU隔离工具、私人样本或本机回滚脚本。

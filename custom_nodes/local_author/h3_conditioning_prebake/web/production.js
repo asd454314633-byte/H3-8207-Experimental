@@ -37,6 +37,14 @@ export async function restoreProductionExecution(node){
  for(let i=0;i<6;i++){
   const state=result.segments?.[i],card=ui.cards[i];if(!state)continue;
   const a=state.attempt||{},receipt=state.receipt||{};
+  const adaptive=state.adaptive_recovery;
+  if(adaptive?.output_status==='RECOVERED'&&adaptive.prompt_id===a.prompt_id&&adaptive.segment_index===i){
+   // Bind only this story-owned immutable task; never rewrite old Native receipts.
+   ui.setSegmentVideo(i,{...adaptive.output.ref,prompt_id:adaptive.prompt_id});
+   card.status.textContent='GPU已成功｜自适应V1历史恢复';
+   card.videoLabel.textContent+='｜原任务 '+adaptive.prompt_id;
+   continue;
+  }
   const active=['PREPARED','PENDING','CANCELLING','BLOCKED'].includes(a.status);pending ||= active;blocked ||= a.status==='BLOCKED';
   const label=active?'后台任务恢复中：'+a.status:state.video_status;
   card.status.textContent=label||'未生成';

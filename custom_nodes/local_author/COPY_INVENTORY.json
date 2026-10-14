@@ -1215,13 +1215,14 @@
     "rel": "h3_conditioning_prebake/attempt_lifecycle.py",
     "dest": "h3_conditioning_prebake\\attempt_lifecycle.py",
     "orig_sha": "cfa8f3c31fb125483edfa4f00992da1f33640f40360798ecee95608a05636824",
-    "new_sha": "3a2e407e814b9ecc86a77f18bffec7e99e49f3cc8448917f661b2abe35b1209c",
+    "new_sha": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
     "text": true,
     "redactions": 0,
     "json_ok": true,
     "status": "REUSE_PASS",
     "node": "h3_conditioning_prebake",
-    "final_change": "CREATIVE_FREEDOM_20261014"
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC",
+    "validated_local_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28"
   },
   {
     "rel": "h3_conditioning_prebake/model_registry.json",
@@ -1275,13 +1276,14 @@
     "rel": "h3_conditioning_prebake/production.py",
     "dest": "h3_conditioning_prebake\\production.py",
     "orig_sha": "00047c0820f10fb73fc95a83d06ec8a3d645e697ef1e668f9f9184f87cce58fa",
-    "new_sha": "3c8d0496d971a8ca7f0c72a05c6c9bf767341a67e28a412b98491ad734e4a09e",
+    "new_sha": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
     "text": true,
     "redactions": 0,
     "json_ok": true,
     "status": "REUSE_PASS",
     "node": "h3_conditioning_prebake",
-    "final_change": "CREATIVE_FREEDOM_20261014"
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC",
+    "validated_local_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19"
   },
   {
     "rel": "h3_partial_diffusion_evict/__init__.py",
@@ -1653,14 +1655,15 @@
     "rel": "h3_conditioning_prebake/web/production.js",
     "dest": "h3_conditioning_prebake\\web\\production.js",
     "orig_sha": "2904893e2492b1406106cfd68fa0e19adaef7d543c0af4f0c1b6043aa3e7ef21",
-    "new_sha": "2e2a026a72a33abd39446a092181cbc78b60c6e662870f5c602c43b75b48bc71",
+    "new_sha": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95",
     "text": true,
     "redactions": 0,
     "json_ok": true,
     "status": "DELTA_REVIEW",
     "node": "h3_conditioning_prebake",
-    "final_change": "CREATIVE_FREEDOM_20261014",
-    "blocker_round_before_sha256": "2904893e2492b1406106cfd68fa0e19adaef7d543c0af4f0c1b6043aa3e7ef21"
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC",
+    "blocker_round_before_sha256": "2904893e2492b1406106cfd68fa0e19adaef7d543c0af4f0c1b6043aa3e7ef21",
+    "validated_local_sha256": "f55b2071c3850868169e74bc390b60a731b1a4bbdb3ba7eb085919fbc2f6dd95"
   },
   {
     "rel": "H3_V28_Director/skills/official-minimax-h3-prompt/README.md",
@@ -1685,5 +1688,44 @@
     "status": "AUDITED_SOURCE_UPDATE",
     "node": "h3_conditioning_prebake",
     "final_change": "CREATIVE_FREEDOM_20261014"
+  },
+  {
+    "rel": "h3_conditioning_prebake/adaptive_bridge.py",
+    "dest": "h3_conditioning_prebake/adaptive_bridge.py",
+    "orig_sha": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "ORIGINAL_H3_SYNC",
+    "node": "h3_conditioning_prebake",
+    "new_sha": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+    "validated_local_sha256": "b0bf67ee30dbe2bc3ba2e37b8f1b2599692c59772efe6b79d2f486c4e21addaf",
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC"
+  },
+  {
+    "rel": "h3_conditioning_prebake/adaptive_v1/core.py",
+    "dest": "h3_conditioning_prebake/adaptive_v1/core.py",
+    "orig_sha": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "ORIGINAL_H3_SYNC",
+    "node": "h3_conditioning_prebake",
+    "new_sha": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+    "validated_local_sha256": "69d4a914b816144d0d5c159c3ff705451e104436e87f5359e0255e8dd975a5f0",
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC"
+  },
+  {
+    "rel": "h3_conditioning_prebake/adaptive_v1/__init__.py",
+    "dest": "h3_conditioning_prebake/adaptive_v1/__init__.py",
+    "orig_sha": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "ORIGINAL_H3_SYNC",
+    "node": "h3_conditioning_prebake",
+    "new_sha": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+    "validated_local_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
+    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC"
   }
 ]
