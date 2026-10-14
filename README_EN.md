@@ -8,6 +8,12 @@ Write a story as six independently editable prompts, submit video jobs, and cont
 
 **Explore:** **[Full catalog: 76 capabilities, including long-used voice references](docs/FULL_FUNCTION_INVENTORY.md)** · [Modes, 48 tests, and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
 
+### ⚡ Performance tip: H3 Memory Optimization is OFF by default
+
+For **Ref2VA PDD 8-step** users: the Chinese console exposes **“H3 Memory Optimization (PDD 8-step only)”**. The published workflow defaults to **Off (production default)**; users can manually choose **On (advanced/optional)**. The maintainer reports **faster initial sampling preparation and markedly less disk-reading pressure**, with stable results on their local system. This is **an owner-reported observation, not a universal benchmark or guaranteed speedup**. Outcomes depend on RAM/VRAM, model and load state; do not extrapolate the benefit to Stable8, FL2VA or Native20. The repository **does not enable this option automatically**.
+
+[How to enable it, scope and caveats](docs/H3_MEMORY_OPTIMIZATION.md).
+
 ### Experimental capabilities beyond the six-prompt panel
 
 | Area | Implemented interface / experimental direction | Validated scope |
