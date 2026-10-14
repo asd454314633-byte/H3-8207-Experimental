@@ -6,6 +6,25 @@
 
 Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
+**Explore:** [All experimental capabilities, modes, 48 tests and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
+
+### Experimental capabilities beyond the six-prompt panel
+
+| Area | Implemented interface / experimental direction | Validated scope |
+|---|---|---|
+| Six-part storytelling | Independent draft, submission, continuous or independent execution, segment resume | Public code and workflow; **no current public GPU E2E** |
+| Edit while jobs are queued | Separated **Story vs Execution** snapshots, per-attempt identity, queue isolation | CPU/JS contracts, **not a live browser/ComfyUI queue E2E** |
+| Native latent continuity | Real preceding latent, receipt and SHA checks; spatial resampling of the video prefix when the sampling grid differs | **11 Native CPU tests PASS**; current GPU video quality not re-tested |
+| PreBake cache and recovery | Dependency-scoped cache preparation, identity validation and legitimate prior-version retention | **11 PreBake CPU tests PASS** |
+| Model/reference choices | Ref2VA multi-reference, FL2VA single/first-last frame, alternative sampling, attention and audio/video routes | Branch existence is **not** proof that every combination passed live tests |
+| Other experimental tracks | Guide/Pose/Depth, V2V/RV2V, optional image generation/editing/Qwen workflows | Partial/bypassed or independent; historical Qwen **4/4 GPU** not repeated |
+| Multi-segment merge | Selection and merge hooks | **Mixed-resolution automatic merge remains HOLD** |
+
+**Verified preview regression: 48 CPU/JavaScript PASS / 0 FAIL** (11 spatial Native + 11 PreBake + 9 release guards + 16 workflow helpers + 1 frontend/backend bridge). **193 sanitized JSON workflows** = 12 current + 181 history; these are *files statically checked*, **not GPU generations**. Public preview's complete six-segment GPU and browser/live queue E2E remain **NOT_TESTED**.
+
+See [the complete evidence-scoped catalog](docs/CAPABILITIES_AND_EVIDENCE.md) and [publication gate](PUBLIC_RELEASE_GATE.md).
+
+
 ![Historical H3 Chinese director showcase cover](assets/showcase/showcase-cover.jpg)
 
 ## Real interface and video showcase
