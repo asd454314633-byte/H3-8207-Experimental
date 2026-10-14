@@ -12,12 +12,12 @@ Write a story as six independently editable prompts, submit video jobs, and cont
 
 | Area | Implemented interface / experimental direction | Validated scope |
 |---|---|---|
-| Six-part storytelling | Independent draft, submission, continuous or independent execution, segment resume | Public code and workflow; **no current public GPU E2E** |
+| Chinese main console and six-part storytelling | **N159 five operation phases plus an all-bypass state**: first pass, anomaly scan, time-smear, second pass, conditional auto-repair; independent segment drafts and resume | Public code and workflow; **no current public GPU E2E** |
 | Edit while jobs are queued | Separated **Story vs Execution** snapshots, per-attempt identity, queue isolation | CPU/JS contracts, **not a live browser/ComfyUI queue E2E** |
 | Native latent continuity | Real preceding latent, receipt and SHA checks; spatial resampling of the video prefix when the sampling grid differs | **11 Native CPU tests PASS**; current GPU video quality not re-tested |
 | **Voice timbre references** | Three reference-voice slots, optional source-video soundtrack, `<Audio N>` and speaker/role mapping, format and duration checks | Published Ref2VA / 8-step source interface; **current preview has no live GPU voice-clone-quality acceptance** |
 | PreBake cache and recovery | Dependency-scoped cache preparation, identity validation and legitimate prior-version retention | **11 PreBake CPU tests PASS** |
-| Model/reference choices | Ref2VA multi-reference, FL2VA single/first-last frame, alternative sampling, attention and audio/video routes | Branch existence is **not** proof that every combination passed live tests |
+| Model/reference choices | **Ref2VA Stable8 / PDD8 / Native20 diagnostic** and separate **FL2VA F4 4-step / FastH3 V2 8-step**; multimodal references | Legacy Ref2VA VSA menu was removed from normal UI; F4 is the FL2VA route, not a proven 4-image Ref2VA mode; GPU E2E not established for this preview |
 | Other experimental tracks | Guide/Pose/Depth, V2V/RV2V, optional image generation/editing/Qwen workflows | Partial/bypassed or independent; historical Qwen **4/4 GPU** not repeated |
 | Multi-segment merge | Selection and merge hooks | **Mixed-resolution automatic merge remains HOLD** |
 
