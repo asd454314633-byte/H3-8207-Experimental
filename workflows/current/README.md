@@ -21,6 +21,10 @@
 
 **需要冻结正式 H3 工作流而非实验版？** 使用独立的 [8197 正式仓库](https://github.com/asd454314633-byte/H3-Chinese-Director) 中唯一公开工作流；**不要混装正式与实验版本的节点和缓存**。
 
+## H3 六段工作流的内存优化选项
+
+`wf_05` 内置 **H3 内存优化** 高级开关，**默认关闭**；只有选择适用的 **Ref2VA PDD 多参考8步** 路线后，才应评估手动开启。作者本机实测开启后首步采样准备加快、磁盘读取压力减轻，效果与内存/显存及模型环境有关，**不是对所有用户的保证**。请阅读 [内存优化使用指南](../../docs/H3_MEMORY_OPTIMIZATION.md)。本仓库不改变原工作流的默认状态。
+
 ## 下载与安全边界
 
 1. 用 GitHub 文件页的 **Raw / Download raw file** 下载需要的 JSON；也可以从 [v0.1.0-preview 发布附件](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview) 获取冻结预发布包。
