@@ -2,7 +2,7 @@
 
 **H3-8207 Experimental** · ComfyUI 中文实验导演台 · `v0.1.0-preview` 预发布版
 
-[English README](README_EN.md) · **[下载 v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [查看工作流](workflows/current) · [8197 正式稳定仓库](https://github.com/asd454314633-byte/H3-Chinese-Director)
+[English README](README_EN.md) · **[下载 v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [选择工作流：12 份 JSON 分类指南](workflows/current/README.md) · [8197 正式稳定仓库](https://github.com/asd454314633-byte/H3-Chinese-Director)
 
 把一段故事拆成六段中文提示词，分别编辑、提交生成，并通过真实的上一段 Latent 续接视频。本项目提供中文操作界面、连续任务调度、PreBake 缓存和结果合并，是独立于 8197 正式生产线的**实验源码预览版**。
 
@@ -72,7 +72,7 @@
 ## 安装、下载与源码重建
 
 - **[版本下载与 SHA256 校验附件](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)**：源码 ZIP、完整文件清单和 `SHA256SUMS.txt`。已有标签和附件保持不变；main 上的首页改进不改变该冻结源码包。
-- **[当前工作流 JSON](workflows/current)**：选择并打开对应文件，通过 GitHub 的 Raw / Download 下载。模板已经脱敏，需替换占位素材和路径。
+- **[工作流选择指南：12 份 JSON 分类](workflows/current/README.md)**：六段 H3 视频主工作流是 **wf_05**，其余主要为不同的图像实验；请按功能选择，不要依编号顺序加载。文件通过 GitHub Raw / Download 获取，模板已脱敏，需替换占位素材和路径。
 - **[源码重建与配置说明](REPRODUCIBILITY_REPORT.md)**：[固定版本锁](config/baseline.lock.json)、[重建脚本](scripts/rebuild/rebuild_from_8197.py)、[依赖安装脚本](scripts/setup/install_deps.py) 和 [模型路径示例](config/examples/extra_model_paths.example.yaml)。请使用独立空目录，不覆盖生产环境。
 - **[依赖来源清单](config/third_party_nodes.json)** 与 [锁定版本](config/third_party_nodes.lock.json)：模型权重、第三方节点的运行依赖和可选服务须另行准备；源码获取或重建成功不等于运行环境安装验收。
 
