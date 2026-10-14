@@ -6,6 +6,25 @@
 
 把一段故事拆成六段中文提示词，分别编辑、提交生成，并通过真实的上一段 Latent 续接视频。本项目提供中文操作界面、连续任务调度、PreBake 缓存和结果合并，是独立于 8197 正式生产线的**实验源码预览版**。
 
+**先看完整能力：** [模式/实验特性/48 项回归/验收边界](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 份 JSON 选择指南](workflows/current/README.md) · [正式 8197 生产版](https://github.com/asd454314633-byte/H3-Chinese-Director)
+
+### 不只是六段文本框：8207 实验能力概览
+
+| 实验方向 | 项目里提供什么 | 当前公开候选的证据 |
+|---|---|---|
+| 六段中文创作 | 分别编辑提示词、独立或连续执行、从选定段落恢复 | 工作流/前端源码存在；完整 GPU E2E **未测** |
+| 运行中继续编辑 | **Story / Execution 独立快照**、已提交任务不可被后续草稿覆盖、独立 attempt 和排队 | CPU/JavaScript 合同回归；实际浏览器队列 E2E **未测** |
+| 真实 latent 跨段接续 | Native masked continuation、前序回执与哈希校验；跨分辨率时有明确的视频 latent 空间重采样记录 | **11 项 Native CPU PASS**；视频效果 E2E **未测** |
+| 缓存与恢复 | Conditioning PreBake 精确依赖补建、缓存身份门禁、合法旧版本保护 | **11 项 PreBake CPU PASS** |
+| 视频模式矩阵 | Ref2VA 多参考 / FL2VA 单图及首尾帧、不同 4/8 步与注意力分支、可选音视频参考 | 需要分别核对当前真实路由；**不是所有模式均有 GPU PASS** |
+| 扩展实验 | 关键帧 Guide / Pose-Depth / V2V-RV2V；单独的 Lustify/Krea2、Qwen 图像工作流 | 部分为默认旁路或候选；Qwen 历史 GPU **4/4** 不等于当前版重测 |
+| 视频合并 | 合并与身份状态核对 | **混分辨率自动合并 HOLD**；不能用 8197 的成功替代 |
+
+**测试清单：48 项 CPU/JavaScript PASS（11 Native + 11 PreBake + 9 防护 + 16 JS + 1 前后端桥接），0 FAIL**；另有 **12 份当前 JSON + 181 份历史 JSON = 193 份工作流静态隐私检查**、固定源码重建通过。这些数字**不是 48 次 GPU 视频生成，也不是 193 次成功生成**。当前公开候选的完整六段 GPU E2E、浏览器/真实队列 E2E 仍为 **NOT_TESTED**。
+
+完整的模式、状态、测试来源和 8197/8207 边界请阅读 **[详细索引](docs/CAPABILITIES_AND_EVIDENCE.md)**。
+
+
 ![H3 中文导演台历史真实展示封面](assets/showcase/showcase-cover.jpg)
 
 ## 真实界面与视频展示
