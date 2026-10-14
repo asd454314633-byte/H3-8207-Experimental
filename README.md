@@ -2,7 +2,7 @@
 
 **H3-8207 Experimental** · ComfyUI 中文实验导演台 · `v0.1.0-preview` 预发布版
 
-[English README](README_EN.md) · **[下载 v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [查看工作流](workflows/current)
+[English README](README_EN.md) · **[下载 v0.1.0-preview](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)** · [查看工作流](workflows/current) · [8197 正式稳定仓库](https://github.com/asd454314633-byte/H3-Chinese-Director)
 
 把一段故事拆成六段中文提示词，分别编辑、提交生成，并通过真实的上一段 Latent 续接视频。本项目提供中文操作界面、连续任务调度、PreBake 缓存和结果合并，是独立于 8197 正式生产线的**实验源码预览版**。
 
