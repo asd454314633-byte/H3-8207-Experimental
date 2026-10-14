@@ -15,6 +15,8 @@
 | 其他当前图像实验 | Lustify / Krea2 图像生成、Identity Edit、风格参考，以及小型图像与对比图 | 不是 H3 六段视频链的必装前置 |
 | AI Director | 可选剧情文本生成、不同本地语言模型 Provider 接口 | **手动写六段提示词无需 AI Director**，不宣称所有提供者在线推理验收 |
 
+**[完整 76 项用户功能索引](FULL_FUNCTION_INVENTORY.md)** 汇总中文控制台、采样路线、音色参考、六段连续、二采、实验支路、AI 导演及图像工作流，并区分长期使用、历史验收、源码实现、实验和占位。
+
 [12 份 JSON 逐项识别索引](../workflows/current/README.md)包含文件用途和静态节点证据。
 
 ## 二、六段导演台实际功能
@@ -41,7 +43,7 @@
 
 ## 三、补充：长期使用的音色参考、音频专项与真实人物控制
 
-**音色克隆参考不是仅停留在功能设想。** 2026-10-14，项目所有者已明确确认 H3 导演台的音色克隆/音色参考能力经过真实测试，并持续稳定使用：记录为 `OWNER_CONFIRMED_LONG_TERM_USE`。当前本 GitHub 仓库提供可复核的源码接口，但 **8207 当前脱敏 `v0.1.0-preview` 没有与这项长期生产使用逐一绑定的新版公开 GPU 回执**；应分开陈述，不可把长期成功错写成“从未测试”，也不可把历史使用等同于 8207 完整 E2E 通过。
+**音色克隆参考不是仅停留在功能设想。** 2026-10-14，项目所有者已明确确认 H3 导演台的音色克隆/音色参考能力经过真实测试，并已在本机持续稳定使用至少一个月：记录为 `OWNER_CONFIRMED_LONG_TERM_USE`。当前本 GitHub 仓库提供可复核的源码接口，但 **8207 当前脱敏 `v0.1.0-preview` 没有与这项长期生产使用逐一绑定的新版公开 GPU 回执**；应分开陈述，不可把长期成功错写成“从未测试”，也不可把历史使用等同于 8207 完整 E2E 通过。
 
 | 核心能力 | 公开节点/前端 | 状态与补充说明 |
 |---|---|---|
@@ -73,7 +75,7 @@
 
 来源：[机器可读校验结果](../manifests/preview_validation.json)、[发布范围与证据分级](../PUBLIC_RELEASE_GATE.md)、[正式预览说明](PREVIEW_RELEASE_NOTES.md)、[R2 阻断修复](BLOCKER_RESOLUTION.md)。
 
-## 四、关键工程升级与风险
+## 五、关键工程升级与风险
 
 **相对 8197 的主要实验方向：** 故事/提交快照分离、提交执行身份、运行中编辑和待执行排队、缓存依赖精确恢复、跨尺寸 Native 视频 latent 空间映射；这些是**实验特性**，不是免安装、无需验证的生产升级。
 
@@ -88,7 +90,7 @@
 
 一些旧报告开头仍保留了历史 `PUBLICATION_APPROVED=HOLD`，需结合 [更新后的 R2 修复说明](BLOCKER_RESOLUTION.md) 与 [最终独立发布门禁](../PUBLIC_RELEASE_GATE.md) 阅读；**不能把旧冻结候选 HOLD 误当当前公开预览从未发布，也不能把源码发布 PASS 当成 GPU 生产 PASS**。
 
-## 五、导航与下载
+## 六、导航与下载
 
 - **只需要冻结稳定 8197 线：** [H3-Chinese-Director 正式仓库](https://github.com/asd454314633-byte/H3-Chinese-Director)（独立版本/独立验收）。
 - **研究 8207 H3 六段实验：** [wf_05](../workflows/current/h3_8207_wf_05.json) → [源码/依赖重建](../REPRODUCIBILITY_REPORT.md) → [实验版 Release](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.1.0-preview)。
