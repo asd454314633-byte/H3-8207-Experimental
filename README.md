@@ -21,6 +21,8 @@
 | 扩展实验 | 关键帧 Guide / Pose-Depth / V2V-RV2V；单独的 Lustify/Krea2、Qwen 图像工作流 | 部分为默认旁路或候选；Qwen 历史 GPU **4/4** 不等于当前版重测 |
 | 视频合并 | 合并与身份状态核对 | **混分辨率自动合并 HOLD**；不能用 8197 的成功替代 |
 
+**音色参考真实使用状态更新：** 作者确认这一能力已过实际生成测试并长期稳定使用（`OWNER_CONFIRMED_LONG_TERM_USE`）；三路独立音色参考、视频原音轨、`<Audio N>` 角色映射及单条 2–15 秒/总计 ≤15 秒预检均有公开实现。此项**不属于当前 8207 预览版完整 GPU E2E 的替代验收**。参见 [音色与功能细目](docs/CAPABILITIES_AND_EVIDENCE.md)。
+
 **测试清单：48 项 CPU/JavaScript PASS（11 Native + 11 PreBake + 9 防护 + 16 JS + 1 前后端桥接），0 FAIL**；另有 **12 份当前 JSON + 181 份历史 JSON = 193 份工作流静态隐私检查**、固定源码重建通过。这些数字**不是 48 次 GPU 视频生成，也不是 193 次成功生成**。当前公开候选的完整六段 GPU E2E、浏览器/真实队列 E2E 仍为 **NOT_TESTED**。
 
 完整的模式、状态、测试来源和 8197/8207 边界请阅读 **[详细索引](docs/CAPABILITIES_AND_EVIDENCE.md)**。
