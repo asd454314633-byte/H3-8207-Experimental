@@ -1,5 +1,11 @@
 # H3-8207 Experimental
 
+## 🚀 Latest full Agent Pack: V29 capability handoff
+
+**[Download the H3 8207 V29 Full Agent Pack (ZIP + SHA256 + Chinese delivery report)](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.2.0-full-agent-pack)**
+
+Includes the complete V29 workflows, custom nodes, features and optimizations, and the implementation conditions needed for deployment. Traceability materials are provided for all 76 capabilities. After downloading, give the pack to your own AI Agent and start with the packaged 包内 `00_接收方Agent_执行顺序.md`. Third-party nodes and models not distributed in the pack must be obtained from the original authors at the pinned versions documented in the pack, subject to their licenses. This is a complete source and capability handoff; it does not mean GPU runtime acceptance has been completed in the recipient's environment.
+
 ## 2026-10-14 main update: Adaptive V1 and a real local six-segment run
 
 **Adaptive V1 is promoted on local 8207 and passed real History recovery, original-player refill and complete playback.** Six validated files are synchronized byte-for-byte. Metadata/types/topology discovery, 24 vs 24.0 normalization, immutable task snapshots and semantic workflow versions do not hardcode nine references, a private story or node IDs. Missing capabilities are still reported.
