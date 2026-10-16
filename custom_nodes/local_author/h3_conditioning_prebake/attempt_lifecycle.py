@@ -75,6 +75,8 @@ class AttemptManager:
     if cross or graph.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json') or 'CROSS_GROUP_PREVIOUS' in graph:
      actual=p.cross_group_gate(graph,ctx,i)
      if actual!=cross or a.get('graph_sha256')!=p.graph_digest(graph):raise ValueError('跨组提交图或前驱绑定在准备后被修改，未提交GPU')
+    from .user_guides import submission_check
+    submission_check(graph,ctx,i,a)
     a['prepared_graph_sha256']=a.get('graph_sha256')
     a['graph_changed_since_prepare']=a.get('graph_sha256')!=p.graph_digest(graph)
     now=self.clock();pid=str(uuid.uuid4());a.update(prompt_id=pid,status='PENDING',dispatch_started=True,submitted_at_epoch=now,deadline_epoch=None,graph_sha256=p.graph_digest(graph))

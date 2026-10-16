@@ -1,5 +1,6 @@
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
+import {prepareUserGuide,compileUnmanagedGuide,assertGuideSafe} from './h3_six_guides.js?v=20261017guide3';
 import {prepareLongSong,finishLongSong} from './h3_long_song.js?v=20261016cross1';
 import {resolveSongStart} from '/extensions/H3_LongSong/start_contract.js?v=20261016origin1';
 import {prepareProduction,cachedGraph,acceptProduction,submitProduction,productionStatus} from '/extensions/h3_conditioning_prebake/production.js?v=20261014queue';
@@ -53,6 +54,8 @@ async function storeRequest(path,data) {
 export function executeVisiblePrompt(text,index,update,options={}) {
   const host=app.graph._nodes.find(n=>n.type==='H3SixDirectorState'&&n.properties.h3_six_director);
   options={...options,long_song:structuredClone(host?.properties.h3_long_song||null)};
+  options={...options,user_guide:structuredClone(host?.__sixUI?.guideSnapshot?.()[index]||host?.properties.six_prompt_state?.guides?.[index]||null)};
+  assertGuideSafe(options.user_guide);
   if(host?.properties.h3_cross_group?.enabled===true)options={...options,cross_group:structuredClone(host.properties.h3_cross_group)};
   options={...options,submission_id:crypto.randomUUID(),production_selection:host?structuredClone({story_id:host.properties.h3_prebake_story_id,binding:host.properties.h3_prebake_binding,generated_group_id:host.__sixUI?.group?.id||null,texts:[...host.__sixRoot.querySelectorAll('.six-prompt')].map(a=>a.value),revisions:host.properties.h3_prebake_revisions||[0,0,0,0,0,0],previous:host.properties.h3_prebake_texts||['','','','','','']}):null};
   const key=(options.project_id||'H3_SIX_V288')+':'+index;
@@ -88,6 +91,8 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
       update(cross?`接上一组：新增内容从${options.cross_group.contract.global_boundary}秒接续，首段保护并仅裁剪39帧`:`原曲起点 ${verified.start_seconds}秒（${options.long_song.start_origin}）；后续段按实际保存帧数自动接续`);
     }
     prepareLongSong(snapshot,index,options);
+    const userGuide=await prepareUserGuide(snapshot,index,options);
+    if(userGuide)update(`第${index+1}段关键帧：可见索引${userGuide.visible_frame} → 模型索引${userGuide.model_frame}（保护区${userGuide.protected_frames}帧）`);
     const prebake=await prepareProduction(snapshot,text,index,options,update,waitForCompletion);
     const generationProject=prebake?.context?.project_id||project;
     if(inherit&&index>0){
@@ -120,6 +125,7 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
         if(type==='Prepare')delete inputs.prev_latent; // Resume uses this exact project's index-1 store.
       }
       args[1].output=await cachedGraph(finishLongSong(output,options,generationProject),prebake);
+      if(!prebake)args[1].output=await compileUnmanagedGuide(args[1].output,index,options,generationProject);
       if(continuous)await storeRequest('/h3/six/acceptance',{project_id:generationProject,segment_index:index,status:'PENDING',group_id:prebake?.context?.group_id});
       const result=prebake?await submitProduction(prebake,args[1].output,args[1].workflow,api.clientId):await original.apply(this,args);
       if(!submitted&&result?.prompt_id){

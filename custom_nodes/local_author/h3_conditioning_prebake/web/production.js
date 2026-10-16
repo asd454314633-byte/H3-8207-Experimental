@@ -37,6 +37,10 @@ export async function restoreProductionExecution(node){
  for(let i=0;i<6;i++){
   const state=result.segments?.[i],card=ui.cards[i];if(!state)continue;
   const a=state.attempt||{},receipt=state.receipt||{};
+  // Restore only a missing/pristine editor from its own immutable segment snapshot.
+  // A newer saved workflow draft always remains authoritative.
+  const guide=a.snapshot?.user_guide;
+  if(guide?.segment_index===i)ui.restoreGuide?.(i,guide.config,true);
   const adaptive=state.adaptive_recovery;
   if(adaptive?.output_status==='RECOVERED'&&adaptive.prompt_id===a.prompt_id&&adaptive.segment_index===i){
    // Bind only this story-owned immutable task; never rewrite old Native receipts.

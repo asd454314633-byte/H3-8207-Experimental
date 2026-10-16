@@ -2,9 +2,9 @@
 
 ## 🚀 Latest full Agent Pack: V29 capability handoff
 
-**[Download the H3 8207 V29 Full Agent Pack (ZIP + SHA256 + Chinese delivery report)](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.2.1-full-agent-pack)**
+**[Download the H3 8207 V29 Full Agent Pack (ZIP + SHA256 + Chinese delivery report)](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.2.2-full-agent-pack)**
 
-Includes the complete V29 workflows, custom nodes, features and optimizations, and the implementation conditions needed for deployment. Traceability materials are provided for all 76 capabilities. After downloading, give the pack to your own AI Agent and start with the packaged 包内 `00_接收方Agent_执行顺序.md`. Third-party nodes and models not distributed in the pack must be obtained from the original authors at the pinned versions documented in the pack, subject to their licenses. This is a complete source and capability handoff; it does not mean GPU runtime acceptance has been completed in the recipient's environment.
+Includes the complete V29 workflows, custom nodes, features and optimizations, and the implementation conditions needed for deployment. The 76-item baseline plus G01-G09 updates is documented as 85 catalog entries; catalog counts are not GPU test counts. After downloading, give the pack to your own AI Agent and start with the packaged 包内 `00_接收方Agent_执行顺序.md`. Third-party nodes and models not distributed in the pack must be obtained from the original authors at the pinned versions documented in the pack, subject to their licenses. This is a complete source and capability handoff; it does not mean GPU runtime acceptance has been completed in the recipient's environment.
 
 > **Workflow scope:** This repository includes **12 workflow JSON files**. Only **`wf_05` is the MiniMax-H3 V29 six-segment video-director workflow**. The other **11 workflows are the author's independent auxiliary image-production tools** for image generation, editing, processing, or comparison; **they are not part of the H3 video-director functionality or required H3 dependencies**. The shared `h3_8207_wf_XX` filename prefix is an archive naming convention, not an H3 integration claim. See the [workflow selector](workflows/current/README.md) for the individual files.
 
@@ -26,7 +26,7 @@ Includes the complete V29 workflows, custom nodes, features and optimizations, a
 
 Write a story as six independently editable prompts, submit video jobs, and continue from a real predecessor Latent. The project provides a Chinese interface, continuous-job scheduling, PreBake caching and result merging as an **experimental source preview**, separate from the 8197 production line.
 
-**Explore:** **[Full catalog: 76 capabilities, including long-used voice references](docs/FULL_FUNCTION_INVENTORY.md)** · [Modes, 48 tests, and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
+**Explore:** **[Full catalog: 85 catalog entries (76 baseline + 9 updates), including long-used voice references](docs/FULL_FUNCTION_INVENTORY.md)** · [Modes, 48 tests, and evidence limits](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 workflow JSON selector](workflows/current/README.md) · [frozen 8197 production release](https://github.com/asd454314633-byte/H3-Chinese-Director).
 
 ### ⚡ Performance tip: H3 Memory Optimization is OFF by default
 
@@ -157,3 +157,5 @@ Private paths, original story text, input references, ledgers, caches, logs, sec
 ## 2026-10-17 / 2026-10-16 capability update
 
 [长歌一次输入、明确X秒起点、超时恢复、默认关闭的跨组六段接续与验收范围](docs/UPDATE_20261016.md)。16份本机源码按SHA同步；跨组GPU及公开构建GPU仍NOT_TESTED，8197未部署更改。
+
+[Six-segment user keyframe update](docs/UPDATE_20261017_SIX_GUIDES_EN.md): CPU graph routing passed; visual GPU acceptance is pending a user-run review.

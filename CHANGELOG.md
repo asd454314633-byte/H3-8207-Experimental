@@ -12,3 +12,5 @@ Creative editing, execution version isolation, queued submission and audited spa
 ## 2026-10-17 同步增补
 
 [10月16日能力、修复及分级验收](docs/UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。
+
+[10月17日六段关键帧更新](docs/UPDATE_20261017_SIX_GUIDES.md)：关键帧默认关闭并按段隔离；CPU接线PASS，GPU视觉HOLD。完整包 v0.2.2 发布后链接见首页。

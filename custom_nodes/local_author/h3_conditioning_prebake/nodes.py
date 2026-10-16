@@ -203,3 +203,5 @@ class H3AttemptGuard:
   return conditioning,latent
 
 NODE_CLASS_MAPPINGS={'H3AttemptGuard':H3AttemptGuard,'H3ConditioningBake':H3ConditioningBake,'H3ConditioningLoad':H3ConditioningLoad,'H3PreBakeContinuationAudit':H3PreBakeContinuationAudit,'H3PreBakePreviousState':H3PreBakePreviousState}
+from .user_guides import H3SixUserGuideAudit
+NODE_CLASS_MAPPINGS['H3SixUserGuideAudit']=H3SixUserGuideAudit

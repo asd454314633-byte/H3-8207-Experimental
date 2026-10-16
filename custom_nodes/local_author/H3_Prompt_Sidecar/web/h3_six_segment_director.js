@@ -1,6 +1,7 @@
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
-import {executeVisiblePrompt} from './h3_six_execute.js?v=20261016cross1';
+import {uploadGuide,previewGuide,guideImageURL,watchGuideFrames} from './h3_six_guides.js?v=20261017guide3';
+import {executeVisiblePrompt} from './h3_six_execute.js?v=20261017guide3';
 import {installNativeMerge,beforeSixExecution} from './h3_native_merge.js?v=20261006switchbackend';
 
 import {SIX_MIN_WIDTH,installSixWidthContract} from './h3_six_width_contract.js?v=20261006d';
@@ -68,6 +69,7 @@ async function mount(node) {
   const snapshot=()=>{
     if(!ready)return;
     node.properties.six_prompt_state={...node.properties.six_prompt_state,settings:root.querySelector('.six-settings').value,goal:root.querySelector('.six-goal').value,model:root.querySelector('.six-model').value,texts:[...root.querySelectorAll('.six-prompt')].map(t=>t.value),execution:node.__sixUI?.executionSnapshot()||node.properties.six_prompt_state?.execution,video_refs:node.__sixUI?.videoSnapshot()||node.properties.six_prompt_state?.video_refs||Array(6).fill(null)};
+    node.properties.six_prompt_state.guides=node.__sixUI?.guideSnapshot?.()||node.properties.six_prompt_state.guides;
     app.graph.setDirtyCanvas(true,true);
   };
   root.addEventListener('input',event=>{snapshot();if(event.target.matches('.six-prompt'))node.__h3EditSync=node.__h3EditSync.catch(()=>{}).then(()=>syncProductionTexts(node));node.__h3EditSync.catch(error=>{node.__h3EditError=String(error);root.title='提示词同步失败：'+error.message;})});
@@ -79,9 +81,9 @@ async function mount(node) {
   for(const name of ['pointerdown','mousedown','wheel','keydown'])root.addEventListener(name,event=>event.stopPropagation());
   try{
     await restoreProductionIdentity(node);
-    const {mountSixDirector}=await import('/h3-director/six_ui.js?architecture=v1&continuous_button=20261014queue');
+    const {mountSixDirector}=await import('/h3-director/six_ui.js?architecture=v1&segment_guides=20261017guide3');
     const execute=async(...args)=>{await node.__h3EditSync?.catch(()=>{});await beforeSixExecution(root);const id=saveVideoNodeId();const result=await executeVisiblePrompt(...args);return {...result,save_video_node_id:id,superseded:result.execution_version&&result.execution_version!==node.properties.h3_prebake_binding?.execution_version}};
-    const ui=await mountSixDirector(root,{base:'',execute,storyId:storyId(node),executionState:node.properties.six_prompt_state?.execution||{},videoRefs:node.properties.six_prompt_state?.video_refs||[],resolveVideo:resolveSegmentVideo,mediaURL:videoURL});
+    const ui=await mountSixDirector(root,{base:'',execute,storyId:storyId(node),executionState:node.properties.six_prompt_state?.execution||{},videoRefs:node.properties.six_prompt_state?.video_refs||[],resolveVideo:resolveSegmentVideo,mediaURL:videoURL,guideConfigs:node.properties.six_prompt_state?.guides,guideTools:{upload:uploadGuide,preview:previewGuide,mediaURL:guideImageURL,watch:watchGuideFrames}});
     const saved=node.properties.six_prompt_state;
     if(saved){root.querySelector('.six-settings').value=saved.settings||'';root.querySelector('.six-goal').value=saved.goal||'';if(saved.model)root.querySelector('.six-model').value=saved.model;ui.cards.forEach((c,i)=>{if(saved.texts?.[i]!==undefined)c.area.value=saved.texts[i]});root.querySelector('.six-model').dispatchEvent(new Event('h3-model-display'))}
     const binding=node.properties.h3_prebake_binding;

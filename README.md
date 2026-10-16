@@ -2,9 +2,9 @@
 
 ## 🚀 最新完整 Agent Pack：V29 完整能力交接
 
-**[下载 H3 8207 V29 完整 Agent Pack（ZIP + SHA256 + 中文交付报告）](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.2.1-full-agent-pack)**
+**[下载 H3 8207 V29 完整 Agent Pack（ZIP + SHA256 + 中文交付报告）](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.2.2-full-agent-pack)**
 
-包含完整 V29 工作流、自研节点、功能与优化及部署所需实现条件；既有76项能力及本次8项增补具有追溯资料。下载后交给你自己的 AI Agent，先按包内 `00_接收方Agent_执行顺序.md` 部署。未随包分发的第三方节点和模型，按包内原作者来源与固定版本说明获取，并遵循各自许可证。完整源码与能力交接不代表已在接收方环境完成 GPU 运行验收。
+包含完整 V29 工作流、自研节点、功能与优化及部署所需实现条件；既有76项能力与G01–G09更新共85个目录条目，均提供追溯资料。下载后交给你自己的 AI Agent，先按包内 `00_接收方Agent_执行顺序.md` 部署。未随包分发的第三方节点和模型，按包内原作者来源与固定版本说明获取，并遵循各自许可证。完整源码与能力交接不代表已在接收方环境完成 GPU 运行验收。
 
 > **工作流归属说明：**本仓库当前共收录 **12 份工作流 JSON**：其中只有 **`wf_05` 是 MiniMax-H3 V29 六段视频导演台主工作流**；其余 **11 份是作者独立的图像辅助生产工具**，用于图像生成、编辑、处理或比对，**与 H3 视频导演台功能及其必需依赖无直接关系**。统一的 `h3_8207_wf_XX` 文件名前缀只是归档编号，不代表它们属于 H3 视频生成链。具体清单见 [工作流选择指南](workflows/current/README.md)。
 
@@ -26,7 +26,7 @@
 
 把一段故事拆成六段中文提示词，分别编辑、提交生成，并通过真实的上一段 Latent 续接视频。本项目提供中文操作界面、连续任务调度、PreBake 缓存和结果合并，是独立于 8197 正式生产线的**实验源码预览版**。
 
-**功能总览：** **[完整功能目录（76项既有＋8项增补）（含长期实用的音色参考、全部生成模式与实验分支）](docs/FULL_FUNCTION_INVENTORY.md)** · [测试与证据分级](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 份 JSON 选择指南](workflows/current/README.md) · [正式 8197 生产版](https://github.com/asd454314633-byte/H3-Chinese-Director)
+**功能总览：** **[完整功能目录（76项既有＋9项增补）（含长期实用的音色参考、全部生成模式与实验分支）](docs/FULL_FUNCTION_INVENTORY.md)** · [测试与证据分级](docs/CAPABILITIES_AND_EVIDENCE.md) · [12 份 JSON 选择指南](workflows/current/README.md) · [正式 8197 生产版](https://github.com/asd454314633-byte/H3-Chinese-Director)
 
 ### ⚡ 重要性能提示：H3 内存优化默认关闭
 
@@ -157,3 +157,5 @@
 ## 2026-10-17 / 2026-10-16 capability update
 
 [长歌一次输入、明确X秒起点、超时恢复、默认关闭的跨组六段接续与验收范围](docs/UPDATE_20261016.md)。16份本机源码按SHA同步；跨组GPU及公开构建GPU仍NOT_TESTED，8197未部署更改。
+
+[六段独立关键帧更新](docs/UPDATE_20261017_SIX_GUIDES.md)：56项CPU检查及服务端提交图通过；GPU视觉验收等待用户录屏。

@@ -75,6 +75,12 @@ def build_contract(g,text,index,context):
  impls={t:implementation(t) for t in sorted({n['class_type'] for n in upstream.values()}-{'Any Switch (rgthree)'})};files.extend(impls.values())
  # Binding the entire effective upstream graph includes switches, disabled slots and encode parameters.
  c={'schema':codec.SCHEMA,'segment_id':str(index),'group_id':context['group_id'],'story_id':context['group_id'],'final_text_revision':int(context['revisions'][index]),'prompt_sha256':codec.digest(text.encode()),'reference_slots':sorted(refs,key=lambda r:r['slot']),'width':scalar(p['width'],g),'height':scalar(p['height'],g),'frames':scalar(p['length'],g),'fps':scalar(g.get('960',{}).get('inputs',{}).get('fps',context['fps']),g),'h3':h3,'te':role_models['te'],'node136':impls['MiniMaxH3ReferenceToVideo'],'generation_mode':'Ref2VA','ref2va_branch':'INT8_CONVROT_PDD8','conditioning_parameters':{'prompt':text,'effective_node136_graph':upstream,'reference_size':p['ref_image_size'],'static_dynamic_split':'Node136 only; previous AV state applied after real VIDEO_SUCCESS'},'files':files}
+ from .user_guides import fingerprint,source_info
+ guide=fingerprint(g,index)
+ if guide is not None:
+  info=source_info(guide['source'],guide['source_sha256'])
+  c['user_guide']=guide
+  c['files'].append({'role':'user_guide','path':str(Path(folder_paths.get_input_directory())/info['source']),'sha256':info['source_sha256']})
  codec.verified_contract(json.dumps(c));return c,None
 def ledger_path(context):
  import folder_paths
@@ -298,7 +304,11 @@ def fallback_conditioning_key(graph,text,index,ctx):
  if '138' in g and g['138']['class_type']=='PrimitiveStringMultiline':
   g['138']['inputs']['value']=text;g['136']['inputs']['prompt']=['138',0]
  else:g['136']['inputs']['prompt']=text
- return codec.digest(codec.canonical({'route':'DYNAMIC_FALLBACK','text':text,'revision':ctx['revisions'][index],'group_id':ctx['group_id'],'fps':ctx.get('fps',24),'conditioning_graph':prune(g,['136'])}))
+ value={'route':'DYNAMIC_FALLBACK','text':text,'revision':ctx['revisions'][index],'group_id':ctx['group_id'],'fps':ctx.get('fps',24),'conditioning_graph':prune(g,['136'])}
+ from .user_guides import fingerprint
+ guide=fingerprint(g,index)
+ if guide is not None:value['user_guide']=guide
+ return codec.digest(codec.canonical(value))
 
 def reject_first_frame_guides(conditioning):
  if not isinstance(conditioning,(list,tuple)) or not conditioning:raise ValueError('Guide conditioning cannot be inspected')
@@ -539,8 +549,11 @@ def generate(payload,state_lock=None):
  if 'SEAM_PRECHECK' in g:
   attempt['guide_anchor_sha256']=guide_policy_digest(json.loads(g['SEAM_PRECHECK']['inputs']['guide_guard_json']))
   attempt['snapshot'].update(predecessor_index=i-1,guide_predecessor_index=i-1)
+ from .user_guides import apply as apply_user_guide
+ g,user_guide=apply_user_guide(g,ctx,i,attempt['attempt_id'])
+ if user_guide is not None:attempt['snapshot']['user_guide']=user_guide
  result=prune(g,['961',save]);assert not any(n['class_type'] in ('MiniMaxH3ReferenceToVideo','CLIPLoader','H3SelectiveTEUnload') for n in result.values())
- if 'SEAM_PRECHECK' in result:attempt['graph_sha256']=graph_digest(result) # Existing submit gate rejects changes before queue/GPU.
+ if 'SEAM_PRECHECK' in result or user_guide is not None:attempt['graph_sha256']=graph_digest(result) # Existing submit gate rejects changes before queue/GPU.
  with LOCK, state_lock or nullcontext():
   _,data=bound_context(ctx);entry=data['segments'].get(str(i),{})
   attempt_check(ctx,i,data,attempt)
@@ -594,6 +607,9 @@ def fallback(payload,state_lock=None):
   if 'SEAM_PRECHECK' in g:
    attempt['guide_anchor_sha256']=guide_policy_digest(json.loads(g['SEAM_PRECHECK']['inputs']['guide_guard_json']))
    attempt['snapshot'].update(predecessor_index=i-1,guide_predecessor_index=i-1)
+  from .user_guides import apply as apply_user_guide
+  g,user_guide=apply_user_guide(g,ctx,i,attempt['attempt_id'])
+  if user_guide is not None:attempt['snapshot']['user_guide']=user_guide
   attempt['graph_sha256']=graph_digest(g)
   if entry.get('video_status')=='SUCCESS':invalidate_video_chain(ledger_path(ctx),data,ctx,i,state_lock)
   archive_attempt(entry);entry['attempt']=attempt;entry['predecessor_index']=attempt['snapshot']['predecessor_index'];receipts=read_state(ledger_path(ctx).parent/'six_acceptance.json') or {}
@@ -624,6 +640,9 @@ def accepted(payload,server,state_lock=None):
   if attempt:validate_deadline(attempt,h)
   if h['prompt'][1]!=pid:raise ValueError('History prompt_id mismatch')
   graph=h['prompt'][2];saves=[n for n in graph.values() if n['class_type']=='H3ContinuationSave' and n['inputs'].get('enabled') is True]
+  if attempt:
+   from .user_guides import submission_check
+   submission_check(graph,ctx,i,attempt)
   if 'SEAM_GUIDE' in graph:
    if attempt and attempt.get('guide_anchor_sha256') and not __import__(__package__+'.adaptive_bridge',fromlist=['graph_matches']).graph_matches(attempt,graph):raise ValueError('Guide submitted graph changed before acceptance')
    verify_predecessor(ctx,i)
@@ -708,6 +727,8 @@ def register():
  server.h3_prebake_routes_installed=True
  from .attempt_lifecycle import install
  install(server)
+ from .user_guides import register as register_user_guides
+ register_user_guides()
  server.h3_prebake_acceptance_reconcile=lambda payload:accepted(payload,server,getattr(server,'h3_acceptance_state_lock',None))
  server.h3_prebake_pending=lambda project,index,group:mark_pending(project,index,group,getattr(server,'h3_acceptance_state_lock',None))
  server.h3_prebake_recover=lambda project,index:recover_segment(project,index,server,getattr(server,'h3_acceptance_state_lock',None))

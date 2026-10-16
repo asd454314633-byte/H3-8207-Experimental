@@ -1,0 +1,2 @@
+编号,能力,实现与证据
+G09,六段独立用户关键帧,H3_Prompt_Sidecar/six_ui.js与web/h3_six_guides.js；每段单图默认关闭；官方MiniMaxH3AddGuide接入最终BasicGuider conditioning；Clean Rebase seam frame0共存，普通Native帧位加39；56项CPU检查及243/362服务端提交图PASS，GPU视觉HOLD

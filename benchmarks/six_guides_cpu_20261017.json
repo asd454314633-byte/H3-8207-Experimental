@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-17",
+  "guide_routing": "PASS",
+  "guide_visual_gpu": "HOLD",
+  "cpu_checks": 56,
+  "prebake_regressions": 11,
+  "managed_server_graphs": [
+    {
+      "queue_submitted": false,
+      "visible_frames": 243,
+      "valid_prompt": true,
+      "seam_frame": 0,
+      "user_frame": 155
+    },
+    {
+      "queue_submitted": false,
+      "visible_frames": 362,
+      "valid_prompt": true,
+      "seam_frame": 0,
+      "user_frame": 274
+    }
+  ],
+  "native_visible_frame_24_maps_to_model_frame": 63,
+  "all_off_legacy_graphs_identical": 12,
+  "frontend_persistence": "PASS",
+  "gpu_submissions": 0,
+  "public_build_gpu": "NOT_TESTED"
+}
