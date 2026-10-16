@@ -71,9 +71,13 @@ class AttemptManager:
     p.attempt_check(ctx,i,data,a)
     graph=p.clean_graph(payload['graph']);claims=[json.loads(n['inputs']['execution_json']) for n in graph.values() if n['class_type'] in ('H3ConditioningLoad','H3AttemptGuard') and n['inputs'].get('execution_json')]
     if len(claims)!=1 or claims[0]!={'context':ctx,'index':i,'attempt_id':aid}:raise ValueError('Submission graph claim mismatch')
+    cross=a.get('snapshot',{}).get('cross_group')
+    if cross or graph.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json') or 'CROSS_GROUP_PREVIOUS' in graph:
+     actual=p.cross_group_gate(graph,ctx,i)
+     if actual!=cross or a.get('graph_sha256')!=p.graph_digest(graph):raise ValueError('跨组提交图或前驱绑定在准备后被修改，未提交GPU')
     a['prepared_graph_sha256']=a.get('graph_sha256')
     a['graph_changed_since_prepare']=a.get('graph_sha256')!=p.graph_digest(graph)
-    now=self.clock();pid=str(uuid.uuid4());a.update(prompt_id=pid,status='PENDING',dispatch_started=True,submitted_at_epoch=now,deadline_epoch=now+300,graph_sha256=p.graph_digest(graph))
+    now=self.clock();pid=str(uuid.uuid4());a.update(prompt_id=pid,status='PENDING',dispatch_started=True,submitted_at_epoch=now,deadline_epoch=None,graph_sha256=p.graph_digest(graph))
     a.update(timing_basis='execution_start',deadline_epoch=None)
     a.update(runtime_seconds=0,queue_submit_time=now,terminal_status=None)
     from .adaptive_bridge import capture
@@ -147,7 +151,7 @@ class AttemptManager:
       elif any(x[1]==pid for x in running):a['execution_start_time']=self.clock()
       elif h:a['execution_start_time']=a['submitted_at_epoch'] # Legacy terminal evidence: conservative.
      if a.get('execution_start_time'):
-      a['deadline_epoch']=a['execution_start_time']+300
+      a['deadline_epoch']=None
       if a['attempt_id'] not in self.timers and record.get('started_monotonic') is not None:
        self.timers[a['attempt_id']]=(record['started_monotonic'],0)
     a['runtime_seconds']=self.elapsed(a)
@@ -173,8 +177,7 @@ class AttemptManager:
      interrupted=any(e=='execution_interrupted' for e,_ in h['status'].get('messages',[]))
      if not matches:self.close(ctx,index,data,'INTERRUPTED' if interrupted else 'FAILED','Server terminal failure',{'queue_absent':True,'history_status':h['status']})
     return True
-   if pid and a.get('deadline_epoch') and a['runtime_seconds']>=300:
-    self.request_cancel({'context':ctx,'index':index,'attempt_id':a['attempt_id'],'prompt_id':pid},'TIMEOUT_300S');return True
+   # No automatic generation deadline. User cancellation and ownership checks remain.
    if not pid and self.clock()-a.get('prepared_at_epoch',self.clock())>=30:
     self.close(ctx,index,data,'REJECTED','Preparation expired before submission',{'not_dispatched':True});return True
    if pid and not matches and a['attempt_id'] not in self.inflight and self.clock()-a.get('submitted_at_epoch',self.clock())>=5:

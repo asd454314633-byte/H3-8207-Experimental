@@ -1,0 +1,104 @@
+{
+  "source_date": "2026-10-16",
+  "publication_date": "2026-10-17",
+  "scope": "16 explicitly listed files only; older manifests are historical",
+  "gpu": "NOT_TESTED",
+  "files": [
+    {
+      "path": "H3_LongSong/web/cross_group.js",
+      "runtime_sha256": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908",
+      "repository_sha256": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908",
+      "package_sha256": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908"
+    },
+    {
+      "path": "H3_LongSong/web/long_song.js",
+      "runtime_sha256": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832",
+      "repository_sha256": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832",
+      "package_sha256": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832"
+    },
+    {
+      "path": "H3_LongSong/web/start_contract.js",
+      "runtime_sha256": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8",
+      "repository_sha256": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8",
+      "package_sha256": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8"
+    },
+    {
+      "path": "H3_LongSong/__init__.py",
+      "runtime_sha256": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09",
+      "repository_sha256": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09",
+      "package_sha256": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09"
+    },
+    {
+      "path": "H3_LongSong/cross_group.py",
+      "runtime_sha256": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c",
+      "repository_sha256": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c",
+      "package_sha256": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c"
+    },
+    {
+      "path": "H3_LongSong/nodes.py",
+      "runtime_sha256": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334",
+      "repository_sha256": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334",
+      "package_sha256": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334"
+    },
+    {
+      "path": "H3_LongSong/recovery.py",
+      "runtime_sha256": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca",
+      "repository_sha256": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca",
+      "package_sha256": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca"
+    },
+    {
+      "path": "H3_LongSong/start_validation.py",
+      "runtime_sha256": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5",
+      "repository_sha256": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5",
+      "package_sha256": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5"
+    },
+    {
+      "path": "H3_NativeContinuation/core.py",
+      "runtime_sha256": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d",
+      "repository_sha256": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d",
+      "package_sha256": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d"
+    },
+    {
+      "path": "H3_NativeContinuation/nodes.py",
+      "runtime_sha256": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2",
+      "repository_sha256": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2",
+      "package_sha256": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2"
+    },
+    {
+      "path": "H3_Prompt_Sidecar/web/h3_long_song.js",
+      "runtime_sha256": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596",
+      "repository_sha256": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596",
+      "package_sha256": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596"
+    },
+    {
+      "path": "H3_Prompt_Sidecar/web/h3_six_execute.js",
+      "runtime_sha256": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd",
+      "repository_sha256": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd",
+      "package_sha256": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd"
+    },
+    {
+      "path": "H3_Prompt_Sidecar/web/h3_six_segment_director.js",
+      "runtime_sha256": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62",
+      "repository_sha256": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62",
+      "package_sha256": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62"
+    },
+    {
+      "path": "h3_conditioning_prebake/attempt_lifecycle.py",
+      "runtime_sha256": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927",
+      "repository_sha256": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927",
+      "package_sha256": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927"
+    },
+    {
+      "path": "h3_conditioning_prebake/execution_state.py",
+      "runtime_sha256": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd",
+      "repository_sha256": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd",
+      "package_sha256": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd"
+    },
+    {
+      "path": "h3_conditioning_prebake/production.py",
+      "runtime_sha256": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170",
+      "repository_sha256": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170",
+      "package_sha256": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170"
+    }
+  ]
+}

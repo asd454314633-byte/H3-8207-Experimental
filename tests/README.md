@@ -11,3 +11,6 @@ Current preview checks and their limits are listed in [PREVIEW_RELEASE_NOTES](..
 - `python -B tests/smoke_test.py`、`python -B scripts/verify/verify_integrity.py`、`python -B scripts/sanitize/sanitize_workflows.py --selfcheck`：JSON、139 项来源清单哈希、集合和 193 份工作流静态隐私检查通过。
 
 GPU、真实 ComfyUI 服务、浏览器 UI、Qwen 模型执行和视频端到端均未测试。其它依赖完整安装或外部 Skill 的旧测试没有被上述测试冒充全部通过。PUBLICATION_APPROVED = HOLD。
+
+
+2026-10-16 updates: `python -B tests/test_long_song_cpu.py` and `node --test tests/long_song_start.test.cjs` use synthetic CPU fixtures of the actual published timeline/parser/gates. Full pack: `python -B scripts/verify/verify_agent_pack.py <EXTRACTED_PACK>` verifies all file hashes and the 16 update sources. No GPU runs.

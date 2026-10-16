@@ -134,14 +134,15 @@
   {
     "rel": "H3_NativeContinuation/nodes.py",
     "dest": "H3_NativeContinuation\\nodes.py",
-    "orig_sha": "e41872f822361e291d8082ef009e9785015bd31799508b833017b8c18ceeb19b",
-    "new_sha": "78b44161bb18cb122aaa625f4d2564f97e7e49cdcaba2a64a317726bb0f5c37d",
+    "orig_sha": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2",
+    "new_sha": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "REUSE_PASS",
+    "status": "SOURCE_SYNC_20261016",
     "node": "H3_NativeContinuation",
-    "final_change": "CREATIVE_FREEDOM_20261014"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "7032da8bcce26b38c7362999a984a0276ee46ee0138888afad747e74556efca2"
   },
   {
     "rel": "H3_NextgenDirector/__init__.py",
@@ -1214,15 +1215,15 @@
   {
     "rel": "h3_conditioning_prebake/attempt_lifecycle.py",
     "dest": "h3_conditioning_prebake\\attempt_lifecycle.py",
-    "orig_sha": "cfa8f3c31fb125483edfa4f00992da1f33640f40360798ecee95608a05636824",
-    "new_sha": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28",
+    "orig_sha": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927",
+    "new_sha": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "REUSE_PASS",
+    "status": "SOURCE_SYNC_20261016",
     "node": "h3_conditioning_prebake",
-    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC",
-    "validated_local_sha256": "7db582b25c1a6f2e8aff6d4c4c2cc65c33d23c0c7bf3df704a9e851879fa7c28"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "1a51aa3cfa6541b56185a36900e729c699fc59d96cbe7ba6b1939e1c501e8927"
   },
   {
     "rel": "h3_conditioning_prebake/model_registry.json",
@@ -1275,15 +1276,15 @@
   {
     "rel": "h3_conditioning_prebake/production.py",
     "dest": "h3_conditioning_prebake\\production.py",
-    "orig_sha": "00047c0820f10fb73fc95a83d06ec8a3d645e697ef1e668f9f9184f87cce58fa",
-    "new_sha": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19",
+    "orig_sha": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170",
+    "new_sha": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "REUSE_PASS",
+    "status": "SOURCE_SYNC_20261016",
     "node": "h3_conditioning_prebake",
-    "final_change": "ADAPTIVE_V1_VALIDATED_SYNC",
-    "validated_local_sha256": "90feba896cff4b63928666b9c1b5db925b0326696e2102cafb400df1388cba19"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "81eccc3b02c78e65ea76670a1b3766e54fcdb2d648b982d2ff4bbea5da040170"
   },
   {
     "rel": "h3_partial_diffusion_evict/__init__.py",
@@ -1577,15 +1578,16 @@
   {
     "rel": "H3_NativeContinuation/core.py",
     "dest": "H3_NativeContinuation\\core.py",
-    "orig_sha": "c7ba3290249d77524a5bc08b95f96a2857649d4320a3948250ed822ac52fcaaf",
-    "new_sha": "577bdfd4f4cf0b386a0f3a7de23cff8994e16c3540c6cd1c8602748457263393",
+    "orig_sha": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d",
+    "new_sha": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "DELTA_REVIEW",
+    "status": "SOURCE_SYNC_20261016",
     "node": "H3_NativeContinuation",
-    "final_change": "CREATIVE_FREEDOM_20261014",
-    "blocker_round_before_sha256": "c7ba3290249d77524a5bc08b95f96a2857649d4320a3948250ed822ac52fcaaf"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "blocker_round_before_sha256": "c7ba3290249d77524a5bc08b95f96a2857649d4320a3948250ed822ac52fcaaf",
+    "validated_local_sha256": "538abac47271448b99d1f33e21388f564af67b426fae876d4e5708b4f8fd206d"
   },
   {
     "rel": "H3_Prompt_Sidecar/native_merge_control.py",
@@ -1616,28 +1618,30 @@
   {
     "rel": "H3_Prompt_Sidecar/web/h3_six_execute.js",
     "dest": "H3_Prompt_Sidecar\\web\\h3_six_execute.js",
-    "orig_sha": "cbe179b5f9b94faef5ab7e8cb215824571110531d3fd54695122e39ad659b521",
-    "new_sha": "9b4a834e325969ac45c330669946a89e1e0a0c7885f76ccf0b282db967f7537a",
+    "orig_sha": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd",
+    "new_sha": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "DELTA_REVIEW",
+    "status": "SOURCE_SYNC_20261016",
     "node": "H3_Prompt_Sidecar",
-    "final_change": "CREATIVE_FREEDOM_20261014",
-    "blocker_round_before_sha256": "cbe179b5f9b94faef5ab7e8cb215824571110531d3fd54695122e39ad659b521"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "blocker_round_before_sha256": "cbe179b5f9b94faef5ab7e8cb215824571110531d3fd54695122e39ad659b521",
+    "validated_local_sha256": "a29354e1cb0c6da8e2bc52da9794eb53333e553adbcd99ad9dc49611dace6efd"
   },
   {
     "rel": "H3_Prompt_Sidecar/web/h3_six_segment_director.js",
     "dest": "H3_Prompt_Sidecar\\web\\h3_six_segment_director.js",
-    "orig_sha": "e07483cd7260e584ae7a42512d1097a3224b07d31b0425a2240abf7de0a9287a",
-    "new_sha": "b8bb637e2c84484257ef9350c22f20d9499f41759513f9d6de64c97847e3b1b7",
+    "orig_sha": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62",
+    "new_sha": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "DELTA_REVIEW",
+    "status": "SOURCE_SYNC_20261016",
     "node": "H3_Prompt_Sidecar",
-    "final_change": "CREATIVE_FREEDOM_20261014",
-    "blocker_round_before_sha256": "e07483cd7260e584ae7a42512d1097a3224b07d31b0425a2240abf7de0a9287a"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "blocker_round_before_sha256": "e07483cd7260e584ae7a42512d1097a3224b07d31b0425a2240abf7de0a9287a",
+    "validated_local_sha256": "6aa4d86fb5884636b4478eb7b448df1e988335173f37a30f33e126c8a4de2f62"
   },
   {
     "rel": "h3_conditioning_prebake/cache_codec.py",
@@ -1679,15 +1683,16 @@
   },
   {
     "rel": "h3_conditioning_prebake/execution_state.py",
-    "dest": "h3_conditioning_prebake/execution_state.py",
-    "orig_sha": "cb315efe7d122275601f018055994ac926c77e9e415a38c48b0805eab6b34b56",
-    "new_sha": "cb315efe7d122275601f018055994ac926c77e9e415a38c48b0805eab6b34b56",
+    "dest": "h3_conditioning_prebake\\execution_state.py",
+    "orig_sha": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd",
+    "new_sha": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd",
     "text": true,
     "redactions": 0,
     "json_ok": true,
-    "status": "AUDITED_SOURCE_UPDATE",
+    "status": "SOURCE_SYNC_20261016",
     "node": "h3_conditioning_prebake",
-    "final_change": "CREATIVE_FREEDOM_20261014"
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "269020c0424f2dd6934533c44857ad9f6e590af778fc8acec9f7bc5d7ce118cd"
   },
   {
     "rel": "h3_conditioning_prebake/adaptive_bridge.py",
@@ -1727,5 +1732,122 @@
     "new_sha": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
     "validated_local_sha256": "b0717e1231cb328ab35162b7fc4d58818427e82c239111db6209d53b578acf05",
     "final_change": "ADAPTIVE_V1_VALIDATED_SYNC"
+  },
+  {
+    "rel": "H3_LongSong/web/cross_group.js",
+    "dest": "H3_LongSong\\web\\cross_group.js",
+    "orig_sha": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908",
+    "new_sha": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "8920f73c1a263d6fd86248ffbaf62d4e6c2bfe0132ce5b77817aa7a65b8a8908"
+  },
+  {
+    "rel": "H3_LongSong/web/long_song.js",
+    "dest": "H3_LongSong\\web\\long_song.js",
+    "orig_sha": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832",
+    "new_sha": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "47179aa96006c0c8676d9d71b1164773cc8e12bb3f6b19aa7263216b725ae832"
+  },
+  {
+    "rel": "H3_LongSong/web/start_contract.js",
+    "dest": "H3_LongSong\\web\\start_contract.js",
+    "orig_sha": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8",
+    "new_sha": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "5be52c487e4c5c803978c8077d1f3b9e56cad2c161fd162239f8d6c482b06ae8"
+  },
+  {
+    "rel": "H3_LongSong/__init__.py",
+    "dest": "H3_LongSong\\__init__.py",
+    "orig_sha": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09",
+    "new_sha": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "c8e42480b98fd2b781b6b1f08c5f6ab4ae256d0dbecd904e9f98a42758d74a09"
+  },
+  {
+    "rel": "H3_LongSong/cross_group.py",
+    "dest": "H3_LongSong\\cross_group.py",
+    "orig_sha": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c",
+    "new_sha": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "9161dd5fba905c61775403fb2e433f52ee8d061949aebc842533f915f5abfc2c"
+  },
+  {
+    "rel": "H3_LongSong/nodes.py",
+    "dest": "H3_LongSong\\nodes.py",
+    "orig_sha": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334",
+    "new_sha": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "8fbc94e1b553cb0cc90ba2ad29c43483a4ce808c83fbbb5af8d69e8a89336334"
+  },
+  {
+    "rel": "H3_LongSong/recovery.py",
+    "dest": "H3_LongSong\\recovery.py",
+    "orig_sha": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca",
+    "new_sha": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "668d3982e91aec770d216868e092664913f32510a8c04b306c93fd39a7621bca"
+  },
+  {
+    "rel": "H3_LongSong/start_validation.py",
+    "dest": "H3_LongSong\\start_validation.py",
+    "orig_sha": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5",
+    "new_sha": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_LongSong",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "212a66cc4574f5174f0a990b440175cc169fdd51df1121dcf73487bb4f8b35a5"
+  },
+  {
+    "rel": "H3_Prompt_Sidecar/web/h3_long_song.js",
+    "dest": "H3_Prompt_Sidecar\\web\\h3_long_song.js",
+    "orig_sha": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596",
+    "new_sha": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596",
+    "text": true,
+    "redactions": 0,
+    "json_ok": true,
+    "status": "SOURCE_SYNC_20261016",
+    "node": "H3_Prompt_Sidecar",
+    "final_change": "RUNTIME_BYTE_IDENTICAL",
+    "validated_local_sha256": "ec0f13fb674ba695b7cc341624db5568b0b6fe25df9ad9a03a6ab2f751e15596"
   }
 ]

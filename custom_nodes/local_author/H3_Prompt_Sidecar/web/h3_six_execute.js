@@ -1,5 +1,7 @@
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
+import {prepareLongSong,finishLongSong} from './h3_long_song.js?v=20261016cross1';
+import {resolveSongStart} from '/extensions/H3_LongSong/start_contract.js?v=20261016origin1';
 import {prepareProduction,cachedGraph,acceptProduction,submitProduction,productionStatus} from '/extensions/h3_conditioning_prebake/production.js?v=20261014queue';
 
 const flights=new Map();
@@ -15,10 +17,8 @@ for(const name of ['execution_success','execution_error','execution_interrupted'
   flights.get(id)?.check();
 });
 
-function waitForCompletion(id,timeout=300000){
-  timeout=Math.min(Number.isFinite(timeout)&&timeout>0?timeout:300000,300000);
+function waitForCompletion(id,timeout){
   let checking=false,settled=false,interval,timer,resolve,reject;
-  const startTimer=()=>{timer ||= setTimeout(()=>finish(Error('等待执行结果超时，请检查ComfyUI任务历史')),timeout)};
   const promise=new Promise((yes,no)=>{resolve=yes;reject=no});promise.catch(()=>{});
   function cleanup(){clearInterval(interval);clearTimeout(timer);flights.delete(id);terminalEvents.delete(id)}
   function finish(error){if(settled)return;settled=true;cleanup();error?reject(error):resolve()}
@@ -34,8 +34,7 @@ function waitForCompletion(id,timeout=300000){
       }
       const terminal=terminalEvents.get(id);
       if(terminal&&terminal.name!=='execution_success')finish(Error(terminal.message||'视频执行失败或被中断'));
-      // Queue waiting does not consume a video's 300-second execution budget.
-      if(!timer){const q=await api.fetchApi('/queue',{signal:AbortSignal.timeout(10000)});if(q.ok&&(await q.json()).queue_running?.some(item=>item[1]===id))startTimer()}
+      // Generation has no wall-clock deadline. Exact history/events remain authoritative.
     }catch(error){
       // A transient HTTP disconnect is not SUCCESS; the bounded monitor retries.
     }finally{checking=false}
@@ -48,11 +47,13 @@ export function sixExecutionState(){return {executing:activeExecutions>0,pending
 
 async function storeRequest(path,data) {
   const response=await api.fetchApi(path,data===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-  const value=await response.json();if(!response.ok)throw Error(value.error||'连续存档检查失败');return value;
+  const value=await response.json();if(!response.ok)throw Error((path.startsWith('/h3/cross-group/')?'跨组校验失败：':path==='/h3/long-song/validate-start'?'音频起点校验失败：':'')+(value.error||'连续存档检查失败'));return value;
 }
 
 export function executeVisiblePrompt(text,index,update,options={}) {
   const host=app.graph._nodes.find(n=>n.type==='H3SixDirectorState'&&n.properties.h3_six_director);
+  options={...options,long_song:structuredClone(host?.properties.h3_long_song||null)};
+  if(host?.properties.h3_cross_group?.enabled===true)options={...options,cross_group:structuredClone(host.properties.h3_cross_group)};
   options={...options,submission_id:crypto.randomUUID(),production_selection:host?structuredClone({story_id:host.properties.h3_prebake_story_id,binding:host.properties.h3_prebake_binding,generated_group_id:host.__sixUI?.group?.id||null,texts:[...host.__sixRoot.querySelectorAll('.six-prompt')].map(a=>a.value),revisions:host.properties.h3_prebake_revisions||[0,0,0,0,0,0],previous:host.properties.h3_prebake_texts||['','','','','','']}):null};
   const key=(options.project_id||'H3_SIX_V288')+':'+index;
   const dependencies=options.continuous===true&&index>0&&options.independent!==true?[continuityFlights.get((options.project_id||'H3_SIX_V288')+':'+(index-1))].filter(Boolean):[];
@@ -69,10 +70,27 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     const previous=submissionTail;submissionTail=new Promise(resolve=>release=resolve);await previous;
     const project=options.project_id||'H3_SIX_V288';
     const continuous=options.continuous===true;
-    const inherit=continuous&&index>0&&options.independent!==true;
+    const cross=options.cross_group?.enabled===true;
+    const inherit=continuous&&(index>0||cross)&&options.independent!==true;
+    if(cross&&(!options.long_song?.enabled||app.graph.extra?.h3_prebake_production?.enabled!==true))throw Error('跨组续接需要现有完整歌曲适配和PreBake受控提交链');
+    if(options.long_song?.enabled){
+      const firstText=index===0?text:options.production_selection?.texts?.[0];
+      options={...options,long_song:resolveSongStart(options.long_song,firstText)};
+      if(cross){
+        if(!options.cross_group.contract)throw Error('请先核验并绑定上一组六段；未提交GPU');
+        if(options.cross_group.source_project!==options.cross_group.contract.source_project)throw Error('跨组前驱选择与绑定身份不一致，请重新核验');
+        const checked=await storeRequest('/h3/cross-group/validate',{contract:options.cross_group.contract,requested_start:options.long_song.start_seconds,requested_origin:options.long_song.start_origin,continuous,independent:options.independent===true});
+        options={...options,cross_group:{enabled:true,contract:checked.contract},long_song:{...options.long_song,start_seconds:checked.contract.song_start,start_origin:'跨组原曲边界 '+checked.contract.global_boundary+'秒'}};
+      }
+      const selectedProject=options.predecessor_binding?.project_id||options.production_selection?.binding?.project_id||project;
+      const prepare=Object.values(snapshot.output).find(n=>n.class_type==='H3ContinuationPrepare')?.inputs;
+      const verified=await storeRequest('/h3/long-song/validate-start',{...options.long_song,project_id:selectedProject,segment_index:index,inherit,...(cross?{cross_group:options.cross_group.contract,graph:snapshot.output,clean_rebase:prepare?.clean_rebase_enabled===true&&Number(prepare.clean_rebase_segment)===index}:{})});
+      update(cross?`接上一组：新增内容从${options.cross_group.contract.global_boundary}秒接续，首段保护并仅裁剪39帧`:`原曲起点 ${verified.start_seconds}秒（${options.long_song.start_origin}）；后续段按实际保存帧数自动接续`);
+    }
+    prepareLongSong(snapshot,index,options);
     const prebake=await prepareProduction(snapshot,text,index,options,update,waitForCompletion);
     const generationProject=prebake?.context?.project_id||project;
-    if(inherit){
+    if(inherit&&index>0){
       try{await storeRequest(`/h3/six/store?project_id=${encodeURIComponent(generationProject)}&segment_index=${index-1}`)}
       catch(error){throw Error(`无法从第${index+1}段连续续跑：${error.message}`)}
     }
@@ -89,7 +107,7 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
       if(output)delete output['915'];
       // Keep audio outputs, but use the selected literal as final H3 text.
       if(output?.['138']?.inputs)output['138'].inputs.value=text;
-      if(output?.['136']?.inputs)output['136'].inputs.prompt=['138',0];
+      if(output?.['136']?.inputs&&!options.long_song?.enabled)output['136'].inputs.prompt=['138',0];
       const native=Object.values(output||{}).filter(n=>n.class_type?.startsWith('H3Continuation'));
       for(const type of ['Prepare','Guides','Save','TrimOnce','Assemble']){
         const nodes=native.filter(n=>n.class_type==='H3Continuation'+type);
@@ -101,7 +119,7 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
         if(['Prepare','Guides','TrimOnce'].includes(type))inputs.enabled=inherit;
         if(type==='Prepare')delete inputs.prev_latent; // Resume uses this exact project's index-1 store.
       }
-      args[1].output=await cachedGraph(output,prebake);
+      args[1].output=await cachedGraph(finishLongSong(output,options,generationProject),prebake);
       if(continuous)await storeRequest('/h3/six/acceptance',{project_id:generationProject,segment_index:index,status:'PENDING',group_id:prebake?.context?.group_id});
       const result=prebake?await submitProduction(prebake,args[1].output,args[1].workflow,api.clientId):await original.apply(this,args);
       if(!submitted&&result?.prompt_id){
@@ -117,7 +135,7 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     finally{if(api.queuePrompt===capture)api.queuePrompt=original}
     if(!submitted)throw Error('未收到本次Queue的prompt_id；没有继续提交后续段落');
     release();release=null;
-    try{await completion}catch(error){if(prebake&&submitted){const status=await productionStatus(prebake,submitted);if(['PENDING','CANCELLING','BLOCKED'].includes(status.status)&&status.deadline_epoch&&Date.now()/1000>=status.deadline_epoch)await productionStatus(prebake,submitted,true);}throw error;}
+    await completion;
     if(prebake){const status=await productionStatus(prebake,submitted);if(status.status!=='SUCCESS')throw Error('本次任务未通过后台验收：'+status.status);await acceptProduction(prebake,submitted);}
     else if(continuous)await storeRequest('/h3/six/acceptance',{project_id:generationProject,segment_index:index,status:'SUCCESS',prompt_id:submitted,group_id:prebake?.context?.group_id});
     return {prompt_id:submitted,execution_version:prebake?.context.execution_version,story_id:prebake?.context.story_id,binding:prebake?.context};

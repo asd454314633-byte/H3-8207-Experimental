@@ -1,5 +1,6 @@
 """Dynamic CPU contracts using real cache/state/attempt code.
-Only transport and folder roots are fixtures. No ComfyUI service, model, video or GPU is started.
+Transport, folder roots and host registration metadata are CPU fixtures.
+No ComfyUI service, model, video or GPU is started.
 The --rpc mode lets the real frontend adapter call the real Python state logic over JSON pipes.
 """
 from pathlib import Path
@@ -21,6 +22,10 @@ class Harness:
   self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name);C.ROOT=self.root/'cache';C.MODEL_REGISTRY={};P.STATE_LOCK=None
   paths=types.ModuleType('folder_paths');paths.get_output_directory=lambda:str(self.root/'output');paths.get_input_directory=lambda:str(self.root/'input');sys.modules['folder_paths']=paths
   self.queue=Queue();self.server=types.SimpleNamespace(prompt_queue=self.queue);self.clock=1000.;self.submissions=[];self.cancelled=[];self.restart()
+  # Adaptive capture/recovery now reads live host registration and singleton.
+  # Provide an empty synthetic host rather than importing CUDA-owning server/nodes.
+  server=types.ModuleType('server');server.PromptServer=types.SimpleNamespace(instance=self.server);sys.modules['server']=server
+  nodes=types.ModuleType('nodes');nodes.NODE_CLASS_MAPPINGS={};sys.modules['nodes']=nodes
  def restart(self):self.manager=L.AttemptManager(self.server,self.submit,self.cancel,clock=lambda:self.clock,monotonic=lambda:self.clock)
  async def submit(self,body):
   self.submissions.append(copy.deepcopy(body));self.queue.items.append((0,body['prompt_id'],copy.deepcopy(body['prompt']),{},[]));return 200,{'prompt_id':body['prompt_id']}
@@ -71,8 +76,8 @@ class DynamicContracts(unittest.IsolatedAsyncioTestCase):
   self.assertEqual(sum(isinstance(r,dict) for r in results),1);self.assertEqual(len(self.h.submissions),1)
  async def test_restart_keeps_exact_pending_identity(self):
   payload=self.h.prepare();result=await self.h.manager.submit(payload);self.h.restart();state=self.h.manager.status({**payload,'prompt_id':result['prompt_id']});self.assertEqual(state['status'],'PENDING');self.assertEqual(state['prompt_id'],result['prompt_id']);self.assertEqual(len(self.h.submissions),1)
- async def test_timeout_cancels_only_owned_task(self):
-  payload=self.h.prepare();result=await self.h.manager.submit(payload);self.h.manager.record_progress('execution_start',{'prompt_id':result['prompt_id']});self.h.clock+=301;self.h.manager.recover(payload['context']['project_id'],0);state=self.h.manager.status(payload);self.assertEqual(state['status'],'TIMED_OUT');self.assertEqual(self.h.cancelled,[result['prompt_id']])
+ async def test_long_generation_does_not_auto_cancel_at_300_seconds(self):
+  payload=self.h.prepare();result=await self.h.manager.submit(payload);self.h.manager.record_progress('execution_start',{'prompt_id':result['prompt_id']});self.h.clock+=301;self.h.manager.recover(payload['context']['project_id'],0);state=self.h.manager.status(payload);self.assertEqual(state['status'],'PENDING');self.assertIsNone(state['deadline_epoch']);self.assertEqual(self.h.cancelled,[])
  async def test_queue_wait_is_not_execution_time(self):
   payload=self.h.prepare();result=await self.h.manager.submit(payload);self.h.clock+=1200;state=self.h.manager.status(payload)
   self.assertEqual(state['status'],'PENDING');self.assertEqual(state['runtime_seconds'],0);self.assertEqual(self.h.cancelled,[])

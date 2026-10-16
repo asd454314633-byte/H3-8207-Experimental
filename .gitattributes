@@ -10,3 +10,21 @@ custom_nodes/local_author/h3_conditioning_prebake/adaptive_v1/core.py -text whit
 custom_nodes/local_author/h3_conditioning_prebake/production.py -text whitespace=cr-at-eol
 custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py -text whitespace=cr-at-eol
 custom_nodes/local_author/h3_conditioning_prebake/web/production.js -text whitespace=cr-at-eol
+
+# Exact 2026-10-16 runtime updates (historic manifests remain date-scoped).
+custom_nodes/local_author/H3_LongSong/web/cross_group.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/web/long_song.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/web/start_contract.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/cross_group.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/nodes.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/recovery.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/start_validation.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_NativeContinuation/core.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_NativeContinuation/nodes.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_long_song.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_execute.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_segment_director.js -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/execution_state.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/production.py -text whitespace=cr-at-eol

@@ -166,3 +166,18 @@
 [8207 中文首页](../README.md) · [英文首页](../README_EN.md) · [功能证据台账](CAPABILITIES_AND_EVIDENCE.md) · [发布门禁](../PUBLIC_RELEASE_GATE.md) · [8197 正式版完整能力目录](https://github.com/asd454314633-byte/H3-Chinese-Director/blob/main/docs/CAPABILITY_CATALOG.md) · [工作流选择指南](../workflows/current/README.md)
 
 **最后边界：** 本文使用公开源码与已有历史资料、作者本人长期使用陈述重建功能目录；尚未直接扫描作者 Windows 上的 D: 等本地目录，也未重新运行 GPU 或浏览器 E2E，因此不冒充“本机逐项源码/回执重新终验”。
+
+
+## 2026-10-16新增能力（2026-10-17同步）
+
+既有76项目录保留，新增G01–G08共8项，合计84个目录条目；目录条目数不是GPU测试次数。详情和实现路径见[本次更新](UPDATE_20261016.md)。
+| 编号 | 更新 | 执行体 / 使用方法 | 已有证据与边界 |
+|---|---|---|---|
+| G01 | 完整歌曲一次输入 | H3_LongSong；启用长歌，选一个完整WAV或带音轨长MP4 | 内部解码/取段，原文件不修改；MP4走同一音轨解码路径；任意容器兼容性未穷举 |
+| G02 | 按真实帧数自动取段 | nodes.py interval；生成帧、已保存帧、Native39帧及Clean Rebase共同计算 | 原2–15秒参考音频预检保留；362帧=15.083333秒时只给模型最多15秒参考；输出保留对应原曲PCM |
+| G03 | 指定音轨驱动与原曲输出 | H3ExactAudioLock；音频latent锁定；Clean Rebase保持Ref2VA参考路径 | 本机历史六段54.25秒原曲版获用户粗同步认可；不是逐音素口型模型，不保证每个提示词开口演唱 |
+| G04 | 明确音频起点 | start_contract.js / start_validation.py；默认0；支持“音频起点=12.5秒”、01:02.5及从原曲开头 | 提示词明确起点优先于首句歌词定位和UI；只写第一句歌词须填写秒数，不猜歌词；12解析案例、72图适配检查通过 |
+| G05 | 接续与起点一致性 | GPU前核验原曲SHA、前段成功回执及时间轴 | 起点/原曲变化拒绝；旧52秒视频不会重标为0秒，须重新生成 |
+| G06 | 超时、裁剪及解码恢复修复 | h3_six_execute.js、attempt_lifecycle.py、NativeContinuation、recovery.py | 移除300秒整段生成硬截止，保留HTTP超时/手动取消/真实失败；清理旧trim事件；仅从同任务已保存Native恢复解码，不重采样、不伪造成功 |
+| G07 | 默认关闭的跨组六段接续 | cross_group.js / cross_group.py / PreBake；绑定上一组真实成功第6段 | 下一组第1段显式prev_latent；验证回执、Native、SHA和项目身份；不开关沿用旧路径；缺证据中文报错 |
+| G08 | 跨组音频与CPU合并 | global_boundary / cross-group merge | 示例保存起点82.375秒；raw80.750至95.833333，362帧裁39一次后323帧；合并已裁片段不再裁39，连续原曲音轨只铺一次 |

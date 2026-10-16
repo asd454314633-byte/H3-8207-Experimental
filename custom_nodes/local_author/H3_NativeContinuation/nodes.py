@@ -444,6 +444,7 @@ class H3ContinuationAssemble:
                 "images": ("IMAGE",),
                 "audio": ("AUDIO",),
                 "fps": ("FLOAT", {"default": float(core.FPS), "min": 1.0, "max": 120.0}),
+                "cross_group_json": ("STRING", {"default": ""}),
             },
         }
 
@@ -452,9 +453,14 @@ class H3ContinuationAssemble:
     FUNCTION = "run"
     CATEGORY = CATEGORY
 
-    def run(self, project_id="", images=None, audio=None, fps=float(core.FPS)):
+    def run(self, project_id="", images=None, audio=None, fps=float(core.FPS),cross_group_json=''):
         store = core.ContinuationStore(_output_root(), project_id)
         index = store.load_index()
+        if cross_group_json:
+            import copy,nodes
+            proof=nodes.NODE_CLASS_MAPPINGS['H3CrossGroupPrevious'].verify(cross_group_json)
+            if proof['source_project']==project_id:raise ValueError('跨组组装目标与前驱相同')
+            index=copy.deepcopy(index);index['_external_first_prefix']=True
 
         final_frames = int(images.shape[0]) if images is not None else None
         final_duration = (final_frames / float(fps)) if final_frames is not None else None

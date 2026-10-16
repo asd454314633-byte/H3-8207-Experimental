@@ -35,3 +35,8 @@ Scope: local technical readiness of the audited, source-only experimental packag
 `GITHUB_PUBLICATION = v0.1.0-preview (independent experimental repository)`
 
 Users must follow the build and third-party installation instructions, obtain models separately, and configure model paths. This gate does not claim live setup, node registration, video quality, provider connectivity, or current-candidate automated GPU E2E success. The separately archived historical results and the user's manual acceptance remain accurately labeled.
+
+
+## 2026-10-17 同步增补
+
+[10月16日能力、修复及分级验收](docs/UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。

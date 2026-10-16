@@ -42,3 +42,8 @@ The spatial test executes the actual Native preparation and audit classes agains
 The public portability adapter also retains the previously audited generic receipt protections (success, prompt identity and latent SHA). Legacy unbound receipts cannot bypass these checks. This sanitized adapter is not presented as byte-identical to the local runtime.
 
 Publication regression: 48 executable CPU/JavaScript tests passed (11 spatial, 11 PreBake state, 9 release guards, 16 workflow helpers, 1 frontend/backend bridge), plus integrity, workflow sanitization and smoke checks. A clean pinned-source rebuild passed. No GPU or live browser acceptance is claimed for this public build.
+
+
+## 2026-10-17 同步增补
+
+[10月16日能力、修复及分级验收](UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。

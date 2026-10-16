@@ -109,3 +109,8 @@
 - **许可与隐私边界：** [THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES.md) · [隐私审核](../PRIVACY_SANITIZATION_REPORT.md)。
 
 **本文件展示的是可核查的工程范围与测试口径，不新增任何当前候选 GPU 或真实用户 E2E 验收。**
+
+
+## 2026-10-17 同步增补
+
+[10月16日能力、修复及分级验收](UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。

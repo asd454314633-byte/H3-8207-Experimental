@@ -491,12 +491,12 @@ def resolve_guides(keyframes: list, protected_frames: int, frame_count: int):
 # deterministic assembly assertions
 # --------------------------------------------------------------------------
 
-def expected_total_frames(segments: list, prefix_frames: int = VIDEO_PREFIX_FRAMES) -> int:
+def expected_total_frames(segments: list, prefix_frames: int = VIDEO_PREFIX_FRAMES, external_first_prefix=False) -> int:
     """Segment 1 contributes fully; every later segment loses its prefix once."""
     if not segments:
         return 0
     ordered = sorted(segments, key=lambda s: int(s["segment_index"]))
-    total = int(ordered[0]["frames"])
+    total = int(ordered[0]["frames"]) - (int(prefix_frames) if external_first_prefix else 0)
     for s in ordered[1:]:
         total += int(s["frames"]) - int(prefix_frames)
     return total
@@ -522,12 +522,15 @@ def assert_assembly(index: dict,
 
     # 1. the 39 frame prefix of every continuation segment is trimmed exactly once
     continuation_indices = {int(s["segment_index"]) for s in segments[1:]}
+    if index.get('_external_first_prefix') and segments:
+        continuation_indices.add(int(segments[0]['segment_index']))
     counts: dict[int, int] = {}
     for ev in trims:
         counts[int(ev["segment_index"])] = counts.get(int(ev["segment_index"]), 0) + 1
+    frames_by_index = {int(s["segment_index"]): int(s["frames"]) for s in segments}
+    # Stale/foreign trim records must produce a failed check, not StopIteration.
     bad_once = {i: c for i, c in counts.items()
-                if c != 1 or int(next(s["frames"] for s in segments
-                                      if int(s["segment_index"]) == i)) == 0}
+                if c != 1 or frames_by_index.get(i, 0) == 0}
     stray = sorted(set(counts) - continuation_indices)
     add("trim_once_per_continuation_prefix",
         not bad_once and not stray,
@@ -544,7 +547,7 @@ def assert_assembly(index: dict,
 
     # 2. frame bookkeeping
     if final_frames is not None:
-        exp = expected_total_frames(segments, prefix_frames)
+        exp = expected_total_frames(segments, prefix_frames, index.get('_external_first_prefix',False))
         add("final_frame_count", int(final_frames) == exp,
             "expected=%d actual=%s" % (exp, final_frames))
         if final_duration is not None:

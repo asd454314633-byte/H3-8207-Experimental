@@ -48,3 +48,8 @@
 - The public 8207 preview has **no same-version full six-segment GPU end-to-end acceptance**. For the validated frozen 8197 line, use the [production repository](https://github.com/asd454314633-byte/H3-Chinese-Director).
 
 以上仅为公开工作流**结构索引**，不是新增加的运行验收报告。
+
+
+## 2026-10-17 同步增补
+
+[10月16日能力、修复及分级验收](../../docs/UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。

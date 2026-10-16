@@ -247,7 +247,13 @@ def fork(source, ledger, state_lock=None, requested_index=None):
                                   'prompt_ids': {i: r['prompt_id'] for i, r in inherited.items() if i.isdigit()},
                                   'merge_status': 'WAITING_6_OF_6' if enabled else 'DISABLED',
                                   'merge_prompt_id': None, 'merge_output': None}}}
-    p.atomic_json(new / 'index.json', {**index, 'project_id': binding['project_id'], 'segments': retained})
+    # A fork inherits trim evidence only for the exact retained segment assets.
+    # Do not copy trims from outputs invalidated or omitted by this execution.
+    retained_indices = {int(s['segment_index']) for s in retained}
+    retained_trims = [e for e in index.get('trim_events', [])
+                      if int(e['segment_index']) in retained_indices]
+    p.atomic_json(new / 'index.json', {**index, 'project_id': binding['project_id'],
+                                    'segments': retained, 'trim_events': retained_trims})
     p.atomic_json(new / 'six_acceptance.json', inherited)
     p.atomic_json(p.ledger_path(binding), data)
     return binding, data

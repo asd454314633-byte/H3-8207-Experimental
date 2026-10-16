@@ -486,6 +486,7 @@ def plan(payload,state_lock=None):
  return {'invalidated_video_from':min(invalidated) if invalidated else None,'plans':plans,'group_id':ctx['group_id'],'project_id':ctx['project_id'],'binding':binding}
 def generate(payload,state_lock=None):
  g=clean_graph(payload['graph']);ctx=payload['context'];i=int(payload['index']);ct=payload['contract_json'];c,key=codec.verified_contract(ct)
+ if g.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json'):raise ValueError('跨组仅允许现有长歌动态参考链，禁止绕过受控Fallback提交')
  if c['group_id']!=ctx['group_id'] or c['segment_id']!=str(i) or c['prompt_sha256']!=codec.digest(payload['text'].encode()):raise ValueError('Final text/group mismatch')
  cached,_,_=codec.load(ct,restore_device=False) # complete content validation before Generate; never old cache fallback
  cached_guides=None
@@ -556,25 +557,33 @@ def archive_attempt(entry):
 
 def graph_digest(graph):return codec.digest(codec.canonical(clean_graph(graph)))
 
+def cross_group_gate(graph,ctx,index):
+ raw=graph.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json')
+ if not raw and 'CROSS_GROUP_PREVIOUS' not in graph:return None
+ import nodes
+ guard=nodes.NODE_CLASS_MAPPINGS.get('H3CrossGroupPrevious')
+ if guard is None:raise ValueError('跨组校验节点未加载，禁止提交GPU')
+ return guard.verify_graph(graph,ctx,index)
+
 def validate_deadline(attempt,h=None):
  if attempt.get('stop_reason'):raise ValueError('Attempt stopped: '+attempt['stop_reason'])
- if attempt.get('runtime_seconds',0)>300:raise ValueError('Video exceeded 300 second monotonic deadline')
- if h and attempt.get('deadline_epoch') and not attempt.get('monotonic_completion_proven'):
-  stamps=[float(d['timestamp'])/1000 for e,d in h['status'].get('messages',[]) if e=='execution_success' and 'timestamp' in d]
-  if not stamps or max(stamps)>attempt['deadline_epoch']:raise ValueError('Video exceeded 300 second deadline or completion time unproven')
+ # Elapsed time is observational only. Explicitly stopped attempts stay rejected.
 
 def fallback(payload,state_lock=None):
  ctx=payload['context'];i=int(payload['index']);g=clean_graph(payload['graph'])
+ cross=cross_group_gate(g,ctx,i)
  with LOCK,state_lock or nullcontext():
   binding,data=bound_context(ctx);entry=data['segments'].get(str(i),{})
   if entry.get('conditioning_status')!='DYNAMIC_FALLBACK' or payload['cache_key']!=entry.get('cache_key') or codec.digest(payload['text'].encode())!=entry.get('final_prompt_sha256'):raise ValueError('Fallback contract/revision mismatch')
   independent=binding['start_mode']=='independent' and i==binding['start_index']
   prep=next(n['inputs'] for n in g.values() if n['class_type']=='H3ContinuationPrepare')
-  if i<binding['start_index'] or (prep.get('enabled') is True)!=(i>0 and not independent):raise ValueError('Fallback inheritance/start policy mismatch')
+  if cross and independent:raise ValueError('跨组必须选择连续续跑，不能独立开始')
+  if i<binding['start_index'] or (prep.get('enabled') is True)!=((i>0 and not independent) or bool(cross and i==0)):raise ValueError('Fallback inheritance/start policy mismatch')
   if i>0 and not independent and not (prep.get('clean_rebase_enabled') is True and i==prep.get('clean_rebase_segment')):verify_predecessor(ctx,i)
   if entry.get('attempt',{}).get('status') in ('PREPARED','PENDING','CANCELLING','BLOCKED'):raise ValueError('Segment already has an active attempt')
   attempt={'attempt_id':uuid.uuid4().hex,'project_id':ctx['project_id'],'group_id':ctx['group_id'],'execution_version':ctx['execution_version'],'revision':entry['revision'],'cache_key':entry['cache_key'],'status':'PREPARED','prepared_at_epoch':time.time(),'prompt_id':None,'route':'DYNAMIC_FALLBACK'}
   attempt['snapshot']={'text':payload['text'],'context':copy.deepcopy(ctx),'predecessor_index':i-1 if i>0 and not independent and not (prep.get('clean_rebase_enabled') is True and i==prep.get('clean_rebase_segment')) else None}
+  if cross:attempt['snapshot']['cross_group']=copy.deepcopy(cross)
   claim={'context':ctx,'index':i,'attempt_id':attempt['attempt_id']}
   for n in g.values():
    for k,v in list(n['inputs'].items()):

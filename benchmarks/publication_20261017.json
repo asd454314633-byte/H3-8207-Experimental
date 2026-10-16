@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-17",
+  "source_date": "2026-10-16",
+  "scope": "CPU/static/publication only",
+  "updated_sources": 16,
+  "python_js_syntax": "PASS",
+  "test_suites": {
+    "timeline_and_cross_start": 5,
+    "frontend_start_parser": 2,
+    "release_guards": 9,
+    "adaptive_v1": 7,
+    "native_spatial_prefix": 11,
+    "prebake_runtime_contract": 11,
+    "workflow_helpers_js": 16,
+    "frontend_python_bridge": 1
+  },
+  "test_cases": 62,
+  "offline_integrity": "PASS",
+  "json_files": 208,
+  "source_inventory_files": 152,
+  "workflow_files": 193,
+  "current_workflows": 12,
+  "full_pack_file_hashes": "PASS",
+  "zip_members": "PASS",
+  "local_history_records_observed": 38,
+  "cross_group_history_records_observed": 0,
+  "gpu_submissions": 0,
+  "public_build_gpu": "NOT_TESTED",
+  "cross_group_gpu": "NOT_TESTED",
+  "receiver_fresh_install": "HOLD"
+}
