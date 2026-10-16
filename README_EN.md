@@ -6,6 +6,9 @@
 
 Includes the complete V29 workflows, custom nodes, features and optimizations, and the implementation conditions needed for deployment. Traceability materials are provided for all 76 capabilities. After downloading, give the pack to your own AI Agent and start with the packaged 包内 `00_接收方Agent_执行顺序.md`. Third-party nodes and models not distributed in the pack must be obtained from the original authors at the pinned versions documented in the pack, subject to their licenses. This is a complete source and capability handoff; it does not mean GPU runtime acceptance has been completed in the recipient's environment.
 
+> **Workflow scope:** This repository includes **12 workflow JSON files**. Only **`wf_05` is the MiniMax-H3 V29 six-segment video-director workflow**. The other **11 workflows are the author's independent auxiliary image-production tools** for image generation, editing, processing, or comparison; **they are not part of the H3 video-director functionality or required H3 dependencies**. The shared `h3_8207_wf_XX` filename prefix is an archive naming convention, not an H3 integration claim. See the [workflow selector](workflows/current/README.md) for the individual files.
+
+
 ## 2026-10-14 main update: Adaptive V1 and a real local six-segment run
 
 **Adaptive V1 is promoted on local 8207 and passed real History recovery, original-player refill and complete playback.** Six validated files are synchronized byte-for-byte. Metadata/types/topology discovery, 24 vs 24.0 normalization, immutable task snapshots and semantic workflow versions do not hardcode nine references, a private story or node IDs. Missing capabilities are still reported.
