@@ -1,63 +1,44 @@
 {
-  "captured_at_local": "2026-10-19T19:44:58.701394+08:00",
-  "scope": "8207/8210 local recovery and compiler-preview evidence only; excludes 8197, 8213, model weights, raw logs, original videos, credentials, private browser captures.",
-  "live_state": {
-    "8207_listener": "127.0.0.1:8207 PID 23548",
+  "offline_tests": {
+    "independent_compiler_rules": "PASS",
+    "branch_recovery": "PASS 2/2",
+    "prebake_cpu_regression_cuda_disabled": "PASS 11/11",
+    "javascript_syntax": "PASS"
+  },
+  "live_acceptance": {
+    "timestamp_local": "2026-10-19 20:08 Asia/Shanghai",
+    "8207_pid": 33568,
     "8207_queue_running": 0,
     "8207_queue_pending": 0,
-    "8210_listener": "127.0.0.1:8210 PID 44116",
-    "history_prompt_id": "481b2639-9b76-4cef-a72e-86822259529b",
-    "history_status": "success",
-    "history_completed": true,
-    "history_video": "LongSong_20261016/segment_00059_.mp4",
-    "history_video_bytes": 4604391,
-    "history_video_sha256": "610E19B1866FBFFA602CB72AFE87C754A31880F2BB4146A7AC223A49D9394B05",
-    "h3_graph_nodes": 181,
-    "prebake_enabled": true
-  },
-  "compiler_preview": {
-    "origin": "http://127.0.0.1:8207/",
-    "route": "same-origin /h3/compiler -> 127.0.0.1:8210",
-    "sample_raw": "林薇在雨后的街道上慢慢走向路灯，停下脚步，抬头看向夜空。",
-    "success_status": "COMPILED",
-    "success_elapsed_seconds": 3.081,
-    "compiler_validation_valid": true,
-    "actual_connected_picture_count": 9,
-    "actual_connected_video_count": 0,
-    "actual_connected_audio_count": 1,
-    "picture_role_id_purpose_note_all_blank": true,
-    "full_official_prompt": "subject_definitions:\n<Subject 1> is Lin Wei, in their twenties a young woman.\n\nsummary:\n[reference generation] Lin Wei after the rain a street take it easy walks toward roadlights, stops footsteps, lifts their head looks at night sky\n\nretention_analysis:\n<Subject 1> (appears in [Shot 1]): fully_preserved - in their twenties a young woman.\n\ndetailed_description:\n[Shot 1] Lin Wei after the rain a street take it easy walks toward roadlights, stops footsteps, lifts their head looks at night sky.\n\noverall_soundscape:\nN/A\n\nnon_diegetic_music:\nN/A",
-    "fallback_test_status": "RAW_FALLBACK",
-    "fallback_error": "Ref2VA 至少需要一张已连接的参考图或参考视频。",
-    "fallback_used_equals_raw": true,
-    "gpu_submission": false,
-    "ai_director_called": false
-  },
-  "tests": {
-    "test_independent_compiler_rules.mjs": "PASS",
-    "test_branch_recovery.py": "PASS (2 tests)",
-    "test_prebake_regression_adapted.py": "PASS (11 tests; CUDA_VISIBLE_DEVICES=-1; synthetic temp directories; no service or GPU started)",
-    "node_syntax_checks": "PASS for h3_six_compiler.js, h3_six_segment_director.js, h3_six_compiler_preview_ui.js"
-  },
-  "preservation": {
-    "8197": "untouched",
-    "8213": "untouched",
-    "frozen_8210_app_source": "not modified; app/server.py SHA256 513784ABD9EFFEA29D072C65E8DCCED4FBD13CD79C29693DA2E372DEF2A596C1",
-    "six_prompt_original_textarea": "not overwritten; browser value restored after preview",
-    "raw_logs_and_media": "excluded from public archive; retained locally"
-  },
-  "ui_runtime_note": "Existing BrowserOS page remained open to protect its unsaved workflow. The exact new preview UI module was dynamically loaded into that tab for real HTTP acceptance. The on-disk extension integration is syntax-checked; a full page reload/restart was not done in this capture.",
-  "private_raw_log_backup": {
-    "local_directory": "D:\\H3导演台项目目录\\_parallel_v29_chinese_ui_8207\\evidence_private\\2026-10-19",
-    "listener_watch.log": {
-      "bytes": 11278,
-      "sha256": "4B19C933C946D38370C47912ED63F094712DC24412BDF55C93913057AF94425F"
+    "8210_pid": 55976,
+    "8210_task": "H3-8210-Managed",
+    "8210_task_state": "Running",
+    "same_origin_health": "HTTP 200",
+    "plain_chinese_raw": "林薇在雨后的街道上慢慢走向路灯，停下脚步，抬头看向夜空。",
+    "compile_status": "COMPILED",
+    "compile_endpoint_elapsed_ms": 2372.9,
+    "preview_ui_elapsed_ms": 3581,
+    "official_validator_valid": true,
+    "live_reference_counts": {"pictures": 9, "videos": 0, "audios": 1},
+    "picture_roles_purposes_notes": "all empty; no inferred responsibility or Subject binding",
+    "raw_textarea_changed": false,
+    "gpu_submitted": false,
+    "failure_path": {
+      "real_8210_error": "Ref2VA 至少需要一张已连接的参考图或参考视频。",
+      "status": "RAW_FALLBACK",
+      "used_equals_raw": true
     },
-    "listener_forensics.log": {
-      "bytes": 284234,
-      "sha256": "6EA12468515C99A2D1280CAADB894421E2C7BE6B1EFF594F184F8E0D2C4A1931"
+    "no_explicit_role_path": {
+      "state": "UNCHANGED",
+      "state_endpoint_http": 200,
+      "compile_endpoint_called": false,
+      "reason": "No explicit role profile match in raw prompt; source text is retained unchanged."
     },
-    "public_upload": false,
-    "originals_retained": true
+    "network_timeout_root_cause": "The shared aiohttp session had a 4 second total timeout reused by compile requests; compile response exceeded it and 8210 logged WinError 10053 while returning response. Fixed by 300 second shared total and a per-health 4 second timeout.",
+    "zero_reference_cleanup": "No deletion or isolation; no provably zero-reference candidate identified.",
+    "observation_window": "about 5m13s after last 8207 start; not a long-term stability claim",
+    "history_limitation": "In-memory SQLite History was cleared by authorized 8207 restart; pre-restart snapshot and output hashes retained privately.",
+    "static_extension_reload": "Not verified; active browser page preserved without reload.",
+    "gpu_generation": "NOT_RERUN"
   }
 }

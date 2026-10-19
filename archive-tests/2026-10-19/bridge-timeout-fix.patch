@@ -1,0 +1,148 @@
+diff --git "a/C:\\Users\\ZHAOCHEN\\AppData\\Local\\Temp\\h3_bridge_before.py" "b/C:\\Users\\ZHAOCHEN\\AppData\\Local\\Temp\\h3_bridge_after.py"
+index 8cfd334..1c0e5c2 100644
+--- "a/C:\\Users\\ZHAOCHEN\\AppData\\Local\\Temp\\h3_bridge_before.py"
++++ "b/C:\\Users\\ZHAOCHEN\\AppData\\Local\\Temp\\h3_bridge_after.py"
+@@ -1,19 +1,114 @@
+ # H3 六段独立编译器桥（8207侧最小适配，2026-10-19）
+-#
+-# 目的：8210 冻结编译器（H3_中文提示词编译器，127.0.0.1:8210）不支持跨域，
+-# 浏览器页面（同源 127.0.0.1:8207）无法直接调用其公开 HTTP API。
+-# 本扩展只做一件事：把同源 /h3/compiler/* 请求**原样转发**到 127.0.0.1:8210/*。
+-#
+-# 硬边界：
+-#   * 只转发，不改写请求与响应、不缓存、不重试、不做任何编译逻辑；
+-#   * 8210 不可达时如实返回 502，由前端按任务要求阻断提交，不回退原稿；
+-#   * 不触碰 8197；不新增节点；不改变队列行为；
+-#   * 8210 冻结源码零改动（仅使用其既有 /api/* 接口）。
++# 只代理到冻结的8210编译器；缺少身份确认时 fail closed，不会另起重复实例。
++import asyncio
++import os
++import socket
++import subprocess
++
+ from aiohttp import ClientSession, ClientTimeout, web
+ from server import PromptServer
+ 
+ UPSTREAM = "http://127.0.0.1:8210"
++TASK_NAME = "H3-8210-Managed"
++PID_FILE = r"D:\H3导演台项目目录\H3_中文提示词编译器\data\server.pid"
+ _session = None
++_start_lock = None
++
++
++async def _http_health():
++    global _session
++    if _session is None:
++        # Keep the shared proxy session long-lived; only the health probe is short.
++        _session = ClientSession(timeout=ClientTimeout(total=300))
++    try:
++        async with _session.get(
++            f"{UPSTREAM}/api/health", timeout=ClientTimeout(total=4)
++        ) as response:
++            if response.status != 200:
++                return False
++            data = await response.json()
++            return data.get("ok") is True
++    except Exception:
++        return False
++
++
++async def _listener_pid():
++    """Read the actual local listener owner without changing network settings."""
++    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
++    try:
++        proc = await asyncio.create_subprocess_exec(
++            "netstat.exe", "-ano", "-p", "tcp",
++            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL,
++            creationflags=flags,
++        )
++        out, _ = await asyncio.wait_for(proc.communicate(), timeout=3)
++        if proc.returncode != 0:
++            return None
++        for line in out.decode("utf-8", errors="replace").splitlines():
++            parts = line.split()
++            if len(parts) >= 5 and parts[0].upper() == "TCP" and parts[1].endswith(":8210") and parts[3].upper() == "LISTENING":
++                return int(parts[-1])
++    except Exception:
++        return None
++    return None
++
++
++def _recorded_pid():
++    try:
++        return int(open(PID_FILE, "r", encoding="ascii").read().splitlines()[0].strip())
++    except Exception:
++        return None
++
++
++async def _ready():
++    if not await _http_health():
++        return False
++    recorded = _recorded_pid()
++    owner = await _listener_pid()
++    return bool(recorded and owner and recorded == owner)
++
++
++async def _port_open():
++    try:
++        reader, writer = await asyncio.wait_for(asyncio.open_connection("127.0.0.1", 8210), timeout=0.4)
++        writer.close()
++        await writer.wait_closed()
++        return True
++    except Exception:
++        return False
++
++
++async def _ensure_compiler():
++    global _start_lock
++    if await _ready():
++        return True, ""
++    if _start_lock is None:
++        _start_lock = asyncio.Lock()
++    async with _start_lock:
++        if await _ready():
++            return True, ""
++        # A listening but unhealthy or identity-mismatched process is not ours to replace.
++        if await _port_open():
++            return False, "8210端口已有监听，但健康状态或PID身份不一致；为避免覆盖未知实例，未启动新服务。"
++        try:
++            proc = await asyncio.create_subprocess_exec(
++                "schtasks.exe", "/Run", "/TN", TASK_NAME,
++                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
++                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000),
++            )
++            stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=5)
++            if proc.returncode != 0:
++                detail = (stderr or stdout).decode("utf-8", errors="replace").strip()
++                return False, f"无法启动受管任务 {TASK_NAME}：{detail or proc.returncode}"
++        except Exception as exc:
++            return False, f"启动受管任务失败：{exc}"
++        for _ in range(50):
++            if await _ready():
++                return True, ""
++            if await _port_open():
++                return False, "8210已出现监听，但健康或PID核验未通过；未重复启动。"
++            await asyncio.sleep(0.2)
++        return False, "8210受管启动超时；未提交请求。"
+ 
+ 
+ async def _proxy(request):
+@@ -21,6 +116,9 @@ async def _proxy(request):
+     origin = request.headers.get("Origin")
+     if origin and origin != f"{request.scheme}://{request.host}":
+         return web.json_response({"error": "Origin rejected"}, status=403)
++    ready, reason = await _ensure_compiler()
++    if not ready:
++        return web.json_response({"error": reason}, status=502)
+     tail = request.match_info["tail"]
+     body = await request.read()
+     if _session is None:
+@@ -38,7 +136,7 @@ async def _proxy(request):
+                 body=payload,
+                 content_type=upstream.headers.get("Content-Type", "application/json").split(";")[0],
+             )
+-    except Exception as ex:  # 8210 不可达：如实上报，绝不回退
++    except Exception as ex:
+         return web.json_response({"error": f"8210 unreachable: {ex}"}, status=502)
+ 
+ 

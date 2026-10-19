@@ -1,29 +1,29 @@
-# 2026-10-19 8207/8210 Recovery Acceptance Report
+# 2026-10-19 8207 / 8210 收口验收（追加修订）
 
-## Current runtime snapshot
+## 当前状态（2026-10-19 20:08 Asia/Shanghai）
 
-- 8207: `127.0.0.1:8207`, listener PID 23548; queue running 0, pending 0.
-- 8210: `127.0.0.1:8210`, listener PID 44116; compiler health 200 and same-origin proxy health 200.
-- Existing History prompt `481b2639-9b76-4cef-a72e-86822259529b`: success/completed, output `LongSong_20261016/segment_00059_.mp4`, 4,604,391 bytes, SHA256 `610E19B1866FBFFA602CB72AFE87C754A31880F2BB4146A7AC223A49D9394B05`.
-- No GPU task was submitted for this compiler-preview acceptance.
+- 8207：HTTP `/queue` 返回 running=0、pending=0；监听 `127.0.0.1:8207` PID 33568，进程命令为 `D:\ComfyUI\ComfyUI_H3_V26_Lab\venv\Scripts\python.exe -u main.py --listen 127.0.0.1 --port 8207 ...`。本次未提交或重提 GPU 工作。
+- 8210：监听 `127.0.0.1:8210` PID 55976；PID 文件与端口属主一致；Task Scheduler `H3-8210-Managed` 状态 Running；8207 同源健康代理返回 `{"ok":true}`，8210 `/api/health` HTTP 200。
+- 8210冻结源码 `app/server.py` 未变（SHA256 `513784ABD9EFFEA29D072C65E8DCCED4FBD13CD79C29693DA2E372DEF2A596C1`）。正式 `start.ps1` 保留。托管包装器与停止信号脚本位于 `ops/`，不依赖 WorkBuddy 控制台生命周期。
 
-## Real compiler preview
+## 因果修复与真实预览
 
-The plain Chinese raw prompt was: “林薇在雨后的街道上慢慢走向路灯，停下脚步，抬头看向夜空。” The browser called 8210 through the existing 8207 same-origin proxy. 8210 returned a complete official-format prompt and its validator returned `valid=true` in 3.081 seconds. The live workflow had 9 connected pictures, 0 videos, and 1 audio; pictures were sent with empty `role_id`, `purpose`, and `note`. The compiler preview did not alter the six-prompt source textarea and did not queue GPU work.
+- 修复前的 8207→8210 共用 aiohttp 客户端曾设置 4 秒总超时；实际 8210 编译响应超过该值时，桥接层先行中断并在8210日志留下 `ConnectionAbortedError: [WinError 10053]`。这解释了此前预览/编译失败，是本机请求超时配置，不是外网掉线。桥接层现改为共享请求会话 300 秒，健康探测单独使用 4 秒超时；只改8207桥接，不改8210冻结应用。
+- 修复后使用普通中文原稿 `林薇在雨后的街道上慢慢走向路灯，停下脚步，抬头看向夜空。` 通过8207同源代理真实调用8210：`/api/compile` 响应 2372.9 ms，完整预览 UI 完成约 3581 ms，官方格式校验 `valid=true`。状态 `COMPILED`，原输入框未被改写，本次预览拟用完整编译稿；图接线统计为图片9、视频0、音频1，图片用途与Subject绑定均留空。预览没有提交GPU。
+- 使用无参考图合成快照作失败路径验证：真实8210返回 `Ref2VA 至少需要一张已连接的参考图或参考视频。`；界面状态 `RAW_FALLBACK`，拟用文本与原稿逐字相同。此分支是实际服务响应，不是伪造结果。
+- 不含角色档案命中的普通中文输入显示 `UNCHANGED`：已真实读取8210 `/api/state`（HTTP 200，版本1.0.0、角色2），但未调用 `/api/compile`，原因是原稿没有明确角色匹配，不足以形成结构化主体信息；原稿保持原样，可继续生成。它与“未触发编译”以及“编译后隐藏结果”在UI状态中分别区分。
 
-The full returned prompt is in `test-results.json`.
+## 服务生命周期、风险与覆盖
 
-A separate real 8210 compile attempt with no connected picture/video returned `Ref2VA 至少需要一张已连接的参考图或参考视频。` The preview result was `RAW_FALLBACK`, and the prospective used text equaled the original Chinese prompt exactly.
+- `H3-8210-Managed` 使用 Task Scheduler、`pythonw.exe`、InteractiveToken、IgnoreNew多实例策略；关闭WorkBuddy不会作为其父宿主。已通过停止标记完成一次受控停止，再由8207健康代理按需拉起；PID文件与LISTENING属主重新一致，Task状态Running。无需常驻可见PowerShell；手动正式启动器仍可单独使用。
+- 8207队列为空时才执行了两次经授权的8207实例重启以加载同源桥接及超时修复；当前8207实例PID33568。短时观察从20:03:06至20:08:19（约5分13秒）；只证明窗口内HTTP可用，不等于长期稳定性保证。
+- 重启前ComfyUI History 使用内存SQLite；成功任务 `481b2639-9b76-4cef-a72e-86822259529b` 的History在重启后不能从当前API取回。重启前快照及输出哈希已私密留存；输出视频仍在，未删除历史/receipt/latent。
+- 零引用清理审计没有发现可确定零引用的目标；未删除、未移动任何历史文件。19e异常分支、身份不明资料及旧队列全部保留。
+- 8207六段UI源模块已语法检查，现有活动页六个预览按钮完成真实编译与失败回退验收；浏览器页面未重载以保护未保存画布，因此重载后的静态扩展自动注入仍未单独验证。
+- 六段提示框、续接/PreBake源代码和生产执行图未因本次编译预览验收改写；相关CPU回归记录见 `test-results.json`。GPU_GENERATION=NOT_RERUN。
 
-## Regression tests
+## 修改文件
 
-- Independent compiler rules: PASS.
-- PreBake branch recovery: 2/2 PASS.
-- PreBake CPU regression: 11/11 PASS, with CUDA disabled and temporary synthetic fixtures.
-- JavaScript syntax checks: PASS for the compiler, extension integration, and preview UI module.
-
-## Scope and exclusions
-
-Only 8207-side source and a small 8207 lifecycle patch are included. Frozen 8210 app sources were not changed. Raw listener logs, screenshots, prompt histories, original videos, model files, and any credentials are excluded. Existing local forensic evidence and outputs remain in place. A private local copy of `listener_watch.log` (11,278 bytes; SHA256 `4B19C933C946D38370C47912ED63F094712DC24412BDF55C93913057AF94425F`) and `listener_forensics.log` (284,234 bytes; SHA256 `6EA12468515C99A2D1280CAADB894421E2C7BE6B1EFF594F184F8E0D2C4A1931`) is stored under the local `evidence_private/2026-10-19/` directory. Neither log is in this public package.
-
-The live BrowserOS workflow was not reloaded or restarted in this capture to protect its unsaved state. The new preview module was loaded into that existing tab for actual online acceptance.
+- 8207：`runtime/custom_nodes/h3_six_compiler_bridge/__init__.py`（延长共享编译请求超时，健康请求独立短超时）。
+- 8210旁路运维：`ops/managed_8210_runner.py`、`ops/stop_managed_8210.ps1`；冻结 `app/` 源码未修改。
+- 归档包包含最小源码、差异、CPU/JS测试、在线验收摘要和SHA256清单；未包含敏感原始日志、截图、提示词历史、媒体、模型或凭据。原始私密材料仍留本机。
