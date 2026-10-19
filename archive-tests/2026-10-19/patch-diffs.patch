@@ -1,0 +1,181 @@
+--- a/runtime/custom_nodes/H3_Prompt_Sidecar/web/h3_six_compiler.js
++++ b/runtime/custom_nodes/H3_Prompt_Sidecar/web/h3_six_compiler.js
+@@ -193,3 +193,69 @@
+     // 临时段保留作为原稿/编译稿双存留档（标题含提交标识），不删除。
+   }
+ }
++
++// Explicit, non-GPU preview. The six-prompt source textarea is never changed.
++// Only roles named in the user's raw prompt are passed to the frozen compiler.
++// Real connected pictures are forwarded neutrally; no duty or Subject binding is inferred.
++export async function previewCompilePrompt(rawText, index, snapshot = null) {
++  const raw = String(rawText ?? '');
++  const state = await cfetch('/api/state', undefined, 8000);
++  const project = state.project || state;
++  const roles = project.roles || [];
++  const roleIds = matchRoles(raw, roles);
++  const refs = runtimeRefs(snapshot);
++  const assets = refs.pictures.map(r => ({kind: 'Picture', label: `ref_image_${r.slot}:${r.file}`, connected: true, role_id: '', purpose: '', note: ''}));
++  if (!roleIds.length) {
++    return {
++      status: 'UNCHANGED', raw, used: raw, compiled: '', refSummary: {pictures: refs.pictures.length, videos: refs.videos.length, audios: refs.audios.length},
++      reason: '8210已响应 /api/state，但原稿没有明确匹配到角色档案；未调用 /api/compile。没有结构化角色信息可供编译，预览拟按原稿直通。',
++      compilerResponse: {ok: state.ok === true, endpoint: '/api/state', compiler_version: project.compiler_version || 'unknown'},
++    };
++  }
++
++  const previousActive = project.active_segment_id || null;
++  let previewId = null;
++  try {
++    const added = await cfetch('/api/segment/add', {
++      title: `H3_8207_PREVIEW_S${index + 1}_${crypto.randomUUID().slice(0, 8)}`,
++      mode: 'Ref2VA', duration: 8,
++    }, 15000);
++    previewId = added.segment?.id;
++    if (!previewId) throw Error('8210未返回预览段ID');
++    await cfetch('/api/segment/update', {
++      id: previewId, action_zh: raw, role_ids: roleIds,
++      task_types: ['reference generation'], assets,
++    }, 15000);
++    const result = await cfetch('/api/compile', {
++      id: previewId, action_zh: raw, role_ids: roleIds,
++      task_types: ['reference generation'], assets,
++    }, 240000);
++    const checks = (result.report?.checks || []).filter(c => c.severity === 'error').map(c => c.message);
++    const errors = [...(result.errors || []), ...checks];
++    if (result.ok && result.report?.valid && typeof result.prompt === 'string' && result.prompt.length) {
++      return {
++        status: 'COMPILED', raw, compiled: result.prompt, used: result.prompt, refSummary: {pictures: refs.pictures.length, videos: refs.videos.length, audios: refs.audios.length},
++        reason: `8210 /api/compile 与官方格式校验通过；预览拟用编译稿（尚未提交生成）。角色依据来自原稿显式点名：${roleIds.join(', ')}。`,
++        compilerResponse: result,
++      };
++    }
++    return {
++      status: 'RAW_FALLBACK', raw, compiled: result.prompt || '', used: raw, refSummary: {pictures: refs.pictures.length, videos: refs.videos.length, audios: refs.audios.length},
++      reason: errors.join('；') || '8210返回编译失败或官方格式校验未通过，按原稿直通。',
++      compilerResponse: result,
++    };
++  } catch (error) {
++    return {
++      status: 'RAW_FALLBACK', raw, compiled: '', used: raw, refSummary: {pictures: refs.pictures.length, videos: refs.videos.length, audios: refs.audios.length},
++      reason: `8210预览调用/编译失败：${error.message}；按原稿直通。`,
++      compilerResponse: {ok: false, error: error.message},
++    };
++  } finally {
++    if (previewId) {
++      try { await cfetch('/api/segment/delete', {id: previewId}, 15000); } catch { /* retain response; report cleanup failure in server logs */ }
++    }
++    if (previousActive) {
++      try { await cfetch('/api/segment/select', {id: previousActive}, 15000); } catch { /* do not affect caller */ }
++    }
++  }
++}
+--- a/runtime/custom_nodes/H3_Prompt_Sidecar/web/h3_six_segment_director.js
++++ b/runtime/custom_nodes/H3_Prompt_Sidecar/web/h3_six_segment_director.js
+@@ -1,3 +1,4 @@
++import {installCompilerPreview} from './h3_six_compiler_preview_ui.js?v=20261019preview1';
+ import {app} from '../../../scripts/app.js';
+ import {api} from '../../../scripts/api.js';
+ import {uploadGuide,previewGuide,guideImageURL,watchGuideFrames} from './h3_six_guides.js?v=20261017guide3';
+@@ -89,6 +90,7 @@
+     const binding=node.properties.h3_prebake_binding;
+     if(binding){root.querySelector('.six-project').value=binding.project_id;root.querySelector('.six-start').value=String(binding.start_index);root.querySelector('.six-inheritance').value=binding.start_mode}
+     node.__sixUI=ui;ready=true;snapshot();await restoreProductionExecution(node);
++    installCompilerPreview(ui,root,app);
+     try{await installNativeMerge(root,()=>{const b=node.properties.h3_prebake_binding,g=ui.group?.id;return {group_id:g||b?.group_id||node.properties.h3_prebake_last_plan?.group_id||storyId(node),project_id:g&&b&&g!==b.group_id?g:(b?.project_id||ui.executionSnapshot().project_id),save_video_node_id:saveVideoNodeId()}})}
+     catch(error){root.querySelector('.six-status').textContent+='\n自动拼接未就绪：'+error.message}
+   }catch(error){root.textContent='六段面板加载失败：'+error.message+'；请检查当前实例 Director接口'}
+@@ -121,3 +123,4 @@
+ });
+ 
+ 
++
+--- a/runtime/custom_nodes/h3_conditioning_prebake/attempt_lifecycle.py
++++ b/runtime/custom_nodes/h3_conditioning_prebake/attempt_lifecycle.py
+@@ -16,7 +16,7 @@
+   # 'absent from queue/history' (RECOVERY_FAILED) mid-execution on 2026-10-19.
+   self.executing_pids=set();self.executing_items={}
+   self.monotonic=monotonic or (time.monotonic if clock is time.time else clock)
+-  self.timers={};self.cancel_timers={}
++  self.timers={};self.cancel_timers={};self.identity_mismatch_logged=set()
+  def elapsed(self,a):
+   if a.get('timing_basis')=='execution_start' and not a.get('execution_start_time'):return 0
+   aid=a['attempt_id'];now=self.monotonic()
+@@ -51,7 +51,8 @@
+  def belongs(self,item,a):
+   if item[1]!=a.get('prompt_id'):return False
+   claims=[json.loads(n['inputs']['execution_json']) for n in item[2].values() if n.get('class_type') in ('H3ConditioningLoad','H3AttemptGuard') and n['inputs'].get('execution_json')]
+-  return len(claims)==1 and claims[0].get('attempt_id')==a['attempt_id'] and claims[0].get('context',{}).get('group_id')==a['group_id'] and claims[0].get('context',{}).get('project_id')==a['project_id']
++  context=claims[0].get('context',{}) if len(claims)==1 else {}
++  return len(claims)==1 and claims[0].get('attempt_id')==a['attempt_id'] and all(context.get(k)==a.get(k) for k in ('group_id','project_id','execution_version'))
+  def close(self,ctx,i,data,status,reason,evidence):
+   entry=data['segments'][str(i)];a=entry['attempt']
+   if a['status'] in TERMINAL:return
+@@ -214,7 +215,18 @@
+   bindings=p.execution_state.bindings()
+   for ctx in bindings:
+    data=p.read_state(p.ledger_path(ctx)) or {}
+-   for i in list(data.get('segments',{})):
++   for i,entry in list(data.get('segments',{}).items()):
++    # A successful fork keeps the parent's receipt and provenance separately;
++    # only a live attempt owned by this exact execution is eligible for recovery.
++    attempt=entry.get('attempt')
++    if not attempt:
++     continue
++    if any(attempt.get(k)!=ctx.get(k) for k in ('project_id','group_id','execution_version')):
++     key=(ctx.get('project_id'),ctx.get('execution_version'),int(i),attempt.get('attempt_id'),attempt.get('project_id'),attempt.get('execution_version'))
++     if key not in self.identity_mismatch_logged:
++      logging.error('H3 attempt recovery skipped: immutable attempt identity does not belong to ledger project=%s version=%s segment=%s attempt_id=%s attempt_project=%s attempt_version=%s',*key)
++      self.identity_mismatch_logged.add(key)
++     continue
+     try:self.recover(ctx['project_id'],int(i))
+     except Exception:logging.exception('H3 attempt recovery blocked for %s/%s',ctx['project_id'],i)
+   controller=getattr(self.server,'h3_native_merge_control',None)
+--- a/runtime/custom_nodes/h3_conditioning_prebake/execution_state.py
++++ b/runtime/custom_nodes/h3_conditioning_prebake/execution_state.py
+@@ -233,10 +233,19 @@
+             shutil.copy2(src, dst)
+         if p.codec.file_sha(dst) != receipt['latent_sha256']:
+             raise ValueError('Execution fork latent copy changed')
+-        entry['inherited_from'] = {'project_id': receipt.get('project_id', source['project_id']),
++        parent_attempt = entry.pop('attempt', None)
++        if parent_attempt is not None:
++            entry['inherited_attempt'] = copy.deepcopy(parent_attempt)
++        entry['inherited_from'] = {'story_id': source['story_id'],
++                                   'group_id': source['group_id'],
++                                   'project_id': receipt.get('project_id', source['project_id']),
+                                    'execution_version': receipt.get('execution_version', source['execution_version']),
+                                    'parent_project_id': source['project_id'],
+-                                   'prompt_id': receipt['prompt_id']}
++                                   'parent_execution_version': source['execution_version'],
++                                   'attempt_id': receipt.get('attempt_id') or (parent_attempt or {}).get('attempt_id'),
++                                   'prompt_id': receipt['prompt_id'],
++                                   'revision': receipt.get('revision'),
++                                   'cache_key': receipt.get('cache_key')}
+         inherited[i] = copy.deepcopy(receipt)
+         inherited[i]['inherited_from'] = copy.deepcopy(entry['inherited_from'])
+         inherited[i]['latent_path'] = str(dst)
+--- a/runtime/custom_nodes/h3_conditioning_prebake/production.py
++++ b/runtime/custom_nodes/h3_conditioning_prebake/production.py
+@@ -136,7 +136,7 @@
+    receipts=read_state(ledger_path(binding).parent/'six_acceptance.json')
+    receipt_state='MISSING' if receipts is None and any(s.get('attempt') or s.get('video_status')=='SUCCESS' for s in data['segments'].values()) else ('UNINITIALIZED' if receipts is None else 'PRESENT')
+    # Frontend recovery reads this exact bound ledger, never latest files.
+-   segments={k:{'video_status':v.get('video_status'),'revision':v.get('revision'),'cache_key':v.get('cache_key'),'attempt':v.get('attempt'),'receipt':(receipts or {}).get(k)} for k,v in data['segments'].items()}
++   segments={k:{'video_status':v.get('video_status'),'revision':v.get('revision'),'cache_key':v.get('cache_key'),'attempt':v.get('attempt'),'inherited_attempt':v.get('inherited_attempt'),'receipt':(receipts or {}).get(k)} for k,v in data['segments'].items()}
+    for segment in segments.values():
+     receipt=segment.get('receipt') or {}
+     if segment.get('video_status')=='SUCCESS' and receipt.get('video_output_ref'):
+@@ -146,7 +146,11 @@
+    from .adaptive_bridge import recovery
+    from server import PromptServer
+    for key,segment in segments.items():
+-    try:segment['adaptive_recovery']=recovery(binding,int(key),data['segments'][key],PromptServer.instance)
++    ledger_entry=data['segments'][key]
++    if ledger_entry.get('inherited_from') and ledger_entry.get('video_status')=='SUCCESS' and (receipts or {}).get(key,{}).get('status')=='SUCCESS':
++     segment['adaptive_recovery']=None
++     continue
++    try:segment['adaptive_recovery']=recovery(binding,int(key),ledger_entry,PromptServer.instance)
+     except Exception as ex:segment['adaptive_recovery_error']=str(ex)
+    return {'state':'BOUND','receipt_state':receipt_state,'binding':binding,'segments':segments}
+   if action!='bind':raise ValueError('Unknown story action')
