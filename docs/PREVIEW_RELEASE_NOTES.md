@@ -47,3 +47,9 @@ Publication regression: 48 executable CPU/JavaScript tests passed (11 spatial, 1
 ## 2026-10-17 同步增补
 
 [10月16日能力、修复及分级验收](UPDATE_20261016.md)。长歌/音频起点/跨组接续源码已同步，默认跨组关闭；原12图和旧发布保留。公开包GPU和跨组GPU仍NOT_TESTED/HOLD；历史验收仅适用于其日期和所测范围。
+
+## 2026-10-19 follow-up: inherited attempt scan classification
+
+The current source now classifies mismatched attempts before recovery: verified terminal attempts from an ancestor execution are audit-only; unproven records remain unconfirmed and isolated. Exact current prompt IDs and execution identities remain guarded. The deidentified 198+1 regression passed repeated scans and evidence-change reclassification.
+
+A live 8207 process was observed for 60 seconds with no new console-log writes. Its loaded lifecycle SHA predates the current source; runtime activation remains HOLD because this task prohibits a restart. This package does not claim that the running service has loaded the fix. GPU generation, a clean package installation, and public-build E2E remain HOLD/NOT_TESTED. See [live follow-up evidence](evidence_archive/2026-10-19/attempt-history-live-followup.md).

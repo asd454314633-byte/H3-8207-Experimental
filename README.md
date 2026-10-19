@@ -159,3 +159,7 @@
 [长歌一次输入、明确X秒起点、超时恢复、默认关闭的跨组六段接续与验收范围](docs/UPDATE_20261016.md)。16份本机源码按SHA同步；跨组GPU及公开构建GPU仍NOT_TESTED，8197未部署更改。
 
 [六段独立关键帧更新](docs/UPDATE_20261017_SIX_GUIDES.md)：56项CPU检查及服务端提交图通过；GPU视觉验收等待用户录屏。
+
+## 2026-10-19 PreBake history follow-up
+
+Legacy fork attempts are classified against parent execution ancestry and exact terminal receipts before recovery. Verified parent history stays out of the current attempt path; unconfirmed records remain preserved and isolated. Repeated scans with unchanged evidence emit only one aggregate audit record, while evidence changes are re-evaluated. CPU regression passed against local, GitHub main, and full-capability source copies. The running 8207 process still has the older module loaded, so runtime activation is **HOLD** pending a safe, explicitly permitted restart. See [evidence](docs/evidence_archive/2026-10-19/attempt-history-live-followup.md) and [acceptance matrix](docs/FULL_DISTRIBUTION_ACCEPTANCE_MATRIX_ZH.md).

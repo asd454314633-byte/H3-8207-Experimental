@@ -159,3 +159,7 @@ Private paths, original story text, input references, ledgers, caches, logs, sec
 [长歌一次输入、明确X秒起点、超时恢复、默认关闭的跨组六段接续与验收范围](docs/UPDATE_20261016.md)。16份本机源码按SHA同步；跨组GPU及公开构建GPU仍NOT_TESTED，8197未部署更改。
 
 [Six-segment user keyframe update](docs/UPDATE_20261017_SIX_GUIDES_EN.md): CPU graph routing passed; visual GPU acceptance is pending a user-run review.
+
+## 2026-10-19 PreBake history follow-up
+
+Legacy fork attempts are checked against parent execution ancestry, exact prompt/attempt identity, parent ledger, and terminal receipt before recovery. Verified parent history is audit-only; unproven records remain preserved and isolated. Repeated scans with unchanged evidence emit one aggregate audit record, and changed evidence is reclassified. The CPU regression passed for local, GitHub main, and full-capability source copies. The running 8207 process still has an older module loaded, so runtime activation is **HOLD** until a safe restart is explicitly allowed. See the [evidence report](docs/evidence_archive/2026-10-19/attempt-history-live-followup.md) and [acceptance matrix](docs/FULL_DISTRIBUTION_ACCEPTANCE_MATRIX_ZH.md).

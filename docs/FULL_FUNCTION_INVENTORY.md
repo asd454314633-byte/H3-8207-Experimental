@@ -183,3 +183,10 @@
 | G08 | 跨组音频与CPU合并 | global_boundary / cross-group merge | 示例保存起点82.375秒；raw80.750至95.833333，362帧裁39一次后323帧；合并已裁片段不再裁39，连续原曲音轨只铺一次 |
 
 | G09 | 六段独立用户关键帧 | 每张提示词卡片独立启用、上传和指定帧位，默认关闭 | 243帧倒数88→155；362帧→274；普通Native用户帧另加39；CPU路由PASS，GPU视觉HOLD |
+
+## 2026-10-19：PreBake 历史 attempt 分类补充
+
+- 旧 fork 留在子执行账本中的父版本 attempt，必须按执行祖先、父账本、prompt/attempt identity 与终态 receipt 交叉确认；已确认的父版本历史不得进入当前 attempt 恢复。
+- 未能证明父链的记录保留 `unconfirmed`，不自动恢复、不删除账本。当前执行 attempt 继续按真实 `prompt_id` 与执行身份保护。
+- watchdog 对历史候选按证据指纹记录聚合审计；相同证据重复扫描不持续输出 ERROR，父账本、receipt 或身份状态变化时重新分类。
+- 当前磁盘源码、GitHub main 和 2026-10-19 完整功能目录的 SHA 一致；运行进程仍加载旧源码，因此 runtime activation = HOLD。参见 [现场复核报告](evidence_archive/2026-10-19/attempt-history-live-followup.md)。
