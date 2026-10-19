@@ -73,7 +73,7 @@ def validate(en,zh,declared,*,generated=True):
 
 class Director:
     def __init__(self,data_dir=None,provider=None):
-        self.data_dir=Path(data_dir or ROOT/'director_data');self.path=self.data_dir/'store.json'
+        self.data_dir=Path(data_dir or os.environ.get('H3_SIDECAR_DATA', str(ROOT/'director_data')));self.path=self.data_dir/'store.json'
         self.provider=provider or create_provider(ROOT/'sidecar.ini');self.lock=threading.RLock()
         if not self.path.exists():atomic(self.path,self.empty())
     @staticmethod

@@ -6,7 +6,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00563_.mp4 [output]"
       }
     },
     "2": {
@@ -15,7 +15,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00564_.mp4 [output]"
       }
     },
     "3": {
@@ -24,7 +24,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00565_.mp4 [output]"
       }
     },
     "4": {
@@ -33,7 +33,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00566_.mp4 [output]"
       }
     },
     "5": {
@@ -42,7 +42,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00567_.mp4 [output]"
       }
     },
     "6": {
@@ -51,7 +51,7 @@
       },
       "class_type": "LoadVideo",
       "inputs": {
-        "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE"
+        "file": "H3_INT8_Accept__00568_.mp4 [output]"
       }
     },
     "7": {
@@ -208,11 +208,11 @@
         "title": "Load Video — segment 1",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00563_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00563_.mp4 [output]",
           "upload": "image"
         }
       },
@@ -245,11 +245,11 @@
         "title": "Load Video — segment 2",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00564_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00564_.mp4 [output]",
           "upload": "image"
         }
       },
@@ -282,11 +282,11 @@
         "title": "Load Video — segment 3",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00565_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00565_.mp4 [output]",
           "upload": "image"
         }
       },
@@ -319,11 +319,11 @@
         "title": "Load Video — segment 4",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00566_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00566_.mp4 [output]",
           "upload": "image"
         }
       },
@@ -356,11 +356,11 @@
         "title": "Load Video — segment 5",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00567_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00567_.mp4 [output]",
           "upload": "image"
         }
       },
@@ -393,11 +393,11 @@
         "title": "Load Video — segment 6",
         "type": "LoadVideo",
         "widgets_values": [
-          "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "H3_INT8_Accept__00568_.mp4 [output]",
           "image"
         ],
         "widgets_values_named": {
-          "file": "REPLACE_WITH_SYNTHETIC_TEST_IMAGE",
+          "file": "H3_INT8_Accept__00568_.mp4 [output]",
           "upload": "image"
         }
       },

@@ -4,6 +4,7 @@ import {prepareUserGuide,compileUnmanagedGuide,assertGuideSafe} from './h3_six_g
 import {prepareLongSong,finishLongSong} from './h3_long_song.js?v=20261016cross1';
 import {resolveSongStart} from '/extensions/H3_LongSong/start_contract.js?v=20261016origin1';
 import {prepareProduction,cachedGraph,acceptProduction,submitProduction,productionStatus} from '/extensions/h3_conditioning_prebake/production.js?v=20261014queue';
+import {compileForSubmission} from './h3_six_compiler.js?v=20261019compiler2';
 
 const flights=new Map();
 let activeExecutions=0,submissionTail=Promise.resolve();
@@ -93,6 +94,9 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     prepareLongSong(snapshot,index,options);
     const userGuide=await prepareUserGuide(snapshot,index,options);
     if(userGuide)update(`第${index+1}段关键帧：可见索引${userGuide.visible_frame} → 模型索引${userGuide.model_frame}（保护区${userGuide.protected_frames}帧）`);
+    // 独立编译接线（2026-10-19）：手写原稿先经8210独立编译/官方校验，编译稿作为唯一最终文本
+    // 进入 N138、PreBake 缓存与真实提交；失败则显示真实原因并阻断，不回退原稿。
+    text=await compileForSubmission(text,index,options,update,snapshot);
     const prebake=await prepareProduction(snapshot,text,index,options,update,waitForCompletion);
     const generationProject=prebake?.context?.project_id||project;
     if(inherit&&index>0){

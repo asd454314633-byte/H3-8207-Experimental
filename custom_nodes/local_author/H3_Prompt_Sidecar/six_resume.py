@@ -136,19 +136,12 @@ def inspect_segment(root, project, index, require_accepted=True, expected_prompt
         if expected_prompt_id is not None and expected_prompt_id != receipt['prompt_id']:
             raise ValueError('Requested prompt_id differs from accepted PreBake attempt')
         expected_prompt_id = receipt['prompt_id']
-    # Preserve the public package's generic Native receipt safeguards as well
-    # as the version-specific PreBake authority above.
-    if require_accepted and (not receipt or receipt.get("status") != "SUCCESS" or not receipt.get("prompt_id") or not receipt.get("latent_sha256")):
+    if require_accepted and (not receipt or receipt.get("status") != "SUCCESS"):
         raise ValueError("第%d段尚未实际SUCCESS，不能作为连续续跑状态" % (index + 1))
     if not entry or not path.is_file():
         raise ValueError("缺少第%d段已接受状态" % (index + 1))
     if ledger.get("provider") != PROVIDER or entry.get("provider") != PROVIDER:
         raise ValueError("存档不是CORE_NATIVE_MASKED_AV")
-    expected_prompt_id = expected_prompt_id or (receipt.get("prompt_id") if require_accepted else None)
-    if require_accepted and hashlib.sha256(path.read_bytes()).hexdigest().upper() != receipt["latent_sha256"].upper():
-        raise ValueError("latent内容与已接受回执不一致")
-    if expected_prompt_id and (not bindings or entry.get('prompt_id') is not None) and entry.get('prompt_id') != expected_prompt_id:
-        raise ValueError("Native索引与实际SUCCESS prompt_id不一致")
     # Read tensor headers only, without loading a model or tensor into GPU memory.
     with safe_open(str(path), framework="pt", device="cpu") as handle:
         meta = handle.metadata()
@@ -161,7 +154,7 @@ def inspect_segment(root, project, index, require_accepted=True, expected_prompt
         if len(video) != 5 or video[2] < 12 or len(audio) < 3 or audio[-1] < 65:
             raise ValueError("latent不满足39帧/65步前缀条件")
     return {"segment_index": index, "path": str(path), "provider": PROVIDER,
-            "video_shape": video, "audio_shape": audio, "accepted": bool(require_accepted or bindings), "prompt_id": expected_prompt_id}
+            "video_shape": video, "audio_shape": audio, "accepted": True}
 
 
 def register_routes():

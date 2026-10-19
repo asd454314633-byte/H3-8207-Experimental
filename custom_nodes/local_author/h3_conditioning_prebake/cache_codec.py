@@ -1,12 +1,13 @@
 """H3 explicit tensor/primitive tree codec. No pickle, object import or executable loading."""
 import hashlib,json,math,os,uuid
 from pathlib import Path
-import os
 import torch
 from safetensors.torch import save_file,load_file,load as load_bytes
 from comfy.nested_tensor import NestedTensor
 SCHEMA='H3_CONDITIONING_PREBAKE_V1'
-ROOT=Path(os.environ.get('H3_CONDITIONING_CACHE', 'output/h3_conditioning_cache'))
+import os
+import folder_paths
+ROOT=Path(os.environ.get('H3_CONDITIONING_CACHE_ROOT', str(Path(folder_paths.get_user_directory())/'h3_conditioning_cache')))
 def canonical(x):return json.dumps(x,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8')
 def digest(x):return hashlib.sha256(x).hexdigest()
 def file_sha(p):

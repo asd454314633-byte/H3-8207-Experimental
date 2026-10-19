@@ -93,7 +93,7 @@ class H3DirectorModelManager:
             catalog = self.registry.catalog()
             key = next((k for k, c in catalog.items() if c['provider'] == 'local_llamacpp'
                         and model and normalized(c['model']) == normalized(model)
-                        and alias == c['alias'] and port == '8095'
+                        and alias == c['alias'] and port == str(c['port'])
                         and normalized(process.exe()) == normalized(Path(c['runtime'])/'llama-server.exe')), None)
             if key is None:
                 return None
@@ -104,11 +104,16 @@ class H3DirectorModelManager:
         except (psutil.Error, OSError):
             return None
 
+    def _port(self):
+        ports={int(c['port']) for c in self.registry.catalog().values() if c['provider']=='local_llamacpp'}
+        if len(ports)!=1: raise ProviderError('SINGLE_LOCAL_MODEL_TARGET_REQUIRED')
+        return next(iter(ports))
+
     def _inspect(self):
         listeners = {c.pid for c in psutil.net_connections(kind='tcp')
-                     if c.status == psutil.CONN_LISTEN and c.laddr.port == 8095}
+                     if c.status == psutil.CONN_LISTEN and c.laddr.port == self._port()}
         if len(listeners) > 1:
-            raise ProviderError('PORT_8095_OCCUPIED_BY_UNKNOWN_PROCESS')
+            raise ProviderError('LOCAL_MODEL_PORT_OCCUPIED_BY_UNKNOWN_PROCESS')
         pid = next(iter(listeners), None)
         owned = []
         for process in psutil.process_iter(['name']):
@@ -117,7 +122,7 @@ class H3DirectorModelManager:
                 if fingerprint:
                     owned.append(fingerprint)
         if len(owned) > 1 or (pid and pid not in {p['pid'] for p in owned}):
-            raise ProviderError('PORT_8095_OCCUPIED_BY_UNKNOWN_PROCESS')
+            raise ProviderError('LOCAL_MODEL_PORT_OCCUPIED_BY_UNKNOWN_PROCESS')
         return pid, owned[0] if owned else None
 
     def get_status(self):
@@ -149,7 +154,7 @@ class H3DirectorModelManager:
                     'create_time':process['create_time'] if process else None,
                     'fingerprint':process, 'healthy':healthy, 'process_identity_match':bool(process),
                     'model_match':bool(match), 'busy':busy or bool(self.active_planners),
-                    'address':'http://127.0.0.1:8095', 'last_error':self.last_error}
+                    'address':f'http://127.0.0.1:{self._port()}', 'last_error':self.last_error}
         except ProviderError as exc:
             return {'state':'FAILED', 'error':str(exc), 'running_model':None,
                     'selected_model':self.registry.selected, 'healthy':False, 'model_match':False, 'pid':None}

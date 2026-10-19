@@ -36,7 +36,7 @@ export async function restoreProductionExecution(node){
  let pending=false,blocked=false;
  for(let i=0;i<6;i++){
   const state=result.segments?.[i],card=ui.cards[i];if(!state)continue;
-  const a=state.attempt||{},receipt=state.receipt||{};
+  const liveAttempt=state.attempt||{},a=liveAttempt.attempt_id?liveAttempt:(state.inherited_attempt||{}),receipt=state.receipt||{};
   // Restore only a missing/pristine editor from its own immutable segment snapshot.
   // A newer saved workflow draft always remains authoritative.
   const guide=a.snapshot?.user_guide;
@@ -49,7 +49,7 @@ export async function restoreProductionExecution(node){
    card.videoLabel.textContent+='｜原任务 '+adaptive.prompt_id;
    continue;
   }
-  const active=['PREPARED','PENDING','CANCELLING','BLOCKED'].includes(a.status);pending ||= active;blocked ||= a.status==='BLOCKED';
+  const active=['PREPARED','PENDING','CANCELLING','BLOCKED'].includes(liveAttempt.status);pending ||= active;blocked ||= liveAttempt.status==='BLOCKED';
   const label=active?'后台任务恢复中：'+a.status:state.video_status;
   card.status.textContent=label||'未生成';
   if(state.video_status==='SUCCESS'&&receipt.status==='SUCCESS'&&receipt.prompt_id===a.prompt_id&&receipt.group_id===binding.group_id&&(receipt.project_id===binding.project_id||receipt.inherited_from?.project_id===receipt.project_id)&&receipt.revision===state.revision&&receipt.cache_key===state.cache_key){

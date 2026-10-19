@@ -2,6 +2,7 @@
 import json,os,sys,time
 from datetime import datetime,timezone
 from pathlib import Path
+import folder_paths
 import comfy.model_management as mm
 from comfy_execution.utils import get_executing_context
 from . import cache_codec as codec
@@ -23,8 +24,17 @@ def residency(require_te_zero):
  return {'TE_TARGET_COUNT':len(entries),'TE_SNAPSHOT':te.probe.snapshot(),'PREBAKE_TE_RELEASED':not entries if require_te_zero else None,'zero_target_census':census,'H3':models,'system':te.probe._windows_memory()}
 def record(kind,data):
  ctx=get_executing_context();data.update(kind=kind,pid=os.getpid(),epoch=time.time(),prompt_id=ctx.prompt_id if ctx else None,node_id=ctx.node_id if ctx else None)
- folder=Path(__file__).resolve().parents[2]/'user'/'h3_conditioning_prebake';folder.mkdir(exist_ok=True)
+ folder=Path(folder_paths.get_user_directory())/'h3_conditioning_prebake';folder.mkdir(exist_ok=True)
  (folder/(kind+'_'+str(os.getpid())+'_'+str(time.time_ns())+'.json')).write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
+
+def clean_rebase_video_mask_is_fresh(latent):
+ mask=latent.get('noise_mask')
+ if mask is None:return True
+ try:
+  video_mask,audio_mask=mask.unbind()
+  return bool(video_mask.eq(1).all().item()) and bool(audio_mask.eq(0).all().item())
+ except Exception:
+  return False
 
 class H3ConditioningBake:
  @classmethod
@@ -62,8 +72,8 @@ class H3ConditioningLoad:
 class H3PreBakeContinuationAudit:
  # Contract: the noise_mask requirement is derived from the segment's REAL
  # continuation state (the H3ContinuationPrepare plan), never from
- # segment_index alone. A Clean Rebase segment legitimately produces a fresh
- # latent with no inherited prefix and no noise_mask, at any segment index.
+ # segment_index alone. Clean Rebase has no inherited video prefix; the
+ # official audio lock may still attach an all-ones video mask and zero audio mask.
  @classmethod
  def INPUT_TYPES(cls):return {'required':{'conditioning':('CONDITIONING',),'latent':('LATENT',),'project_id':('STRING',),'segment_index':('INT',{'default':0})},'optional':{'plan_json':('STRING',{'forceInput':True}),'guide_guard_json':('STRING',{'default':''}),'guide_image':('IMAGE',)}}
  RETURN_TYPES=('CONDITIONING','LATENT');FUNCTION='audit';CATEGORY='H3/PreBake'
@@ -73,7 +83,8 @@ class H3PreBakeContinuationAudit:
   if guide_guard_json:
    from .production import validate_guide_runtime
    plan=json.loads(plan_json) if plan_json else {}
-   if not plan.get('active') or plan.get('clean_rebase') is not True or plan.get('segment_index')!=segment_index or 'noise_mask' in latent:raise ValueError('Guide anchor requires actual fresh Clean Rebase plan')
+   if not plan.get('active') or plan.get('clean_rebase') is not True or plan.get('segment_index')!=segment_index:raise ValueError('Guide anchor requires actual fresh Clean Rebase plan')
+   if not clean_rebase_video_mask_is_fresh(latent):raise ValueError('Guide anchor requires every Clean Rebase video frame to remain regenerable; audio must stay locked')
    policy=json.loads(guide_guard_json)
    if policy.get('index')!=segment_index or policy.get('context',{}).get('project_id')!=project_id:raise ValueError('Guide audit project/segment mismatch')
    ctx=get_executing_context()

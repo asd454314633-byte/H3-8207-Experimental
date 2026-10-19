@@ -84,7 +84,7 @@ export async function mountSixDirector(root, {execute=null, base='', executionSt
     finally{activeOperations--;busy=activeOperations>0;if(!busy){chain.state='IDLE';chain.currentSegment=null;chain.pendingPromptId=null;chainEvent('IDLE')}controls()}
   }
   async function runSegment(index,text=cards[index].area.value,options=executionOptions(index)){
-    if(!execute)throw Error('请从8197控制台的“六段提示词”入口打开本页');
+    if(!execute)throw Error('请从当前实例控制台的“六段提示词”入口打开本页');
     if(!text.trim())throw Error(`第${index+1}段Prompt为空`);
     if(selected!==index)throw Error('请先使用本段');
     const card=cards[index],sequence=card.requestSequence=(card.requestSequence||0)+1;let counted=false;
@@ -111,7 +111,7 @@ export async function mountSixDirector(root, {execute=null, base='', executionSt
   find('.six-model-start').onclick=async()=>{
     if(backendBusy)return;backendBusy=true;controls();message.textContent='正在检查本地模型后台…';
     try{const result=await request('/director/model/warm',{model_key:model.value});message.textContent=result.message;await updateBackend()}
-    catch(error){message.textContent='本地后台检查/唤醒失败：'+(error.message==='NOT_FOUND'?'导演接口尚未加载，请检查8197控制台':error.message)}
+    catch(error){message.textContent='本地后台检查/唤醒失败：'+(error.message==='NOT_FOUND'?'导演接口尚未加载，请检查当前实例控制台':error.message)}
     finally{backendBusy=false;controls()}
   };
   async function startChain(){

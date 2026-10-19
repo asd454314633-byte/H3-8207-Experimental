@@ -1,3 +1,4 @@
+import {installCompilerPreview} from './h3_six_compiler_preview_ui.js?v=20261019preview1';
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
 import {uploadGuide,previewGuide,guideImageURL,watchGuideFrames} from './h3_six_guides.js?v=20261017guide3';
@@ -89,9 +90,10 @@ async function mount(node) {
     const binding=node.properties.h3_prebake_binding;
     if(binding){root.querySelector('.six-project').value=binding.project_id;root.querySelector('.six-start').value=String(binding.start_index);root.querySelector('.six-inheritance').value=binding.start_mode}
     node.__sixUI=ui;ready=true;snapshot();await restoreProductionExecution(node);
+    installCompilerPreview(ui,root,app);
     try{await installNativeMerge(root,()=>{const b=node.properties.h3_prebake_binding,g=ui.group?.id;return {group_id:g||b?.group_id||node.properties.h3_prebake_last_plan?.group_id||storyId(node),project_id:g&&b&&g!==b.group_id?g:(b?.project_id||ui.executionSnapshot().project_id),save_video_node_id:saveVideoNodeId()}})}
     catch(error){root.querySelector('.six-status').textContent+='\n自动拼接未就绪：'+error.message}
-  }catch(error){root.textContent='六段面板加载失败：'+error.message+'；请检查8197 Director接口'}
+  }catch(error){root.textContent='六段面板加载失败：'+error.message+'；请检查当前实例 Director接口'}
 }
 app.registerExtension({name:'H3.SixSegmentDirector',
   registerCustomNodes(){
@@ -112,7 +114,6 @@ app.registerExtension({name:'H3.SixSegmentDirector',
   nodeCreated(node){if(node.type==='H3SixDirectorState')setTimeout(()=>mount(node),0)},
   async afterConfigureGraph(){updateCandidateEntrance();hideBackendContinuityControl();for(const node of app.graph._nodes)if(node.type==='H3SixDirectorState')await mount(node);isolateConsolePromptControls();setTimeout(isolateConsolePromptControls,300);setTimeout(isolateConsolePromptControls,1200)},
   setup(){
-    if(location.port!=='8197')return;
     const button=document.createElement('button');button.hidden=true;button.textContent='定位六段提示词';button.className='h3-six-open';
     button.style.cssText='position:fixed;right:22px;bottom:22px;z-index:1500;background:#294d43;color:#fff;border:1px solid #a7d7c5;border-radius:8px;padding:10px 18px;cursor:pointer';
     button.onclick=()=>{const node=app.graph._nodes.find(n=>n.type==='H3SixDirectorState'&&n.properties?.h3_six_director);if(node)app.canvas.centerOnNode(node)};
@@ -120,5 +121,3 @@ app.registerExtension({name:'H3.SixSegmentDirector',
     document.body.append(button,consoleButton);updateCandidateEntrance();
   }
 });
-
-

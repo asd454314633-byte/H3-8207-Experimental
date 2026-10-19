@@ -136,7 +136,7 @@ def story(payload,state_lock=None):
    receipts=read_state(ledger_path(binding).parent/'six_acceptance.json')
    receipt_state='MISSING' if receipts is None and any(s.get('attempt') or s.get('video_status')=='SUCCESS' for s in data['segments'].values()) else ('UNINITIALIZED' if receipts is None else 'PRESENT')
    # Frontend recovery reads this exact bound ledger, never latest files.
-   segments={k:{'video_status':v.get('video_status'),'revision':v.get('revision'),'cache_key':v.get('cache_key'),'attempt':v.get('attempt'),'receipt':(receipts or {}).get(k)} for k,v in data['segments'].items()}
+   segments={k:{'video_status':v.get('video_status'),'revision':v.get('revision'),'cache_key':v.get('cache_key'),'attempt':v.get('attempt'),'inherited_attempt':v.get('inherited_attempt'),'receipt':(receipts or {}).get(k)} for k,v in data['segments'].items()}
    for segment in segments.values():
     receipt=segment.get('receipt') or {}
     if segment.get('video_status')=='SUCCESS' and receipt.get('video_output_ref'):
@@ -146,7 +146,11 @@ def story(payload,state_lock=None):
    from .adaptive_bridge import recovery
    from server import PromptServer
    for key,segment in segments.items():
-    try:segment['adaptive_recovery']=recovery(binding,int(key),data['segments'][key],PromptServer.instance)
+    ledger_entry=data['segments'][key]
+    if ledger_entry.get('inherited_from') and ledger_entry.get('video_status')=='SUCCESS' and (receipts or {}).get(key,{}).get('status')=='SUCCESS':
+     segment['adaptive_recovery']=None
+     continue
+    try:segment['adaptive_recovery']=recovery(binding,int(key),ledger_entry,PromptServer.instance)
     except Exception as ex:segment['adaptive_recovery_error']=str(ex)
    return {'state':'BOUND','receipt_state':receipt_state,'binding':binding,'segments':segments}
   if action!='bind':raise ValueError('Unknown story action')
@@ -363,15 +367,25 @@ def validate_guide_runtime(conditioning,latent,policy_json,image,prompt_id):
   if image is None or list(image.shape)!=policy['image_shape'] or codec.digest(image.detach().cpu().contiguous().numpy().tobytes())!=policy['pixel_sha256']:raise ValueError('Actual Guide image fingerprint mismatch')
   video=latent['samples'].unbind()[0]
   if (video.shape[-1]*16,video.shape[-2]*16)!=(policy['width'],policy['height']):raise ValueError('Actual Guide latent canvas mismatch')
-  if policy['stage']=='before':reject_first_frame_guides(conditioning)
+  target=policy.get('frame_idx',0)
+  latent_t=video.shape[2]
+  if latent_t<2 or (latent_t-2)%5:raise ValueError('Actual H3 video latent temporal shape is invalid')
+  model_frames=5+17*((latent_t-2)//5)
+  if type(target) is not int or target<0 or target>=model_frames:raise ValueError('Guide target is outside actual model duration')
+  if policy['stage']=='before':
+   for item in conditioning:
+    for keyframe in item[1].get('minimax_keyframes',[]):
+     position=keyframe.get('resolved_frame_index')
+     if type(position) is not int or position<0:raise ValueError('Unresolved existing Guide position')
+     if position==target:raise ValueError('Existing Guide conflicts with Rebase composition anchor')
   elif policy['stage']=='after':
    for item in conditioning:
-    keyframes=item[1].get('minimax_keyframes',[]);first=[k for k in keyframes if k.get('resolved_frame_index')==0]
-    if len(first)!=1 or 'latent' not in first[0]:raise ValueError('Official Guide must produce exactly one image keyframe at frame zero')
-    v=first[0]['latent']
-    if tuple(v.shape)!=(video.shape[0],24,1,video.shape[-2],video.shape[-1]):raise ValueError('Official first-frame Guide latent shape mismatch')
+    keyframes=item[1].get('minimax_keyframes',[]);anchored=[k for k in keyframes if k.get('resolved_frame_index')==target]
+    if len(anchored)!=1 or 'latent' not in anchored[0]:raise ValueError('Official Guide must produce exactly one image keyframe at the saved-frame anchor')
+    v=anchored[0]['latent']
+    if tuple(v.shape)!=(video.shape[0],24,1,video.shape[-2],video.shape[-1]):raise ValueError('Official Guide latent shape mismatch')
   else:raise ValueError('Unknown Guide audit stage')
- return {'stage':policy['stage'],'source_prompt_id':policy['source']['prompt_id'],'pixel_sha256':policy['pixel_sha256'],'frame_idx':0,'actual_image_shape':list(image.shape),'actual_latent_shape':list(video.shape),'duplicate_check':'PASS'}
+ return {'stage':policy['stage'],'source_prompt_id':policy['source']['prompt_id'],'pixel_sha256':policy['pixel_sha256'],'frame_idx':policy.get('frame_idx',0),'actual_image_shape':list(image.shape),'actual_latent_shape':list(video.shape),'duplicate_check':'PASS'}
 
 def guide_policy_digest(policy):return codec.digest(codec.canonical({k:v for k,v in policy.items() if k!='stage'}))
 
@@ -385,8 +399,12 @@ def anchor_clean_rebase(graph,ctx,index,enabled=False,attempt_id=None,cached_con
  if not rebase or independent:return graph
  if index<=0:raise ValueError('Rebase composition anchor needs a predecessor')
  if any(k in graph for k in ('SEAM_GUIDE','SEAM_PRECHECK','SEAM_AUDIT','SEAM_IMAGE')):raise ValueError('Repeated automatic Guide injection; prepare a fresh graph')
- # The user's official first-frame Guide owns that frame; an automatic anchor is optional.
- if check_guide_ancestry(graph):return graph
+ # Anchor the first frame that will survive the explicit rebase output crop.
+ anchor_frame_idx=scalar(graph.get('LONG_SONG',{}).get('inputs',{}).get('clean_rebase_output_discard_frames',0),graph)
+ if type(anchor_frame_idx) is not int or anchor_frame_idx<0:raise ValueError('Invalid Clean Rebase output discard target')
+ if check_guide_ancestry(graph):raise ValueError('Existing Guide conflicts with requested Clean Rebase output anchor')
+ length=scalar(graph.get('136',{}).get('inputs',{}).get('length'),graph)
+ if type(length) is not int or anchor_frame_idx>=length:raise ValueError('Clean Rebase Guide anchor outside model duration')
  if 'PREBAKE_LOAD' in graph:
   if cached_conditioning is None:
    cached,_,_=codec.load(graph['PREBAKE_LOAD']['inputs']['contract_json'],restore_device=False)
@@ -425,12 +443,12 @@ def anchor_clean_rebase(graph,ctx,index,enabled=False,attempt_id=None,cached_con
  import numpy as np
  from PIL import Image
  with Image.open(image) as img:pixels=(np.array(img.convert('RGB')).astype(np.float32)/255.0)[None]
- policy={'context':copy.deepcopy(ctx),'index':index,'attempt_id':attempt_id,'revision':ctx['revisions'][index],'cache_key':ctx['cache_keys'][index],'source':{k:receipt[k] for k in ('prompt_id','video_sha256','latent_sha256')},'source_frame':last,'image':graph['SEAM_IMAGE']['inputs']['image'],'image_sha256':codec.file_sha(image),'pixel_sha256':codec.digest(pixels.tobytes()),'image_shape':list(pixels.shape),'width':stream['width'],'height':stream['height']}
+ policy={'context':copy.deepcopy(ctx),'index':index,'attempt_id':attempt_id,'revision':ctx['revisions'][index],'cache_key':ctx['cache_keys'][index],'source':{k:receipt[k] for k in ('prompt_id','video_sha256','latent_sha256')},'source_frame':last,'image':graph['SEAM_IMAGE']['inputs']['image'],'image_sha256':codec.file_sha(image),'pixel_sha256':codec.digest(pixels.tobytes()),'image_shape':list(pixels.shape),'width':stream['width'],'height':stream['height'],'frame_idx':anchor_frame_idx}
  prepare=next(k for k,n in graph.items() if n['class_type']=='H3ContinuationPrepare')
  plan=copy.deepcopy(graph.get('PREBAKE_AUDIT',{}).get('inputs',{}).get('plan_json',[prepare,1]))
  common={'latent':copy.deepcopy(graph['125']['inputs']['latent_image']),'project_id':ctx['project_id'],'segment_index':index,'plan_json':plan,'guide_image':['SEAM_IMAGE',0]}
  graph['SEAM_PRECHECK']={'class_type':'H3PreBakeContinuationAudit','inputs':{**copy.deepcopy(common),'conditioning':copy.deepcopy(graph['126']['inputs']['conditioning']),'guide_guard_json':json.dumps({**policy,'stage':'before'})}}
- graph['SEAM_GUIDE']={'class_type':'MiniMaxH3AddGuide','inputs':{'positive':['SEAM_PRECHECK',0],'latent':['SEAM_PRECHECK',1],'frame_idx':0,'vae':copy.deepcopy(vae),'image':['SEAM_IMAGE',0]}}
+ graph['SEAM_GUIDE']={'class_type':'MiniMaxH3AddGuide','inputs':{'positive':['SEAM_PRECHECK',0],'latent':['SEAM_PRECHECK',1],'frame_idx':anchor_frame_idx,'vae':copy.deepcopy(vae),'image':['SEAM_IMAGE',0]}}
  graph['SEAM_AUDIT']={'class_type':'H3PreBakeContinuationAudit','inputs':{**copy.deepcopy(common),'conditioning':['SEAM_GUIDE',0],'guide_guard_json':json.dumps({**policy,'stage':'after'})}}
  graph['126']['inputs']['conditioning']=['SEAM_AUDIT',0]
  return graph
@@ -653,7 +671,7 @@ def accepted(payload,server,state_lock=None):
     for name,stage in (('SEAM_PRECHECK','before'),('SEAM_AUDIT','after')):
      policy=json.loads(graph.get(name,{}).get('inputs',{}).get('guide_guard_json','{}'))
      if policy.get('stage')!=stage or guide_policy_digest(policy)!=attempt['guide_anchor_sha256']:raise ValueError('Guide audit binding changed before acceptance')
-  if len(saves)!=1 or saves[0]['inputs'].get('project_id')!=ctx['project_id'] or int(saves[0]['inputs'].get('segment_index',-1))!=i:raise ValueError('Native latent save identity mismatch')
+  native_graph_check(graph,ctx,i)
   loads=[n['inputs'] for n in graph.values() if n['class_type']=='H3ConditioningLoad']
   guards=[n['inputs'] for n in graph.values() if n['class_type']=='H3AttemptGuard']
   if attempt and attempt.get('route')=='DYNAMIC_FALLBACK':
@@ -748,3 +766,8 @@ def register():
 
 
 
+
+
+def native_graph_check(graph,ctx,index):
+ saves=[n for n in graph.values() if n['class_type']=='H3ContinuationSave' and n['inputs'].get('enabled') is True]
+ if len(saves)!=1 or saves[0]['inputs'].get('project_id')!=ctx['project_id'] or int(saves[0]['inputs'].get('segment_index',-1))!=int(index):raise ValueError('Native latent save identity mismatch; rejected before GPU dispatch')

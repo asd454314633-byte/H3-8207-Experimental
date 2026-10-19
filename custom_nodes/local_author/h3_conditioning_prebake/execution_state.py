@@ -233,10 +233,19 @@ def fork(source, ledger, state_lock=None, requested_index=None):
             shutil.copy2(src, dst)
         if p.codec.file_sha(dst) != receipt['latent_sha256']:
             raise ValueError('Execution fork latent copy changed')
-        entry['inherited_from'] = {'project_id': receipt.get('project_id', source['project_id']),
+        parent_attempt = entry.pop('attempt', None)
+        if parent_attempt is not None:
+            entry['inherited_attempt'] = copy.deepcopy(parent_attempt)
+        entry['inherited_from'] = {'story_id': source['story_id'],
+                                   'group_id': source['group_id'],
+                                   'project_id': receipt.get('project_id', source['project_id']),
                                    'execution_version': receipt.get('execution_version', source['execution_version']),
                                    'parent_project_id': source['project_id'],
-                                   'prompt_id': receipt['prompt_id']}
+                                   'parent_execution_version': source['execution_version'],
+                                   'attempt_id': receipt.get('attempt_id') or (parent_attempt or {}).get('attempt_id'),
+                                   'prompt_id': receipt['prompt_id'],
+                                   'revision': receipt.get('revision'),
+                                   'cache_key': receipt.get('cache_key')}
         inherited[i] = copy.deepcopy(receipt)
         inherited[i]['inherited_from'] = copy.deepcopy(entry['inherited_from'])
         inherited[i]['latent_path'] = str(dst)

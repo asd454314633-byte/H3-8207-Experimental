@@ -1,5 +1,6 @@
 """Catalog and dispatch. All local process control belongs to ModelManager."""
 import configparser, importlib, json, threading
+from urllib.parse import urlsplit
 from contextlib import nullcontext
 from dataclasses import replace
 from pathlib import Path
@@ -36,7 +37,10 @@ class RegisteredProvider(ModelProvider):
             item=item or profile
             if profile['provider']=='local_llamacpp':
                 profile['model']=item['path']
-                if profile.get('port')!='8095' or profile.get('parallel')!='1':raise ProviderError('SINGLE_LOCAL_MODEL_CONFIGURATION_REQUIRED')
+                port=int(profile.get('port','0'))
+                if not 1 <= port <= 65535 or profile.get('parallel')!='1':raise ProviderError('SINGLE_LOCAL_MODEL_CONFIGURATION_REQUIRED')
+                target=urlsplit(profile['base_url'])
+                if target.hostname not in ('127.0.0.1','localhost','::1') or target.port!=port:raise ProviderError('LOCAL_MODEL_TARGET_MISMATCH')
             profile.setdefault('runtime',str(Path(registry['llama_server']).parent))
             profile.setdefault('alias','h3-prompt-director-'+key);profile.setdefault('label',item['label']);models[key]=profile
         if self.default_model not in models:raise ProviderError('DEFAULT_MODEL_NOT_REGISTERED')

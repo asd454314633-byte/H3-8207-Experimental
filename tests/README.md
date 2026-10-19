@@ -14,3 +14,13 @@ GPU、真实 ComfyUI 服务、浏览器 UI、Qwen 模型执行和视频端到端
 
 
 2026-10-16 updates: `python -B tests/test_long_song_cpu.py` and `node --test tests/long_song_start.test.cjs` use synthetic CPU fixtures of the actual published timeline/parser/gates. Full pack: `python -B scripts/verify/verify_agent_pack.py <EXTRACTED_PACK>` verifies all file hashes and the 16 update sources. No GPU runs.
+
+## 2026-10-19 inherited attempt recovery regression
+
+Run `H3_PREBAKE_PACKAGE_DIR=<path-to-h3_conditioning_prebake> H3_COMFYUI_HOST_ROOT=<ComfyUI-source-root> python -B tests/test_attempt_history_classification.py`. The de-identified fixture preserves the observed 198 parent-ledger-proven terminal copies and one unconfirmed copy using aliases. It checks repeat scans, reclassification after a receipt change, and exact prompt-ID recovery for an active parent task. This is a CPU fixture test; it does not restart a service, submit a prompt, or run GPU generation. See [the review and evidence](../docs/evidence_archive/2026-10-19/attempt-history-classification-review.md).
+
+## 2026-10-19: inherited attempt and compiler rules
+
+- `python -B tests/test_attempt_history_classification.py`: sanitized 198 history mismatches plus one unconfirmed record; no GPU/service access. Set `H3_PREBAKE_PACKAGE_DIR` and `H3_COMFYUI_HOST_ROOT` when testing an extracted package.
+- `H3_COMPILER_SOURCE=<path-to-h3_six_compiler.js> node tests/test_independent_compiler_rules.mjs`: compiler/fallback rules with mocked endpoints; no GPU submission.
+- These CPU checks do not prove the new full package is dynamically loaded or establish GPU/E2E acceptance.
