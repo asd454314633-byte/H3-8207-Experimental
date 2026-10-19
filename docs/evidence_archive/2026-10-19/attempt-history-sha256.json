@@ -1,45 +1,66 @@
 {
   "schema": "h3-public-evidence-sha256-v1",
+  "source_commit": "0bc4c6a744eaf7a186c60d1ae17e1bad67380923",
   "files": [
     {
       "path": "custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py",
+      "bytes": 24524,
       "sha256": "5448c05ddd66b086a844a370440d14f830e04538f7bd05e7b9a657828c59ba0d",
-      "bytes": 24524
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "custom_nodes/local_author/h3_conditioning_prebake/execution_state.py",
+      "bytes": 15467,
       "sha256": "65d6d11bb837331d5ee8c1077992bb233e6599d429fb33801dfcb36d79044d13",
-      "bytes": 15467
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_compiler.js",
+      "bytes": 13644,
       "sha256": "bc7bbdebf37649fe458ab5b95b489ac6da419746e4b9f81d10563bc328a88c3b",
-      "bytes": 13644
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_compiler_preview_ui.js",
+      "bytes": 4207,
       "sha256": "34b7ed77f67405592c5a50e69179ccb377845e5bb7d3459c55101d8858cbb02b",
-      "bytes": 4207
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "custom_nodes/local_author/h3_six_compiler_bridge/__init__.py",
+      "bytes": 5626,
       "sha256": "f433704736e66e49f146ca1891ed4725979b6e6cc2dea666291098493c5015e1",
-      "bytes": 5626
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "tests/test_attempt_history_classification.py",
+      "bytes": 6970,
       "sha256": "3c354ffc77f60aff9b1cd02794d36b06481e629b1ca02bd52a5dde4c4700a1bd",
-      "bytes": 6970
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "tests/test_independent_compiler_rules.mjs",
-      "sha256": "0991e75cf4261fdceba349415fe7bdbd610727623bcfb8aa05e2534e4dba0cf1",
-      "bytes": 2816
+      "bytes": 2791,
+      "sha256": "8aa01dc1a26f7483d2f3ff6ad084cbb7bfb52b4f52d8eba6830dfa4724cc9b32",
+      "hash_basis": "git commit blob bytes"
     },
     {
       "path": "tests/fixtures/sanitized_198_history_mismatches.json",
-      "sha256": "aa435095990ae5083b0b49a2c8a65f51745d24aa7a8d91f5326f109f69022660",
-      "bytes": 275411
+      "bytes": 266696,
+      "sha256": "c83d1c9243c76534cf2c67101631117cbd2a3722228d30bb555bf4a31cc0658e",
+      "hash_basis": "git commit blob bytes"
+    },
+    {
+      "path": "docs/8210_COMPILER_BRIDGE.md",
+      "bytes": 1019,
+      "sha256": "310ee5aa5bb36fe95853dd96195e789d57dcd48a8095dcb2b2e081aca39feb36",
+      "hash_basis": "git commit blob bytes"
+    },
+    {
+      "path": "docs/evidence_archive/2026-10-19/attempt-history-classification-review.md",
+      "bytes": 1117,
+      "sha256": "ce3b0c1c118e6113c9b67851622d0b8a989f07701af00fb41f423ba57b09a99f",
+      "hash_basis": "git commit blob bytes"
     }
   ]
 }
