@@ -1,0 +1,63 @@
+{
+  "schema": "h3-8207-runtime-acceptance-2026-10-19-v1",
+  "status": "PASS_WITHIN_OBSERVATION_WINDOW",
+  "observation": {
+    "start_local": "2026-10-19T21:56:01.1338402+08:00",
+    "end_local": "2026-10-19T22:26:14.4070441+08:00",
+    "duration_seconds": 1813.273204,
+    "samples": 60,
+    "interval_seconds_approx": 30,
+    "listener_count_each_sample": 1,
+    "listener_owner_stable": true,
+    "http_127_0_0_1_no_proxy": {
+      "/system_stats": {"status": 200, "samples": 60},
+      "/queue": {"status": 200, "samples": 60},
+      "/history": {"status": 200, "samples": 60}
+    },
+    "new_connection_requests": 180,
+    "http_failures": 0,
+    "listener_failures": 0
+  },
+  "prebake": {
+    "loaded_module_sha256": "5448c05ddd66b086a844a370440d14f830e04538f7bd05e7b9a657828c59ba0d",
+    "startup_audit_verified_parent_terminal": 198,
+    "startup_audit_unconfirmed_preserved": 1,
+    "post_load_immutable_identity_error_count": 0,
+    "raw_ledger_modified": false
+  },
+  "browser_same_origin": {
+    "origin": "http://127.0.0.1:8207",
+    "checked_local": "2026-10-19T22:26:57+08:00",
+    "system_stats_status": 200,
+    "queue_status": 200,
+    "history_status": 200,
+    "dirty_canvas_count_preserved": 5,
+    "draft_v2_key_count": 13
+  },
+  "queue_safety": {
+    "nonempty_samples": 10,
+    "pending_ever": 0,
+    "final_running_count": 1,
+    "final_pending_count": 0,
+    "observed_task_prompt_or_history_disclosed": false,
+    "observed_task_interrupted_or_retried": false
+  },
+  "compiler_8210": {
+    "independent_managed_listener_count": 1,
+    "health_status": 200,
+    "managed_task_running": true
+  },
+  "regression": {
+    "test": "test_attempt_history_classification.py",
+    "passed": 2,
+    "total": 2,
+    "sanitized_fixture_semantic_rows": 199,
+    "gpu_submitted": false
+  },
+  "gpu_generation": "NOT_RERUN_BY_REPAIR",
+  "scope_limits": [
+    "This is a 30-minute local runtime observation, not a long-term stability guarantee.",
+    "No GPU quality or fresh-install acceptance is claimed.",
+    "The package's public fixture is a sanitized distribution copy; its parsed data matches the repository fixture."
+  ]
+}
