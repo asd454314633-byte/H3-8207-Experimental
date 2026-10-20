@@ -1,5 +1,7 @@
 # H3 8207 实验导演台｜MiniMax-H3 六段连续视频生成
 
+**[历史性能、模型加载、Host Warm、PreBake 与最终裁决总索引（2026-10-20）](docs/H3_PERFORMANCE_HISTORY_AND_DECISIONS_20261020.md)** —— 已做过哪些真实 GPU 测试、哪些旧 HOLD 被后续 PASS 覆盖、哪些优化被拒绝，以及 8207 v0.4.0 尚缺哪些严格 A/B。性能问题先查此页，勿重复研发或把 8197 结果当作 8207 最新测速。
+
 ## 2026-10-20 V29 完整修复与交付
 
 **[下载 H3 8207 V29 完整 Agent Pack（ZIP + SHA256 + 中文交付报告）](https://github.com/asd454314633-byte/H3-8207-Experimental/releases/tag/v0.4.0-full-closeout)**
