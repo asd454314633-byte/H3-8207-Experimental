@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H3 官方中文提示词编译器</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">H3</span>
+    <div>
+      <h1>官方中文提示词编译器</h1>
+      <p class="sub">中文填写 → 官方格式英文提示词 ｜ 不调用导演大模型 · 不占用 GPU</p>
+    </div>
+  </div>
+  <div class="engine" id="engineBox">
+    <span class="dot" id="engineDot"></span>
+    <span id="engineText">正在检测翻译引擎…</span>
+  </div>
+</header>
+
+<nav class="tabs" id="segmentTabs"></nav>
+
+<main class="layout">
+
+  <!-- ============ A. 当前参考预设 ============ -->
+  <section class="card" id="card-preset">
+    <h2><span class="badge">A</span>当前参考预设
+      <button class="link" data-toggle="preset">展开/收起</button>
+    </h2>
+    <div class="cardbody" data-body="preset">
+      <div class="row2">
+        <label>预设名称<input id="preset-name" placeholder="例如：雨天咖啡馆系列"></label>
+        <label>视觉风格<input id="preset-style" placeholder="例如：电影感，写实"></label>
+      </div>
+      <label>当前场景<textarea id="preset-scene" rows="2" placeholder="例如：雨夜城市咖啡馆靠窗座位"></textarea></label>
+      <div class="row2">
+        <label>人物容貌参考<input id="preset-people" placeholder="整体说明（可留空）"></label>
+        <label>体型与服装参考<input id="preset-body" placeholder="整体说明（可留空）"></label>
+      </div>
+      <div class="row2">
+        <label>声音参考<input id="preset-voice" placeholder="整体说明（可留空）"></label>
+        <label>摄影风格<input id="preset-camera" placeholder="例如：手持跟拍"></label>
+      </div>
+      <label>声音风格<input id="preset-sound" placeholder="例如：环境声偏冷、低混响（可留空）"></label>
+      <div class="btnrow">
+        <button class="primary" id="btn-preset-save">保存预设</button>
+        <select id="preset-list"><option value="">— 读取已保存预设 —</option></select>
+        <button id="btn-preset-apply">读取</button>
+        <button id="btn-preset-del">删除所选</button>
+        <button id="btn-preset-default">恢复默认</button>
+      </div>
+      <p class="hint">本段对预设的修改不会覆盖全局参考；如需保留请点「保存预设」或「另存新预设」。
+        默认参考<b>不是永久锁定</b>：随时可改、可换、可清空引用。</p>
+    </div>
+  </section>
+
+  <!-- ============ B. 当前段角色 ============ -->
+  <section class="card" id="card-roles">
+    <h2><span class="badge">B</span>本段角色
+      <button class="link" id="btn-add-role">+ 添加角色</button>
+    </h2>
+    <div class="cardbody">
+      <p class="hint">角色编号（C01、C02…）是本地永久 ID，一经建立不随出场顺序改变；
+        删除本段出场<b>不会</b>删除角色档案。勾选表示本段出场。</p>
+      <div id="roleList" class="rolelist"></div>
+    </div>
+  </section>
+
+  <!-- ============ C. 本段内容 ============ -->
+  <section class="card" id="card-content">
+    <h2><span class="badge">C</span>本段内容</h2>
+    <div class="cardbody">
+      <div class="row3">
+        <label>生成模式<select id="seg-mode"></select></label>
+        <label>时长（秒，4–15）<input id="seg-duration" type="number" min="4" max="15" value="6"></label>
+        <label>本段标题<input id="seg-title" placeholder="第一段"></label>
+      </div>
+
+      <label class="big">① 动作与行为（中文自由填写）
+        <textarea id="seg-action" rows="4" placeholder="例如：林薇坐在沙发上，陈默从画面左侧走进来，镜头向左平移跟住他"></textarea>
+      </label>
+
+      <div class="sub">
+        <div class="subhead">② 台词 <button class="link" id="btn-add-dialogue">+ 新增一条台词</button></div>
+        <div id="dialogueList" class="dialoguelist"></div>
+        <p class="hint">中文台词<b>逐字保留</b>：不翻译、不润色、不删减、不改顺序。情绪与发声方式写在对白标签之外。</p>
+      </div>
+
+      <label class="big">③ 摄影机（可留空，使用当前默认设定）
+        <textarea id="seg-camera" rows="2" placeholder="例如：镜头缓慢推近 / 或直接用右侧下拉精确指定"></textarea>
+      </label>
+
+      <label class="big">④ 环境音与其他要求
+        <textarea id="seg-soundscape" rows="2" placeholder="例如：窗外持续雨声与咖啡馆低频环境噪音"></textarea>
+      </label>
+
+      <details class="adv">
+        <summary>高级：配乐与继承、素材映射、镜头时间线、保留关系</summary>
+        <div class="advbody">
+          <label>配乐（non_diegetic_music）<textarea id="seg-music" rows="2" placeholder="留空则输出 N/A"></textarea></label>
+          <label>其他要求 / summary 补充<textarea id="seg-extra" rows="2" placeholder="可留空"></textarea></label>
+          <label>继承上一段结束状态（可留空，<b>不会自动补剧情</b>）
+            <textarea id="seg-inherit" rows="2"></textarea></label>
+
+          <h4>参考素材（只有勾选"已真实连接"的素材才会生成引用标签）</h4>
+          <div id="assetList" class="assetlist"></div>
+          <button class="link" id="btn-add-asset">+ 新增素材</button>
+
+          <h4>镜头时间线（可留空；留空时自动生成单镜头）</h4>
+          <div id="shotList" class="shotlist"></div>
+          <button class="link" id="btn-add-shot">+ 新增镜头</button>
+
+          <h4>保留关系（retention_analysis，Ref2VA 专用）</h4>
+          <div id="retentionList" class="retentionlist"></div>
+
+          <h4>任务类型前缀（summary）</h4>
+          <div id="taskTypeList" class="chips"></div>
+
+          <h4>本段角色关系（用户未写清时才需要）</h4>
+          <div id="relationList"></div>
+          <button class="link" id="btn-add-relation">+ 新增一条角色关系</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ D. 完整提示词 ============ -->
+  <section class="card" id="card-output">
+    <h2><span class="badge">D</span>完整提示词</h2>
+    <div class="cardbody">
+      <div class="btnrow">
+        <button class="primary big-btn" id="btn-compile">编译完整提示词</button>
+        <button id="btn-validate">重新校验</button>
+        <button id="btn-copy">复制最终提示词</button>
+        <button id="btn-save-prompt">保存到提示词库</button>
+        <button id="btn-export">导出 TXT/JSON</button>
+        <button id="btn-version">保存为版本</button>
+      </div>
+
+      <div id="statusBox" class="status"></div>
+
+      <div class="outgrid">
+        <label>中文原文查看<textarea id="out-zh" rows="5" readonly></textarea></label>
+        <label>英文翻译预览<textarea id="out-en" rows="5" readonly placeholder="（编译后显示详细描述段落的英文）"></textarea></label>
+      </div>
+
+      <label class="big">最终 H3 提示词（可手工修改；<b>人工编辑后的文本拥有最高优先级</b>）
+        <textarea id="out-final" rows="16"></textarea>
+      </label>
+      <p class="hint">手工修改后旧校验状态会<b>立即失效</b>，需要重新校验后才会恢复为"已通过"。
+        导出与保存都以这里的内容为准。</p>
+
+      <details class="adv">
+        <summary>高级：编译器诊断信息</summary>
+        <div class="advbody">
+          <div id="compileInfo" class="info"></div>
+          <textarea id="out-raw" rows="10" readonly placeholder="（编译后的原始输出，未受人工编辑影响）"></textarea>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 侧栏：库 / 版本 ============ -->
+  <section class="card wide" id="card-library">
+    <h2><span class="badge">库</span>提示词库与历史版本</h2>
+    <div class="cardbody">
+      <div class="row2">
+        <div>
+          <h4>提示词库</h4>
+          <div class="btnrow"><input id="prompt-search" placeholder="搜索…"><button id="btn-prompt-search">搜索</button></div>
+          <div id="promptList" class="list"></div>
+        </div>
+        <div>
+          <h4>历史版本（默认不自动删除）</h4>
+          <button id="btn-version-refresh">刷新列表</button>
+          <div id="versionList" class="list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

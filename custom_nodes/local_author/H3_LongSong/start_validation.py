@@ -10,7 +10,7 @@ def validate_start(data):
     source=data['source']
     path=Path(source) if Path(source).is_absolute() else Path(folder_paths.get_annotated_filepath(source))
     path=path.resolve(strict=True)
-    probe=subprocess.run(['ffprobe','-v','error','-select_streams','a:0','-show_entries','stream=duration:format=duration','-of','json',str(path)],capture_output=True,text=True,check=True,timeout=15)
+    probe=subprocess.run(['ffprobe','-v','error','-select_streams','a:0','-show_entries','stream=duration:format=duration','-of','json',str(path)],capture_output=True,text=True,encoding='utf-8',check=True,timeout=15)
     meta=json.loads(probe.stdout)
     if not meta.get('streams'):raise ValueError('源文件没有音轨')
     duration=float(meta['streams'][0].get('duration') or meta['format']['duration'])

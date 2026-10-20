@@ -38,6 +38,30 @@ def graph_matches(attempt,graph):
  snapshot=TaskSnapshot.load(path)
  return analyze(graph,Metadata(json.loads(snapshot.metadata_json))).semantic_version==snapshot.semantic_version
 
+def history_graph_matches(attempt,graph):
+ """Only Core's declared FLOAT coercions may differ from the dispatch graph.
+
+ Keep the pre-submit hash strict. History contains Core-normalized inputs,
+ e.g. fps=24 becomes 24.0; that is not a modified guide or task snapshot.
+ """
+ import copy,math
+ from . import production as p
+ path=snapshot_path(attempt['prompt_id'])
+ if not path.is_file():return False
+ snapshot=TaskSnapshot.load(path);original=json.loads(snapshot.graph_json)
+ if p.graph_digest(original)!=attempt.get('graph_sha256'):return False
+ metadata=json.loads(snapshot.metadata_json)
+ def normalized(value):
+  result=p.clean_graph(value)
+  for node in result.values():
+   schema=metadata.get(node['class_type'],{}).get('input',{})
+   inputs={**schema.get('required',{}),**schema.get('optional',{})}
+   for name,v in list(node['inputs'].items()):
+    spec=inputs.get(name)
+    if spec and spec[0]=='FLOAT' and type(v) in (int,float) and math.isfinite(v):node['inputs'][name]=float(v)
+  return result
+ return p.graph_digest(normalized(original))==p.graph_digest(normalized(graph))
+
 def recovery(ctx,index,entry,server):
  import folder_paths
  pid=entry.get('attempt',{}).get('prompt_id') or entry.get('prompt_id')
@@ -53,7 +77,7 @@ def recovery(ctx,index,entry,server):
   source='LIVE_HISTORY'
   if not history:
    archive=root()/'history'/(pid+'.json');proof=archive.with_suffix('.sha256')
-   if not archive.is_file() or not proof.is_file() or file_sha(archive)!=proof.read_text().strip():return None
+   if not archive.is_file() or not proof.is_file() or file_sha(archive)!=proof.read_text(encoding='ascii').strip():return None
    history=json.loads(archive.read_text(encoding='utf-8'));source='VERIFIED_ARCHIVED_HISTORY'
   native_root=Path(folder_paths.get_output_directory())/'h3_continuation'/ctx['project_id']
   native_index=json.loads((native_root/'index.json').read_text(encoding='utf-8'))

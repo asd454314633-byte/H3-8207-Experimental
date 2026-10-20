@@ -1,4 +1,6 @@
 """Read-only sampler -> video VAE transition snapshots. No eviction operations."""
+
+import folder_paths
 import functools
 import importlib.util
 import json
@@ -17,7 +19,7 @@ _spec = importlib.util.spec_from_file_location('h3_transition_shared_snapshot',P
 shared=importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(shared)
 ACTIVE=None
-FOLDER=Path(__file__).resolve().parents[2]/'user'/'h3_sampler_to_vae_residency_probe'
+FOLDER=Path(folder_paths.get_user_directory())/'h3_sampler_to_vae_residency_probe'
 
 
 def patch_snapshot(patcher,model):

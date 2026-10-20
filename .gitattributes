@@ -28,3 +28,29 @@ custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_segment_director.js -text
 custom_nodes/local_author/h3_conditioning_prebake/attempt_lifecycle.py -text whitespace=cr-at-eol
 custom_nodes/local_author/h3_conditioning_prebake/execution_state.py -text whitespace=cr-at-eol
 custom_nodes/local_author/h3_conditioning_prebake/production.py -text whitespace=cr-at-eol
+
+# Exact current closeout sources and frozen compiler/IOCP bytes.
+custom_nodes/local_author/h3_conditioning_prebake/cache_codec.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/nodes.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_conditioning_prebake/user_guides.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_LongSong/timeline_contract.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_compiler.js -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_six_compiler_preview_ui.js -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_adaptive_host_warm_inplace/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_partial_diffusion_evict/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_sampler_to_vae_residency_probe/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_selective_diffusion_unload/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_selective_te_unload/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_te_residency_probe/__init__.py -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_transfer_audit/__init__.py -text whitespace=cr-at-eol
+services/h3_compiler8210/app/** -text whitespace=cr-at-eol
+runtime_patches/winerror64_20261019/** -text whitespace=cr-at-eol
+
+custom_nodes/local_author/h3_six_compiler_bridge/__init__.py -text whitespace=cr-at-eol
+
+custom_nodes/local_author/H3_Prompt_Sidecar/six_resume.py -text whitespace=cr-at-eol
+custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_task_workflow.js -text whitespace=cr-at-eol
+custom_nodes/local_author/h3_instance_identity/__init__.py -text whitespace=cr-at-eol
+tools/instance_manager.py -text whitespace=cr-at-eol
+services/h3_compiler8210/tests/** -text whitespace=cr-at-eol

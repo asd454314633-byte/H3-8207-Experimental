@@ -3,6 +3,8 @@
 No model loading, unloading, pin registration, cache cleanup, or tensor copies.
 Pin views and their HostBuffer are overlapping measurements, never additive.
 """
+
+import folder_paths
 import ctypes
 from ctypes import wintypes
 import datetime
@@ -226,7 +228,7 @@ class H3TEResidencyProbe:
         # Errors in observation must not mutate or block the production conditioning.
         try:
             result = snapshot()
-            folder = Path(__file__).resolve().parents[2] / "user" / "h3_te_residency_probe"
+            folder = Path(folder_paths.get_user_directory()) / "h3_te_residency_probe"
             folder.mkdir(parents=True, exist_ok=True)
             output = folder / f"snapshot_{os.getpid()}_{time.time_ns()}.json"
             result["SNAPSHOT_PATH"] = str(output)

@@ -17,6 +17,17 @@ _session = None
 _start_lock = None
 
 
+def _decode_windows_output(raw):
+    # schtasks uses the Windows console codepage on Chinese installations.
+    # JSON/HTTP remains UTF-8; preserve raw command errors without replacement.
+    for encoding in ('utf-8-sig', 'gb18030'):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError:
+            pass
+    return raw.decode('utf-8', errors='backslashreplace')
+
+
 async def _http_health():
     global _session
     if _session is None:
@@ -100,7 +111,7 @@ async def _ensure_compiler():
             )
             stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=5)
             if proc.returncode != 0:
-                detail = (stderr or stdout).decode("utf-8", errors="replace").strip()
+                detail = _decode_windows_output(stderr or stdout).strip()
                 return False, f"无法启动受管任务 {TASK_NAME}：{detail or proc.returncode}"
         except Exception as exc:
             return False, f"启动受管任务失败：{exc}"

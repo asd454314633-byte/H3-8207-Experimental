@@ -11,7 +11,18 @@ export function prepareLongSong(snapshot,index,options){
    frames:structuredClone(g['136'].inputs.length),project_id:options.production_selection?.binding?.project_id||options.project_id||'H3_SIX_V288',
    segment_index:index,inherit,clean_rebase:inherit&&prep.clean_rebase_enabled===true&&Number(prep.clean_rebase_segment)===index,fps:24}};
  if(options.cross_group?.enabled)g.LONG_SONG.inputs.cross_group_json=JSON.stringify(options.cross_group.contract);
- const checks=Object.values(g).filter(n=>n.class_type==='H3Audio8ReferencePreflight');
+ let checks=Object.values(g).filter(n=>n.class_type==='H3Audio8ReferencePreflight');
+ // graphToPrompt prunes an unused preflight while all manual audio toggles are
+ // off. Long-song opt-in supplies its own real audio, so restore that exact
+ // existing canvas node before wiring the planner, without enabling old files.
+ if(checks.length===0){
+  const nodes=app.graph._nodes.filter(n=>n.type==='H3Audio8ReferencePreflight');
+  if(nodes.length!==1)throw Error('长歌需要唯一实际画布音频预检节点');
+  const node=nodes[0],id=String(node.id);
+  const inputs={prompt:structuredClone(g['136'].inputs.prompt)};
+  for(const w of node.widgets||[])if(['audio1_enabled','audio2_enabled','audio3_enabled','soundtrack_enabled','role3'].includes(w.name))inputs[w.name]=w.value;
+  g[id]={class_type:'H3Audio8ReferencePreflight',inputs};checks=[g[id]];
+ }
  if(checks.length!==1)throw Error('长歌需要保留唯一15秒音频预检');
  Object.assign(checks[0].inputs,{audio1:['LONG_SONG',2],audio1_enabled:true,audio2_enabled:false,audio3_enabled:false,soundtrack_enabled:false});
  for(const k of Object.keys(g['136'].inputs))if(k.startsWith('ref_audios.')||k.startsWith('ref_video_audios.'))delete g['136'].inputs[k];

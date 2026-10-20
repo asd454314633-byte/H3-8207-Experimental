@@ -1,0 +1,321 @@
+{
+  "schema": "H3_8207_PUBLIC_CLOSEOUT_ACCEPTANCE_V1",
+  "local_functional_acceptance": "PASS",
+  "recipient_gpu": "NOT_TESTED",
+  "release_download_verification": "Separate receipt after publication; not claimed by source-only checks",
+  "date": "2026-10-20",
+  "tasks": [
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 1,
+      "prompt_id": "9bb51c4e-d837-4401-8771-54b1d1e8301d",
+      "frames": 192,
+      "video_sha256": "9090b360c5207f5be4b53101d83c1ae9655e86ea8a8869c91087cf804d12bc7a",
+      "original_pcm_correlation": 0.9976731332756379
+    },
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 2,
+      "prompt_id": "fb3b8a57-aa99-4bb5-9336-27744dd5c186",
+      "frames": 153,
+      "video_sha256": "15528ee57659bae816ef80bec46acc24440a0433b41bb32c7a5d27625e441038",
+      "original_pcm_correlation": 0.998054181621948
+    },
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 3,
+      "prompt_id": "061e14a4-a6cf-42f4-82ae-7a46d03c4fbd",
+      "frames": 153,
+      "video_sha256": "18f8d4d3c57fdaf97fc0f791c85c334db2c6861735728ed08c46cdb2a55a9afa",
+      "original_pcm_correlation": 0.9966486857860344
+    },
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 4,
+      "prompt_id": "3c214828-50c4-41a2-80e5-fd480aeaa2d1",
+      "frames": 153,
+      "video_sha256": "dc01eddaada839b84b7d939d7db2c0f5ec8d8794606280901285f7de31714022",
+      "original_pcm_correlation": 0.9968001243427375
+    },
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 5,
+      "prompt_id": "c34189b2-07de-4620-908c-312ede765057",
+      "frames": 153,
+      "video_sha256": "a996460c167cce8e8bcc7c921f50937c1b3038687907cef711fa34bfdb619686",
+      "original_pcm_correlation": 0.9970752023503101
+    },
+    {
+      "category": "final_music",
+      "group": 1,
+      "segment": 6,
+      "prompt_id": "cbbea10e-4d48-46c8-8d7f-65f996f62209",
+      "frames": 153,
+      "video_sha256": "6654b05f9287c172526b1278345cc6c4b3ad82d32dc156129da029a3a223e726",
+      "original_pcm_correlation": 0.9952066486199909
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 1,
+      "prompt_id": "eb510999-1136-4570-8cb4-9826e34631ad",
+      "frames": 153,
+      "video_sha256": "0e39be0e92c46c1671d69928a5196f207cf2998c8d88ab8c8caaaf06f0ef6f2f",
+      "original_pcm_correlation": 0.9940717383310057
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 2,
+      "prompt_id": "7c74cafd-b7dc-4547-9a65-f2252b432e8c",
+      "frames": 153,
+      "video_sha256": "53c120ef04dd4427fcf4e122bd12e0d77fbde64b53ba8cbafc22dfe8247e6466",
+      "original_pcm_correlation": 0.9948993955211831
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 3,
+      "prompt_id": "3e2ea390-bb83-4e3f-8959-f30bd9486327",
+      "frames": 153,
+      "video_sha256": "c0047b4bf08321615d206fa9553177644952718fa9febc3fabbfbdf477955969",
+      "original_pcm_correlation": 0.9935343717964898
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 4,
+      "prompt_id": "585fe4a3-586f-42de-b846-e1df5aff69a7",
+      "frames": 153,
+      "video_sha256": "3a61a4e0330b8353d17184a529eb2ff7237c9bcaf03cb5c911a355ef5fa1cdf0",
+      "original_pcm_correlation": 0.9944258814213044
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 5,
+      "prompt_id": "138dafcc-3b77-4811-8a8a-345fc4ebc8d0",
+      "frames": 153,
+      "video_sha256": "91b02a15c6fdc9fcf9b09ca26771d51e7ca79d63aa2a53f711207de4f17ff923",
+      "original_pcm_correlation": 0.9964143549515716
+    },
+    {
+      "category": "final_music",
+      "group": 2,
+      "segment": 6,
+      "prompt_id": "18b3eb0e-0486-4bf0-86ce-24d89be5dcf5",
+      "frames": 153,
+      "video_sha256": "7ab7743d5d72c57d08af1ee9d6bc05c1aaff4803d005c3e5a32df7996e1e299e",
+      "original_pcm_correlation": 0.997091055977081
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 1,
+      "prompt_id": "7ec3e2d6-680d-495d-88f4-c2365ccdf77f",
+      "bake_prompt_id": "ec92104d-fa64-4db8-af0e-8d2f28ebca81",
+      "cache_key": "4205552acf77d80b4defea838bf9ee73fec1f841500577be4dfa435a86a5600e",
+      "video_sha256": "b601ee58065ccd15f343502fde9c5cfa9b18513587af355d3a67f807732af5ea"
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 2,
+      "prompt_id": "478327e6-7165-4463-add1-a8f492a49b29",
+      "bake_prompt_id": "95b6d36a-ca4b-490e-b7d1-a5dab4a3e944",
+      "cache_key": "48c83d7e45b85ccf0540b94fe2550d69c3ee2158166734e69e918d7a775cc040",
+      "video_sha256": "377ee326992e14d1915eab642c6e8389d7050e7da01963cbddc9a7f58bdc23f0"
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 3,
+      "prompt_id": "4c20a889-6d8f-4cf5-923f-a00a260014c3",
+      "bake_prompt_id": "9c44171f-e2f7-43d6-bdaa-e5ee9712a4a0",
+      "cache_key": "261231efc92ff25bc643d3e7ce57956fe2118e4f84ed2c3bbb8e121a3baa04e6",
+      "video_sha256": "db3b83b875468fe9ad6c8ae47b717da0300b30d1a760efa536601297341988e3"
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 4,
+      "prompt_id": "5d161c7c-ac42-4ae3-b0e0-37614b5a40ad",
+      "bake_prompt_id": "4041f607-bd98-412e-b34a-3ad91d797727",
+      "cache_key": "fefb25426b68a2c752733c84e749f7299b256da3aed8a7cafa7569c7c0a062d2",
+      "video_sha256": "70dcdfc0bc631f92b1c33e323f0498b5bdf03363f752df51b9a56f448cc065ec"
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 5,
+      "prompt_id": "d8b2e4d4-902f-42c4-8aab-95b8c0dc2e11",
+      "bake_prompt_id": "00412cfd-2365-4cc7-85d1-71c7efb06d93",
+      "cache_key": "43f72eeacbf2b22c82ad8a8ec47b0c8e6f4bc657803a06862ba67cf144f22b56",
+      "video_sha256": "25d34cf374cef9a805e409ce14c25d306867b3d3d1db536bd5677d3b5586d7ce"
+    },
+    {
+      "category": "cache_consumption_not_final_visual_film",
+      "segment": 6,
+      "prompt_id": "3aeb0298-f016-4124-b4be-2429b870d897",
+      "bake_prompt_id": "cebae13e-51c8-4c95-bdd8-cfe026a02209",
+      "cache_key": "d47506fe0a170a7b34900439b42e073bd8ebfc39faba90b1e36ee3818c753ec2",
+      "video_sha256": "22bb5248fd1cf13e4df82cd0cc788583ca77bcf4624db79ce34d34b9d8f2b53b"
+    }
+  ],
+  "additional_real_gpu_tasks": {
+    "prebake_off_dialogue": "989f7aec-64e7-4c79-a3f3-30502204afe8",
+    "controlled_uncached": "481d1d8e-04cd-4e98-a93e-9db95e8daa3c"
+  },
+  "final_film": {
+    "frames": 1875,
+    "fps": 24,
+    "stream_duration": 78.125,
+    "container_duration": 78.145996,
+    "sha256": "f3afd9d7004de01add77e693c04af2fe94d26f401e250eaa58b22894d909abed",
+    "decoded_frames_match_12_clips": true,
+    "compressed_packets_identical": false,
+    "pcm_correlation": 0.9989790878499122,
+    "aac_tail_padding_sample_frames": 912
+  },
+  "stability": {
+    "duration": 303.0904116999882,
+    "fresh_http_requests": 102,
+    "all_http_200": true,
+    "persistent_websocket_errors": []
+  },
+  "cpu_cases": [
+    {
+      "name": "runtime_contract",
+      "status": "PASS"
+    },
+    {
+      "name": "timeline",
+      "status": "PASS"
+    },
+    {
+      "name": "historical_attempts",
+      "status": "PASS"
+    },
+    {
+      "name": "closeout_recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "root_dedup",
+      "status": "PASS"
+    },
+    {
+      "name": "windows_decode",
+      "status": "PASS"
+    },
+    {
+      "name": "compiler_rules",
+      "status": "PASS"
+    },
+    {
+      "name": "release_guards",
+      "status": "PASS"
+    },
+    {
+      "name": "task_workflow",
+      "status": "PASS"
+    },
+    {
+      "name": "native_spatial",
+      "status": "PASS"
+    },
+    {
+      "name": "source_integrity",
+      "status": "PASS"
+    }
+  ],
+  "private_evidence_digests": [
+    {
+      "evidence_name": "final_static_cache_six_audit.json",
+      "sha256": "0628f4df96777c738c8dd6d29f9cedf99628ca971e12ee4d077b744253b91377",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "final_static_prefix_merge_audit.json",
+      "sha256": "6ba08056f963fb7ea92846ffb4875c8c9cdefca195d632b94b9126413e84cd99",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "s4_cache_uncached_parity.json",
+      "sha256": "3a4a70ea9589f84db7878e740b6e788bf02bf6f16e41b9307ba23098defd8d9d",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "H3_CLOSEOUT_VERIFIED_G1_20261020_media_audit.json",
+      "sha256": "8a5201505c0335ed25df5a5fd68b85f859182b15375ed6fc40aaa9b799799c3f",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "H3_EXEC_8ef46f9c6f0c484d8e33dd12fe94d490_media_audit.json",
+      "sha256": "d3b12fdad4b6988bd9a17c5202a8dbe7940954d9e7f6468fd5e931df65a08c60",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "final_two_group_media_audit.json",
+      "sha256": "802bc26cf74f5d3e06cf3963cd61503393c070a085a42ccacddfe1af51cba3bf",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "off_dialogue_graph_proof.json",
+      "sha256": "871badf52fcf4dfcd9970ccff71dc2c7adb91d1f303302015040cd8b3c7fef14",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "public_cpu_suite.json",
+      "sha256": "7e9bbc5f7d8479b230267bff5e47e68783323fa0bc442c5dff85a8448b48be87",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "stability_current_generation.json",
+      "sha256": "0bff8bc68840874ca1ae19e6a073646fe6c9c3dcf9659f1cca9ee5a4f5c649ad",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "current_server_twelve_native_receipts.json",
+      "sha256": "5e0c38de022d640e400939f4c3d4b46bd5c8f0b708aae24a3cb5e1b398c132ef",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "current_static_six_native_receipts.json",
+      "sha256": "be640870cb88364c49ac96da0b9aed874412ad7ccecbd783e14dabdf0f8467c1",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "protected_final_check.json",
+      "sha256": "6e418c7e5a3e5652796cae963c73de0b1832f6897084b02c531d2e152cf7e6c8",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "final_model_full_hash_check.json",
+      "sha256": "620b55d71258f6064b3209338610ac3c523cf5e28e9371f82f96b612ab0ace9e",
+      "availability": "Private local originals retained; public summary excludes raw History/media/paths"
+    },
+    {
+      "evidence_name": "public_actual_rebuild_validation.json",
+      "sha256": "a7b5d287765d9f0cebcbebda87db8cf11e54d622e3587a1f292cab67c4a1fb22",
+      "availability": "Private originals retained; public statistics only"
+    },
+    {
+      "evidence_name": "compiler_archive_gpu_text_binding.json",
+      "sha256": "a00382a38bfe4c4772f66fd1cd86e64d3a12e6b7015f1d6ca145b484b9f8d00e",
+      "availability": "Private originals retained; public statistics only"
+    },
+    {
+      "evidence_name": "music_history_metadata_scope.json",
+      "sha256": "5bbd6bccc412a39d8487c7ba345c3d0bc3ddc5e5731949a49c350b83ad248ec4",
+      "availability": "Private originals retained; public statistics only"
+    },
+    {
+      "evidence_name": "final_live_history_snapshot_receipt.json",
+      "sha256": "563251fdf34f53a1ffb7a219f81921a88c51c6b242f645209cdd0905871524eb",
+      "availability": "Private originals retained; public statistics only"
+    }
+  ],
+  "quality_scope": "Static diagnostic S3->S4 clothing discontinuity retained; controlled live-vs-cache S4 video/audio latent and153 decoded frames identical. Not a caching regression; not accepted as final visual film. Final film is separately validated music two-group output. Guide conditioning is soft, not a universal identity guarantee.",
+  "actual_independent_source_rebuild": "PASS; recipient dependencies/models/GPU not run"
+}

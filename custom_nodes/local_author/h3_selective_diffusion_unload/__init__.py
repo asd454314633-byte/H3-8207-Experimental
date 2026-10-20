@@ -1,4 +1,6 @@
 """Exact MiniMaxH3 residency release after sampling, before all VAE branches."""
+
+import folder_paths
 import json
 import logging
 import os
@@ -30,7 +32,7 @@ class H3SelectiveDiffusionUnloadBeforeVAE:
 
     def release(self,latent,prompt,unique_id):
         record={'schema':'H3_SELECTIVE_DIFFUSION_UNLOAD_BEFORE_VAE_CANARY_V1','pid':os.getpid(),'epoch':time.time(),'status':'FAIL_CLOSED'}
-        folder=Path(__file__).resolve().parents[2]/'user'/'h3_selective_diffusion_unload'
+        folder=Path(folder_paths.get_user_directory())/'h3_selective_diffusion_unload'
         folder.mkdir(parents=True,exist_ok=True)
         output=folder/f'release_{os.getpid()}_{time.time_ns()}.json'
         try:

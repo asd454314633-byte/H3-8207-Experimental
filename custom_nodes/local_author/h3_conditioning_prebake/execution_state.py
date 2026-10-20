@@ -167,7 +167,11 @@ def fork(source, ledger, state_lock=None, requested_index=None):
     data = copy.deepcopy(ledger)
     data.update(project_id=binding['project_id'], execution=binding)
     receipts = p.read_state(old / 'six_acceptance.json') or {}
+    source_timeline = p.read_state(old / 'long_song_timeline.json') or {}
+    if not isinstance(source_timeline, dict):
+        source_timeline = {}
     inherited = {}
+    inherited_timeline = {}
     index = p.read_state(old / 'index.json') or {}
     retained = []
     for i, entry in sorted(data['segments'].items(), key=lambda item: int(item[0])):
@@ -249,6 +253,19 @@ def fork(source, ledger, state_lock=None, requested_index=None):
         inherited[i] = copy.deepcopy(receipt)
         inherited[i]['inherited_from'] = copy.deepcopy(entry['inherited_from'])
         inherited[i]['latent_path'] = str(dst)
+        timeline_plan = source_timeline.get(str(i))
+        if isinstance(timeline_plan, dict) and timeline_plan.get('segment_index') == int(i):
+            timeline_receipt = timeline_plan.get('execution_receipt')
+            legacy_plan = 'fps' not in timeline_plan and not timeline_receipt
+            exact_new_plan = (isinstance(timeline_receipt, dict) and
+                              timeline_receipt.get('prompt_id') == receipt.get('prompt_id') and
+                              timeline_receipt.get('project_id') == receipt.get('project_id') and
+                              timeline_receipt.get('group_id') == receipt.get('group_id') and
+                              timeline_receipt.get('execution_version') == receipt.get('execution_version') and
+                              timeline_receipt.get('source_sha256', '').lower() ==
+                              str(timeline_plan.get('source_sha256', '')).lower())
+            if legacy_plan or exact_new_plan:
+                inherited_timeline[str(i)] = copy.deepcopy(timeline_plan)
         retained.extend(e for e in index.get('segments', []) if int(e['segment_index']) == int(i))
     enabled = receipts.get('_native_merge', {}).get('auto_merge_enabled', True)
     inherited['_native_merge'] = {'auto_merge_enabled': enabled, 'active_group_id': binding['group_id'],
@@ -264,5 +281,7 @@ def fork(source, ledger, state_lock=None, requested_index=None):
     p.atomic_json(new / 'index.json', {**index, 'project_id': binding['project_id'],
                                     'segments': retained, 'trim_events': retained_trims})
     p.atomic_json(new / 'six_acceptance.json', inherited)
+    if inherited_timeline:
+        p.atomic_json(new / 'long_song_timeline.json', inherited_timeline)
     p.atomic_json(p.ledger_path(binding), data)
     return binding, data

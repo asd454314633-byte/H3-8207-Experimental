@@ -1,4 +1,4 @@
-import {previewCompilePrompt} from './h3_six_compiler.js?v=20261019preview2';
+import {previewCompilePrompt} from './h3_six_compiler.js?v=20261020strict6';
 
 export function installCompilerPreview(ui, root, app) {
   if (!ui?.cards?.length || root.dataset.h3CompilerPreview === 'installed') return;
@@ -38,13 +38,13 @@ export function installCompilerPreview(ui, root, app) {
       try {
         const snapshot = await app.graphToPrompt();
         const result = await previewCompilePrompt(card.area.value, index, snapshot);
-        status.textContent = result.status === 'COMPILED' ? 'COMPILED · 8210编译成功 · 仅预览' : result.status === 'RAW_FALLBACK' ? 'RAW_FALLBACK · 按原稿直通 · 仅预览' : 'UNCHANGED · 本次未触发结构化编译 · 仅预览';
+        status.textContent = result.status === 'COMPILED' ? 'COMPILED · 8210编译成功 · 仅预览' : result.status === 'BLOCKED' ? 'BLOCKED · 未提交GPU' : 'VALIDATED · 官方格式校验通过 · 仅预览';
         reason.textContent = result.reason + (result.refSummary ? `\n\n实际图接线：图片${result.refSummary.pictures}张（用途未指定），视频${result.refSummary.videos}路、音频${result.refSummary.audios}路；预览不推断职责。` : '');
         if (result.compiled) { compiled.textContent = result.compiled; compiled.hidden = false; compiledLabel.hidden = false; }
         used.textContent = result.used; wrap.open = true;
       } catch (error) {
-        status.textContent = 'RAW_FALLBACK · 按原稿直通'; reason.textContent = '预览请求失败：' + error.message;
-        raw.textContent = card.area.value; used.textContent = card.area.value; wrap.open = true;
+        status.textContent = 'BLOCKED · 未提交GPU'; reason.textContent = '预览请求失败：' + error.message;
+        raw.textContent = card.area.value; used.textContent = ''; wrap.open = true;
       } finally { button.disabled = false; button.textContent = '重新预览编译结果'; }
     });
   }

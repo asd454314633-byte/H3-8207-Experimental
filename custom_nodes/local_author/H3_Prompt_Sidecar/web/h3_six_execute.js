@@ -1,10 +1,11 @@
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
 import {prepareUserGuide,compileUnmanagedGuide,assertGuideSafe} from './h3_six_guides.js?v=20261017guide3';
-import {prepareLongSong,finishLongSong} from './h3_long_song.js?v=20261016cross1';
+import {prepareLongSong,finishLongSong} from './h3_long_song.js?v=20261020closeout1';
 import {resolveSongStart} from '/extensions/H3_LongSong/start_contract.js?v=20261016origin1';
-import {prepareProduction,cachedGraph,acceptProduction,submitProduction,productionStatus} from '/extensions/h3_conditioning_prebake/production.js?v=20261014queue';
-import {compileForSubmission} from './h3_six_compiler.js?v=20261019compiler2';
+import {prepareProduction,cachedGraph,acceptProduction,submitProduction,productionStatus} from '/extensions/h3_conditioning_prebake/production.js?v=20261020recovery2';
+import {compileForSubmission} from './h3_six_compiler.js?v=20261020strict6';
+import {bindTaskWorkflow} from './h3_task_workflow.js?v=20261020snapshot1';
 
 const flights=new Map();
 let activeExecutions=0,submissionTail=Promise.resolve();
@@ -80,13 +81,17 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     if(options.long_song?.enabled){
       const firstText=index===0?text:options.production_selection?.texts?.[0];
       options={...options,long_song:resolveSongStart(options.long_song,firstText)};
+      let selectedProject=options.predecessor_binding?.project_id||options.production_selection?.binding?.project_id||project;
       if(cross){
         if(!options.cross_group.contract)throw Error('请先核验并绑定上一组六段；未提交GPU');
+        // The current canvas can still point at the completed source group.
+        // Discovery is read-only; the actual immutable target is allocated by
+        // prepareProduction's fork and checked again by the submission gate.
+        if(selectedProject===options.cross_group.contract.source_project)selectedProject='H3_NEXT_'+options.submission_id.replaceAll('-','');
         if(options.cross_group.source_project!==options.cross_group.contract.source_project)throw Error('跨组前驱选择与绑定身份不一致，请重新核验');
-        const checked=await storeRequest('/h3/cross-group/validate',{contract:options.cross_group.contract,requested_start:options.long_song.start_seconds,requested_origin:options.long_song.start_origin,continuous,independent:options.independent===true});
+        const checked=await storeRequest('/h3/cross-group/validate',{contract:options.cross_group.contract,target_project:selectedProject,source:options.long_song.source,requested_start:options.long_song.start_seconds,requested_origin:options.long_song.start_origin,continuous,independent:options.independent===true});
         options={...options,cross_group:{enabled:true,contract:checked.contract},long_song:{...options.long_song,start_seconds:checked.contract.song_start,start_origin:'跨组原曲边界 '+checked.contract.global_boundary+'秒'}};
       }
-      const selectedProject=options.predecessor_binding?.project_id||options.production_selection?.binding?.project_id||project;
       const prepare=Object.values(snapshot.output).find(n=>n.class_type==='H3ContinuationPrepare')?.inputs;
       const verified=await storeRequest('/h3/long-song/validate-start',{...options.long_song,project_id:selectedProject,segment_index:index,inherit,...(cross?{cross_group:options.cross_group.contract,graph:snapshot.output,clean_rebase:prepare?.clean_rebase_enabled===true&&Number(prepare.clean_rebase_segment)===index}:{})});
       update(cross?`接上一组：新增内容从${options.cross_group.contract.global_boundary}秒接续，首段保护并仅裁剪39帧`:`原曲起点 ${verified.start_seconds}秒（${options.long_song.start_origin}）；后续段按实际保存帧数自动接续`);
@@ -96,7 +101,15 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     if(userGuide)update(`第${index+1}段关键帧：可见索引${userGuide.visible_frame} → 模型索引${userGuide.model_frame}（保护区${userGuide.protected_frames}帧）`);
     // 独立编译接线（2026-10-19）：手写原稿先经8210独立编译/官方校验，编译稿作为唯一最终文本
     // 进入 N138、PreBake 缓存与真实提交；失败则显示真实原因并阻断，不回退原稿。
-    text=await compileForSubmission(text,index,options,update,snapshot);
+    if(continuous&&options.production_selection?.texts?.length===6){
+      // Plan one consistent compiled six-text revision. Keeping raw text for
+      // earlier segments here would invalidate their accepted cache identities
+      // when the next segment is prepared.
+      const compiled=[];
+      for(let i=0;i<6;i++)compiled.push(await compileForSubmission(i===index?text:options.production_selection.texts[i],i,options,update,snapshot));
+      options={...options,production_selection:{...options.production_selection,texts:compiled}};
+      text=compiled[index];
+    }else text=await compileForSubmission(text,index,options,update,snapshot);
     const prebake=await prepareProduction(snapshot,text,index,options,update,waitForCompletion);
     const generationProject=prebake?.context?.project_id||project;
     if(inherit&&index>0){
@@ -106,6 +119,7 @@ async function runVisiblePrompt(text,index,update,options,dependencies) {
     const node=app.graph.getNodeById(138),widget=node?.widgets?.find(w=>w.name==='value');
     if(node?.type!=='PrimitiveStringMultiline'||!widget)throw Error('缺少原H3工作流的最终Prompt文本字段');
     widget.value=text;widget.callback?.(text);app.graph.setDirtyCanvas(true,true);
+    snapshot.workflow=bindTaskWorkflow(snapshot.workflow,{nodeId:node.id,widgetIndex:node.widgets.indexOf(widget),widgetName:widget.name,text,context:prebake?.context});
     const original=api.queuePrompt;let submitted=null,completion=null;
     // Preserve the native UI graph snapshot; managed attempts submit once via the backend.
     // The backend reserves the exact prompt_id and owns recovery/stop loss.

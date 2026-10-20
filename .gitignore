@@ -23,3 +23,10 @@ cache/
 .venv/
 venv/
 PRIVATE_AUDIT/
+
+# Local runtime state is never source delivery
+services/h3_compiler8210/data/
+services/h3_compiler8210/.venv/
+tools/instances/
+restore_history_once.*
+*.registry-backup-*

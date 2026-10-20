@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {bindTaskWorkflow} from '../custom_nodes/local_author/H3_Prompt_Sidecar/web/h3_task_workflow.js';
+const raw=['Chinese source S1','Chinese source S2'];
+const before={nodes:[{id:138,type:'PrimitiveStringMultiline',pos:[10,20],size:[300,100],widgets_values:['old final text'],widgets_values_named:{value:'old final text'}},{id:992,type:'H3SixDirectorState',properties:{six_prompt_state:{texts:raw},h3_prebake_binding:{project_id:'OLD'}}}],links:[[1,138,0,42,0,'STRING']],groups:[{title:'Original group'}]};
+const original=structuredClone(before),context={story_id:'STORY',project_id:'NEW',execution_version:'v2',revisions:[1,0,0,0,0,0]};
+const bound=bindTaskWorkflow(before,{nodeId:138,widgetIndex:0,widgetName:'value',text:'validated compiled prompt',context});
+assert.deepEqual(before,original);assert.equal(bound.nodes[0].widgets_values[0],'validated compiled prompt');assert.equal(bound.nodes[0].widgets_values_named.value,'validated compiled prompt');assert.deepEqual(bound.nodes[1].properties.six_prompt_state.texts,raw);
+assert.deepEqual(bound.links,before.links);assert.deepEqual(bound.groups,before.groups);assert.deepEqual(bound.nodes[0].pos,before.nodes[0].pos);assert.deepEqual(bound.nodes[0].size,before.nodes[0].size);
+context.project_id='LATER_DRAFT';before.nodes[0].widgets_values[0]='later editor change';assert.equal(bound.nodes[1].properties.h3_prebake_binding.project_id,'NEW');assert.equal(bound.nodes[0].widgets_values[0],'validated compiled prompt');
+assert.throws(()=>bindTaskWorkflow(original,{nodeId:999,widgetIndex:0,text:'x'}),/未提交GPU/);
+const off=bindTaskWorkflow(original,{nodeId:138,widgetIndex:0,widgetName:'value',text:'official passthrough',context:null});assert.equal(off.nodes[1].properties.h3_prebake_binding.project_id,'OLD');assert.equal(off.nodes[0].widgets_values[0],'official passthrough');
+console.log('TASK_CANVAS_FINAL_TEXT_IDENTITY_AND_DRAFT_ISOLATION=PASS');

@@ -3,6 +3,7 @@ import asyncio,copy,json,math,subprocess,uuid
 from pathlib import Path
 import folder_paths
 from .nodes import sha,probe_frames,inherited_plan
+from .timeline_contract import blocking_unverified_candidate,validate_plan_chain
 from .recovery import production_module
 
 SCHEMA='H3_CROSS_GROUP_V1'
@@ -23,6 +24,10 @@ def source_proof(project,seen=()):
     if ledger.get('project_id')!=project or binding.get('project_id')!=project or binding.get('group_id')!=group:
         raise ValueError('上一组项目/PreBake执行身份不匹配')
     timeline=read(root/'long_song_timeline.json');index=read(root/'index.json')
+    first_plan=timeline.get('0',{})
+    validate_plan_chain(timeline,5,first_plan.get('source_sha256'),
+                        first_plan.get('song_start'),first_plan.get('cross_group'),
+                        require_from_zero=True)
     plans=[];frames=[]
     from safetensors import safe_open
     for i in range(6):
@@ -38,13 +43,24 @@ def source_proof(project,seen=()):
             raise ValueError('上一组真实视频缺失或SHA256不匹配')
         plan=timeline.get(str(i)) or inherited_plan(folder_paths.get_output_directory(),r,i)
         if not plan:raise ValueError('上一组缺少真实音频时间轴')
+        saved_identity=plan.get('execution_receipt')
+        if 'fps' in plan and not isinstance(saved_identity,dict):
+            raise ValueError(f'上一组第{i+1}段新版时间轴缺少SUCCESS执行身份回执')
+        if saved_identity and (saved_identity.get('prompt_id')!=r.get('prompt_id') or
+                saved_identity.get('segment_index')!=i or
+                saved_identity.get('source_sha256','').lower()!=plan.get('source_sha256','').lower() or
+                saved_identity.get('group_id')!=r.get('group_id') or
+                saved_identity.get('execution_version')!=r.get('execution_version') or
+                (r.get('project_id') and saved_identity.get('project_id')!=r.get('project_id'))):
+            raise ValueError(f'上一组第{i+1}段时间轴执行身份与SUCCESS回执不匹配')
         actual=probe_frames(video);prefix=int(plan['prefix_frames'])
         trims=[e for e in index.get('trim_events',[]) if int(e['segment_index'])==i]
         if prefix not in (0,39) or actual!=plan['kept_frames'] or int(meta['frames'])-prefix!=actual:
             raise ValueError('上一组实际保存帧数/39帧裁剪记录不一致')
         if (prefix==39 and (len(trims)!=1 or trims[0]['frames']!=39)) or (prefix==0 and trims):
             raise ValueError('上一组39帧不是仅裁剪一次')
-        if abs(plan['source_start']+prefix/24-plan['output_start'])>1e-8 or abs(plan['output_end']-plan['output_start']-actual/24)>1e-8:
+        discard=int(plan.get('output_discard_frames',0))
+        if abs(plan['source_start']+(prefix+discard)/24-plan['output_start'])>1e-8 or abs(plan['output_end']-plan['output_start']-actual/24)>1e-8:
             raise ValueError('上一组音频时间轴与真实帧数不符')
         if plans and (abs(plan['output_start']-plans[-1]['output_end'])>1e-8 or plan['source_sha256']!=plans[0]['source_sha256'] or plan['song_start']!=plans[0]['song_start']):
             raise ValueError('上一组六段音频链不连续')
@@ -63,6 +79,105 @@ def source_proof(project,seen=()):
             'source_video_sha256':last['video_sha256'].upper(),'song_sha256':plans[0]['source_sha256'].lower(),
             'song_start':plans[0]['song_start'],'group_output_start':plans[0]['output_start'],
             'global_boundary':plans[-1]['output_end'],'saved_frames':sum(frames),'prefix_frames':39}
+
+def discover_predecessor(target_project,source,song_start,preferred_project=None,story_id=None):
+    """Select only a fully verified completed six-segment long-song execution.
+
+    The target execution id is never treated as a predecessor. A retained
+    contract is authoritative when it still verifies; otherwise discovery
+    ranks compatible source candidates by the recorded S6 video-save time,
+    then runs the same full source_proof used by the bind endpoint.
+    """
+    directory(target_project)  # strict identity validation; this is the new target
+    from .nodes import sha as file_sha
+    if not isinstance(source,str) or not source.strip():
+        raise ValueError('请先指定完整歌曲文件；空路径不能作为跨组音频源')
+    raw=Path(source)
+    path=raw if raw.is_absolute() else Path(folder_paths.get_annotated_filepath(str(source)))
+    path=path.resolve(strict=True)
+    if not path.is_file():
+        raise ValueError('跨组音频源必须是文件，不能是目录：'+str(path))
+    wanted_sha=file_sha(path).lower(); wanted_start=float(song_start)
+    if not math.isfinite(wanted_start) or wanted_start<0:raise ValueError('当前原曲起点无效')
+
+    def compatible(proof):
+        if proof['source_project']==target_project:raise ValueError('跨组目标不能作为自己的前驱')
+        if proof['song_sha256'].lower()!=wanted_sha:raise ValueError('前驱原曲SHA与当前长歌不匹配')
+        if abs(float(proof['song_start'])-wanted_start)>1e-8:raise ValueError('前驱原曲起点与当前长歌不匹配')
+        return proof
+
+    # A retained canvas selection is advisory only. Automatic discovery always
+    # ranks current same-story completions, so an old saved contract cannot
+    # silently outrank a newer execution.
+
+    base=(Path(folder_paths.get_output_directory())/'h3_continuation').resolve()
+    candidates=[]; missing_timeline=[]; invalid_candidates=[]; seen_errors=0
+    if not base.is_dir():raise ValueError('8207续接存档根目录不存在')
+    if not story_id:
+        target_root=directory(target_project)
+        for ledger_path in target_root.glob('prebake_*.json'):
+            try:
+                ledger=read(ledger_path); execution=ledger.get('execution',{})
+                if ledger.get('project_id')==target_project and execution.get('project_id')==target_project:
+                    story_id=execution.get('group_id'); break
+            except Exception:pass
+    if not story_id:raise ValueError('当前目标执行没有可核验的story/group身份，不能自动猜测前驱')
+    for child in base.iterdir():
+        if not child.is_dir() or child.name==target_project:continue
+        completed_record=None
+        try:
+            receipts=read(child/'six_acceptance.json')
+            if not all(receipts.get(str(i),{}).get('status')=='SUCCESS' for i in range(6)):continue
+            groups={receipts[str(i)].get('group_id') for i in range(6)}
+            if groups!={story_id}:continue
+            completed=float(receipts['5'].get('video_save_end_time') or receipts['5'].get('execution_end_time') or 0)
+            if not math.isfinite(completed) or completed<=0:continue
+            completed_record=(completed,child.name,receipts['5'].get('prompt_id'))
+            ledger_paths=list(child.glob('prebake_*.json'))
+            identity_ok=False
+            for ledger_path in ledger_paths:
+                ledger=read(ledger_path); execution=ledger.get('execution',{})
+                if ledger.get('project_id')==child.name and execution.get('project_id')==child.name and execution.get('group_id')==story_id:
+                    identity_ok=True; break
+            if not identity_ok:
+                invalid_candidates.append((*completed_record,'PreBake执行身份无法核验'))
+                continue
+            timeline_path=child/'long_song_timeline.json'
+            if not timeline_path.is_file():
+                missing_timeline.append((completed,child.name,receipts['5'].get('prompt_id')))
+                continue
+            timeline=read(timeline_path)
+            if not all(str(i) in timeline for i in range(6)):
+                invalid_candidates.append((*completed_record,'时间轴未包含完整六段'))
+                continue
+            first=timeline['0']
+            if first.get('source_sha256','').lower()!=wanted_sha:
+                invalid_candidates.append((*completed_record,'时间轴原曲SHA与当前原曲不匹配'))
+                continue
+            if abs(float(first.get('song_start'))-wanted_start)>1e-8:
+                invalid_candidates.append((*completed_record,'时间轴原曲起点与当前请求不匹配'))
+                continue
+            proof=compatible(source_proof(child.name))
+            candidates.append((completed,proof))
+        except Exception as exc:
+            seen_errors+=1
+            if completed_record:
+                invalid_candidates.append((*completed_record,str(exc)))
+    invalid=[(*item,'缺少long_song_timeline.json') for item in missing_timeline]+invalid_candidates
+    blocker=blocking_unverified_candidate(candidates,invalid)
+    if not candidates:
+        suffix=f'；已忽略{seen_errors}个不完整或身份校验失败的目录' if seen_errors else ''
+        if blocker:
+            raise ValueError(f'最新同组完成执行 {blocker[1]}（第6段 {blocker[2]}）无法核验：{blocker[3]}；不回退到更旧前驱'+suffix)
+        raise ValueError('没有找到与当前原曲一致、具备完整六段真实回执和时间轴且通过视频/Native核验的前驱'+suffix)
+    newest=max(item[0] for item in candidates)
+    if blocker:
+        raise ValueError(f'最新同组完成执行 {blocker[1]}（第6段 {blocker[2]}）无法核验：{blocker[3]}；不回退到更旧前驱')
+    winners=[proof for completed,proof in candidates if abs(completed-newest)<=1e-6]
+    identities={(p['source_project'],p['source_video_sha256'],p['source_latent_sha256']) for p in winners}
+    if len(identities)!=1:raise ValueError('最新完成时间存在多个不同的真实前驱，无法安全自动选择')
+    proof=winners[0]
+    return {'contract':proof,'discovery':{'method':'latest_verified_s6_completion','verified_candidates':len(candidates),'ignored_incomplete_or_invalid':seen_errors,'story_id':story_id}}
 
 def verify_contract(contract,seen=()):
     if isinstance(contract,str):contract=json.loads(contract)
@@ -169,7 +284,7 @@ def render_media(videos,song,start,end,target):
     if abs(total/24-(end-start))>1e-8:raise ValueError('跨组合并真实帧数与原曲区间不符')
     formats=[]
     for video in videos:
-        info=json.loads(subprocess.run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=width,height,codec_name','-of','json',str(video)],check=True,capture_output=True,text=True,timeout=15).stdout)['streams'][0]
+        info=json.loads(subprocess.run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=width,height,codec_name','-of','json',str(video)],check=True,capture_output=True,text=True,encoding='utf-8',timeout=15).stdout)['streams'][0]
         formats.append(info)
     if any(f!=formats[0] for f in formats):raise ValueError('跨组视频尺寸或编码不一致，请保持两组输出规格一致后合并')
     listing=target.with_suffix('.concat.txt')
@@ -177,7 +292,7 @@ def render_media(videos,song,start,end,target):
     try:
         subprocess.run(['ffmpeg','-v','error','-f','concat','-safe','0','-i',str(listing),'-i',song,'-map','0:v:0','-map','1:a:0','-c:v','copy','-af',f'atrim=start={start}:end={end},asetpts=PTS-STARTPTS','-c:a','aac','-b:a','192k','-movflags','+faststart',str(target)],check=True,capture_output=True,timeout=180)
         if probe_frames(target)!=total:raise ValueError('跨组合并输出帧数不匹配')
-        streams=json.loads(subprocess.run(['ffprobe','-v','error','-show_entries','stream=codec_type,duration','-of','json',str(target)],check=True,capture_output=True,text=True,timeout=15).stdout)['streams']
+        streams=json.loads(subprocess.run(['ffprobe','-v','error','-show_entries','stream=codec_type,duration','-of','json',str(target)],check=True,capture_output=True,text=True,encoding='utf-8',timeout=15).stdout)['streams']
         durations={s['codec_type']:float(s['duration']) for s in streams}
         if any(abs(durations.get(k,-1)-total/24)>1/24 for k in ('audio','video')):raise ValueError('跨组合并成片音画时间轴不一致')
         return {'frames':total,'audio_duration':durations['audio'],'video_duration':durations['video'],'av_drift':abs(durations['audio']-durations['video']),'additional_prefix_trim':0}
@@ -214,10 +329,25 @@ def register():
             data=await request.json();proof=await asyncio.to_thread(source_proof,data['source_project'])
             return web.json_response({'contract':proof})
         except Exception as exc:return web.json_response({'error':'跨组前驱校验失败：'+str(exc)},status=400)
+    @routes.post('/h3/cross-group/discover')
+    async def discover(request):
+        try:
+            data=await request.json()
+            result=await asyncio.to_thread(discover_predecessor,data['target_project'],data['source'],data.get('song_start',0),data.get('preferred_project'),data.get('story_id'))
+            return web.json_response(result)
+        except Exception as exc:return web.json_response({'error':'跨组前驱自动发现/核验失败：'+str(exc)},status=400)
     @routes.post('/h3/cross-group/validate')
     async def validate(request):
         try:
             data=await request.json();proof=await asyncio.to_thread(verify_contract,data['contract'])
+            if data.get('target_project') and data.get('source'):
+                # A saved canvas contract may be old. Before execution, resolve
+                # the latest verified completion for this story and source;
+                # never let the saved 82.375s contract bypass discovery.
+                latest=await asyncio.to_thread(discover_predecessor,
+                    data['target_project'],data['source'],proof['song_start'],None,
+                    proof['source_group'])
+                proof=latest['contract']
             check_requested_start(proof,data['requested_start'],data['requested_origin'],data.get('continuous'),data.get('independent'))
             return web.json_response({'contract':proof})
         except Exception as exc:return web.json_response({'error':str(exc)},status=400)

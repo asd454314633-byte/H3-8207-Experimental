@@ -83,9 +83,12 @@ class H3PreBakeContinuationAudit:
   if guide_guard_json:
    from .production import validate_guide_runtime
    plan=json.loads(plan_json) if plan_json else {}
-   if not plan.get('active') or plan.get('clean_rebase') is not True or plan.get('segment_index')!=segment_index:raise ValueError('Guide anchor requires actual fresh Clean Rebase plan')
-   if not clean_rebase_video_mask_is_fresh(latent):raise ValueError('Guide anchor requires every Clean Rebase video frame to remain regenerable; audio must stay locked')
    policy=json.loads(guide_guard_json)
+   if not plan.get('active') or plan.get('segment_index')!=segment_index:raise ValueError('Guide anchor requires the actual continuation plan')
+   if policy.get('continuation_kind','clean_rebase')=='native_prefix':
+    if plan.get('clean_rebase') is True or plan.get('video_prefix_frames')!=39 or policy.get('frame_idx')!=39:raise ValueError('Native seam Guide must target the first visible frame after the real 39-frame prefix')
+    self.audit(conditioning,latent,project_id,segment_index,plan_json)
+   elif plan.get('clean_rebase') is not True or not clean_rebase_video_mask_is_fresh(latent):raise ValueError('Guide anchor requires every Clean Rebase video frame to remain regenerable; audio must stay locked')
    if policy.get('index')!=segment_index or policy.get('context',{}).get('project_id')!=project_id:raise ValueError('Guide audit project/segment mismatch')
    ctx=get_executing_context()
    proof=validate_guide_runtime(conditioning,latent,guide_guard_json,guide_image,ctx.prompt_id if ctx else None)
@@ -115,10 +118,12 @@ class H3PreBakeContinuationAudit:
     assert torch.equal(video[:,:,:vt].cpu(),expected),'Spatially adapted real predecessor prefix differs'
    else:
     assert torch.equal(video[:,:,:vt].cpu(),previous['video'][:,:,-vt:]),'Previous video latent prefix differs'
-   assert torch.equal(audio[...,:at].cpu(),previous['audio'][...,-at:]),'Previous audio latent prefix differs'
+   if at:
+    assert torch.equal(audio[...,:at].cpu(),previous['audio'][...,-at:]),'Previous audio latent prefix differs'
+   elif plan.get('branch')!='DRIVING_AUDIO':raise ValueError('Zero inherited audio prefix requires the actual driving-audio branch')
    assert torch.all(mask_video[:,:,:vt]==0) and torch.all(mask_audio[...,:at]==0)
    assert torch.all(mask_video[:,:,vt:]==1) and torch.all(mask_audio[...,at:]==1)
-   data.update(previous_path=str(p),previous_sha256=codec.file_sha(p),video_prefix_tokens=vt,audio_prefix_steps=at,video_prefix_frames=pf,protected_frames=plan.get('protected_frames',pf),prev_source=src,reuse_previous_latent=True,previous_video_tail_equal=spatial_transform is None,previous_video_prefix_verified=True,video_prefix_transform=spatial_transform,previous_audio_tail_equal=True,protected_mask_verified=True)
+   data.update(previous_path=str(p),previous_sha256=codec.file_sha(p),video_prefix_tokens=vt,audio_prefix_steps=at,video_prefix_frames=pf,protected_frames=plan.get('protected_frames',pf),prev_source=src,reuse_previous_latent=True,previous_video_tail_equal=spatial_transform is None,previous_video_prefix_verified=True,video_prefix_transform=spatial_transform,previous_audio_tail_equal=True if at else None,protected_mask_verified=True)
   else:
    if 'noise_mask' in latent:raise ValueError('Fresh segment %d (no inherited prefix, reason=%s) must not carry a noise_mask'%(segment_index,'clean_rebase' if plan and plan.get('clean_rebase') else 'continuation_off'))
    data.update(noise_mask_present=False,video_prefix_frames=(plan or {}).get('video_prefix_frames',0),protected_frames=0,prev_source=(plan or {}).get('prev_source'),reuse_previous_latent=bool((plan or {}).get('reuse_previous_latent',False)))

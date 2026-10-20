@@ -11,7 +11,7 @@ async function request(name,data){
 }
 export async function restoreProductionIdentity(node){
  if(!enabled())return null;
- const result=await request('story',{action:'restore',story_id:storyId(node)});
+ const result=await request('story',{action:'restore',story_id:storyId(node),context:node.properties.h3_prebake_binding||null});
  if(result.binding){node.properties.h3_prebake_binding=result.binding;node.properties.h3_prebake_revisions=[...result.binding.revisions]}
  // An older workflow can restore its explicit identity when preparing its next execution.
  return result.binding;
@@ -29,7 +29,7 @@ export async function syncProductionTexts(node){
 export async function restoreProductionExecution(node){
  if(!enabled()||!node.__sixUI)return;
  const root=node.__sixRoot,ui=node.__sixUI;
- const result=await request('story',{action:'restore',story_id:storyId(node)});
+ const result=await request('story',{action:'restore',story_id:storyId(node),context:node.properties.h3_prebake_binding||null});
  if(!result.binding)return;
  const binding=node.properties.h3_prebake_binding;
  if(!binding||['story_id','group_id','project_id','execution_version'].some(k=>binding[k]!==result.binding[k]))return;
@@ -111,6 +111,9 @@ export async function prepareProduction(snapshot,text,index,options,update,waitF
  const selectedMode=options.continuous===true?(options.start_mode||root.querySelector('.six-inheritance').value):'independent';
  const result=await request('execution',{submission_id:options.submission_id||crypto.randomUUID(),context:{...context,story_id:identity,group_id:newStory?generated:context.group_id,project_id:newStory?generated:(bound?.project_id||options.project_id||'H3_SIX_V288'),execution_version:newStory?null:bound?.execution_version},start_index:selectedStart,start_mode:selectedMode,requested_index:index,texts,graph:snapshot.output});
  if(storyId(node)===originalIdentity){node.properties.h3_prebake_story_id=identity;node.properties.h3_prebake_binding=result.binding}
+ // A fork preserves old media, but its invalidated descendants must not keep
+ // the previous execution's success labels in the current six-panel UI.
+ if(bound?.execution_version!==result.binding.execution_version&&storyId(node)===identity)await restoreProductionExecution(node);
  Object.assign(context,result.binding,{fps:context.fps});
  // Server revisions survive refresh; local values describe only newly edited texts.
  context.revisions=[...result.binding.revisions];

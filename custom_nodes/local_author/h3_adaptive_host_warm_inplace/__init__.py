@@ -1,4 +1,6 @@
 """Same official class, same schema/cache; execute-entry H3 release only."""
+
+import folder_paths
 import functools,inspect,json,logging,math,os,sys,time
 from pathlib import Path
 import nodes
@@ -7,7 +9,7 @@ Official=nodes.NODE_CLASS_MAPPINGS['MiniMaxH3ReferenceToVideo']
 if Path(inspect.getfile(Official)).resolve()!=Path(__file__).resolve().parents[2].joinpath('comfy_extras/nodes_minimax_h3.py').resolve() or Official.__name__!='MiniMaxH3ReferenceToVideo':
     raise RuntimeError('Registered Node136 is not the official source class')
 from comfy_execution.utils import get_executing_context
-FOLDER=Path(__file__).resolve().parents[2]/'user'/'h3_adaptive_host_warm_inplace'
+FOLDER=Path(folder_paths.get_user_directory())/'h3_adaptive_host_warm_inplace'
 ACTIVE={}
 NODE_CLASS_MAPPINGS={}
 

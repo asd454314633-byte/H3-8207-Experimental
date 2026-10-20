@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 
 TRACES = {}
-DEST = Path(r"<H3_PROJECT_DIR>\V28_3_MULTIREF_AUDIT_20261001\传递链实测")
+DEST = Path(r"D:\H3导演台项目目录\V28_3_MULTIREF_AUDIT_20261001\传递链实测")
 
 def tensor_record(t):
     a = t.detach().cpu().contiguous()

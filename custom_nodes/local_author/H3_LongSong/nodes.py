@@ -3,11 +3,15 @@ import functools
 import hashlib
 import json
 import math
+import os
 import subprocess
+import time
+import uuid
 from pathlib import Path
 import numpy as np
 import torch
 import folder_paths
+from .timeline_contract import validate_plan_chain
 
 SR = 48000
 
@@ -15,18 +19,28 @@ def sha(path):
     with open(path, 'rb') as f:
         return hashlib.file_digest(f, 'sha256').hexdigest()
 
-def interval(frames, previous_kept, prefix, start, fps=24, external_first=False):
+def interval(frames, previous_kept, prefix, start, fps=24, external_first=False,
+             output_discard_frames=0):
     if fps != 24 or not math.isfinite(start) or start < 0:
         raise ValueError('长歌当前只支持原生24fps；起始秒须有限且非负')
     if frames < 48 or frames % 17 != 5:
         raise ValueError('生成帧数须为合法17k+5网格；参考音频由适配器内部限长')
-    if prefix not in (0, 39) or (previous_kept < prefix and not (external_first and previous_kept==0 and prefix==39)):
+    if prefix not in (0, 39) or output_discard_frames not in (0, 39):
+        raise ValueError('非法Native前缀或输出裁剪帧数')
+    if prefix and output_discard_frames:
+        raise ValueError('Native保护前缀与Clean Rebase输出裁剪不能同时使用')
+    overlap = prefix + output_discard_frames
+    if overlap >= frames:
+        raise ValueError('前缀/裁剪长度必须小于模型帧数')
+    if previous_kept < overlap and not (external_first and previous_kept==0 and prefix==39):
         raise ValueError('非法Native前缀或已保存帧数')
-    begin = start + (previous_kept - prefix) / fps
+    begin = start + (previous_kept - overlap) / fps
     return {'source_start': begin, 'source_end': begin + frames / fps,
-            'frames': frames, 'prefix_frames': prefix, 'kept_frames': frames-prefix,
+            'frames': frames, 'prefix_frames': prefix,
+            'output_discard_frames': output_discard_frames,
+            'kept_frames': frames-overlap,
             'output_start': start + previous_kept / fps,
-            'output_end': start + (previous_kept + frames-prefix) / fps}
+            'output_end': start + (previous_kept + frames-overlap) / fps}
 
 @functools.lru_cache(maxsize=2)
 def decode(path, digest):
@@ -39,7 +53,7 @@ def decode(path, digest):
 def probe_frames(path):
     p = subprocess.run(['ffprobe','-v','error','-select_streams','v:0',
         '-show_entries','stream=nb_frames,avg_frame_rate','-of','json',str(path)],
-        capture_output=True, text=True, check=True, timeout=15)
+        capture_output=True, text=True, encoding='utf-8', check=True, timeout=15)
     stream=json.loads(p.stdout)['streams'][0]
     a,b=map(int,stream['avg_frame_rate'].split('/'))
     if a/b != 24: raise ValueError('前段实际视频帧率不是24fps')
@@ -56,7 +70,17 @@ def inherited_plan(output_root, receipt, index):
     original=records.get(str(index),{})
     if original.get('status')!='SUCCESS' or any(original.get(k)!=receipt.get(k) for k in ('prompt_id','video_sha256','latent_sha256')):
         raise ValueError('长歌历史时间轴与继承SUCCESS回执不匹配')
-    return json.loads(path.read_text('utf-8')).get(str(index))
+    plan=json.loads(path.read_text('utf-8')).get(str(index))
+    if not isinstance(plan,dict):return None
+    if 'fps' in plan:
+        saved=plan.get('execution_receipt')
+        if (not isinstance(saved,dict) or saved.get('prompt_id')!=original.get('prompt_id') or
+                saved.get('project_id')!=original.get('project_id') or
+                saved.get('group_id')!=original.get('group_id') or
+                saved.get('execution_version')!=original.get('execution_version') or
+                saved.get('source_sha256','').lower()!=plan.get('source_sha256','').lower()):
+            raise ValueError('新版长歌时间轴缺少与SUCCESS回执匹配的执行身份')
+    return plan
 
 class H3LongSongSegment:
     CATEGORY='H3/长歌曲'
@@ -72,11 +96,14 @@ class H3LongSongSegment:
             'segment_index':('INT',{'default':0,'min':0,'max':5}),
             'inherit':('BOOLEAN',{'default':False}),
             'clean_rebase':('BOOLEAN',{'default':False}),
-            'fps':('FLOAT',{'default':24})},'optional':{'cross_group_json':('STRING',{'default':''})}}
+            'fps':('FLOAT',{'default':24})},'optional':{
+                'cross_group_json':('STRING',{'default':''}),
+                'clean_rebase_output_discard_frames':('INT',{'default':0,'min':0,'max':39})}}
     @classmethod
     def IS_CHANGED(cls, **kw): return float('nan')  # exact predecessor receipt is runtime state
     def slice(self, source, start_seconds, frames, project_id, segment_index,
-              inherit, clean_rebase, fps=24,cross_group_json=''):
+              inherit, clean_rebase, fps=24,cross_group_json='',
+              clean_rebase_output_discard_frames=0):
         if not project_id or len(project_id)>64 or any(not(c.isalnum() or c in '-_') for c in project_id):
             raise ValueError('非法长歌项目标识')
         path=Path(source) if Path(source).is_absolute() else Path(folder_paths.get_annotated_filepath(source))
@@ -88,6 +115,10 @@ class H3LongSongSegment:
             if not inherit or cross['source_project']==project_id or digest.lower()!=cross['song_sha256'] or start_seconds!=cross['song_start']:
                 raise ValueError('跨组歌曲/起点/目标身份不匹配')
             if segment_index==0 and clean_rebase:raise ValueError('跨组第1段不能Clean Rebase')
+        if clean_rebase_output_discard_frames not in (0,39):
+            raise ValueError('Clean Rebase输出裁剪只允许0或39帧')
+        if clean_rebase_output_discard_frames and (not clean_rebase or segment_index <= 0):
+            raise ValueError('Clean Rebase输出裁剪只允许用于续接段')
         root=Path(folder_paths.get_output_directory())/'h3_continuation'/project_id
         timeline_path=root/'long_song_timeline.json'
         timeline=json.loads(timeline_path.read_text('utf-8')) if timeline_path.exists() else {}
@@ -116,7 +147,10 @@ class H3LongSongSegment:
                 timeline[str(i)]={**prior,'project_id':project_id}
         prefix=39 if inherit and (segment_index>0 or cross) and not clean_rebase else 0
         base=cross['global_boundary'] if cross else float(start_seconds)
-        plan=interval(int(frames),previous_kept,prefix,base,float(fps),external_first=bool(cross and segment_index==0))
+        output_discard = int(clean_rebase_output_discard_frames)
+        plan=interval(int(frames),previous_kept,prefix,base,float(fps),
+                      external_first=bool(cross and segment_index==0),
+                      output_discard_frames=output_discard)
         if cross:plan.update(cross_group=cross,group_start_seconds=base)
         waveform=decode(str(path),digest)
         begin=round(plan['source_start']*SR); end=begin+round(frames/fps*SR)
@@ -126,14 +160,23 @@ class H3LongSongSegment:
         plan.update(reference_source_start=plan['source_start'],
                     reference_source_end=plan['source_start']+reference['waveform'].shape[-1]/SR)
         plan.update(source=str(path),source_sha256=digest,song_start=start_seconds,
-                    segment_index=segment_index,project_id=project_id,origin_index=origin_index)
+                    segment_index=segment_index,project_id=project_id,origin_index=origin_index,
+                    clean_rebase=bool(clean_rebase),fps=float(fps))
         # Pending timeline is never authority without the original SUCCESS receipt.
         root.mkdir(parents=True,exist_ok=True); timeline[str(segment_index)]=plan
-        import uuid, os
+        validate_plan_chain(timeline,segment_index,digest,start_seconds,cross,
+                            require_from_zero=False)
         tmp=timeline_path.with_suffix('.'+uuid.uuid4().hex+'.tmp')
         try:
-            tmp.write_text(json.dumps(timeline,ensure_ascii=False,indent=2),'utf-8')
-            os.replace(tmp,timeline_path)
+            payload=json.dumps(timeline,ensure_ascii=False,indent=2).encode('utf-8')
+            with tmp.open('wb') as stream:
+                stream.write(payload);stream.flush();os.fsync(stream.fileno())
+            for retry in range(6):
+                try:
+                    os.replace(tmp,timeline_path);break
+                except PermissionError:
+                    if retry==5:raise
+                    time.sleep(.01*(retry+1))
         finally: tmp.unlink(missing_ok=True)
         print('[H3 LongSong] '+json.dumps(plan,ensure_ascii=False),flush=True)
         return audio,json.dumps(plan,ensure_ascii=False),reference

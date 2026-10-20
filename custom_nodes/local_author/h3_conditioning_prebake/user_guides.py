@@ -129,14 +129,18 @@ def apply(graph,context,index,attempt_id,managed=True):
     p.prune(graph,['126']) # Reject a conditioning/latent loop before any queue submission.
     return graph,policy
 
-def submission_check(graph,context,index,attempt):
+def submission_check(graph,context,index,attempt,history=False):
     saved=attempt.get('snapshot',{}).get('user_guide')
     current=spec(graph,index)
     present=bool(RESERVED.intersection(graph))
     if saved is None:
         if current is not None or present:raise ValueError('关键帧提交绑定未经过准备，不允许临时插入')
         return
-    if current is None or not present or p.graph_digest(graph)!=attempt.get('graph_sha256'):raise ValueError('关键帧提交图或执行快照被删除/修改，未提交GPU')
+    if history:
+        from .adaptive_bridge import history_graph_matches
+        matches=history_graph_matches(attempt,graph)
+    else:matches=p.graph_digest(graph)==attempt.get('graph_sha256')
+    if current is None or not present or not matches:raise ValueError('关键帧提交图或执行快照被删除/修改，未提交GPU')
     verify_spec(graph,index)
     for key,stage in [('USER_GUIDE_BEFORE','before'),('USER_GUIDE_AFTER','after')]:
         policy=json.loads(graph[key]['inputs']['guide_json'])

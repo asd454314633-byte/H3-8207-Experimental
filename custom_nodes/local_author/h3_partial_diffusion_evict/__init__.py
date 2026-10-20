@@ -1,6 +1,9 @@
 """Exact MiniMaxH3 residency release after sampling, before all VAE branches."""
+
+import folder_paths
 import json
 import logging
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -89,6 +92,14 @@ def branch_identity(prompt, unique_id, ancestors):
         elif kind in ('ModelAttentionBackend', 'H3MemoryOptimization', 'ModelPreviewOverrideKJ',
                       'MiniMaxH3SigmaShift', 'LoraLoaderModelOnly', 'MiniMaxH3PDDAccApply'):
             current = linked(node, 'model')
+        elif kind == 'H3PrecisionAudit':
+            # Opt-in observation clone; no weight/attention edits. Keep all
+            # model/PDD/provenance checks below, and reject duplicate observers.
+            if any(n['class_type'] == kind for _, n in route[:-1]):
+                raise RuntimeError('Unknown H3 branch: duplicate precision observers')
+            if set(node['inputs']) != {'model', 'label'} or not isinstance(node['inputs']['label'], str):
+                raise RuntimeError('Unknown H3 branch: invalid precision observer')
+            current = linked(node, 'model')
         elif kind == 'MiniMaxH3FunControlNetApply':
             # Official MODEL clone: prove this validated Union2 route, but keep
             # release ownership on the actual H3 LoadedModel below. Its sampler
@@ -108,11 +119,39 @@ def branch_identity(prompt, unique_id, ancestors):
     pdds = [(nid, node) for nid, node in route if node['class_type'] == 'MiniMaxH3PDDAccApply']
     loras = [(nid, node) for nid, node in route if node['class_type'] == 'LoraLoaderModelOnly']
     all_pdds = [nid for nid in ancestors if prompt[nid]['class_type'] == 'MiniMaxH3PDDAccApply']
-    if len(pdds) == 1 and not loras and all_pdds == [pdds[0][0]]:
-        if pdds[0][1]['inputs'].get('enabled', True) is not True:
-            raise RuntimeError('Unknown H3 branch: PDD disabled')
-        return {'branch': 'pdd8', 'model_route': [nid for nid, _ in route]}
-    if not pdds and not all_pdds and len(loras) == 1:
+    all_loras = [nid for nid in ancestors if prompt[nid]['class_type'] == 'LoraLoaderModelOnly']
+    if len(pdds) == 1 and all_pdds == [pdds[0][0]] and all_loras == [nid for nid, _ in loras]:
+        pdd_id, pdd = pdds[0]
+        pdd_inputs = pdd['inputs']
+        if (pdd_inputs.get('enabled', True) is not True or
+                pdd_inputs.get('pdd_file') != 'MiniMax-H3-Ref2VA-Acc-8Step.safetensors' or
+                str(pdd_inputs.get('nfe')) != '8'):
+            raise RuntimeError('Unknown H3 branch: unvalidated PDD8 identity')
+        route_ids = [nid for nid, _ in route]
+        if not loras:
+            return {'branch': 'pdd8', 'model_route': route_ids, 'pdd_node': pdd_id,
+                    'people_lora': None}
+        if len(loras) == 1:
+            lora_id, lora = loras[0]
+            inputs = lora['inputs']
+            name = inputs.get('lora_name', '').replace('\\', '/')
+            strength = inputs.get('strength_model')
+            # route is traversed from sampler toward the source UNET: PDD must
+            # consume the already-LoRA-patched MODEL, not the reverse.
+            if (name == 'h3-realism-people-t2v-i2v-r2v.safetensors' and
+                    isinstance(strength, (int, float)) and not isinstance(strength, bool) and
+                    math.isfinite(strength) and strength == 1.0 and
+                    route_ids.index(pdd_id) < route_ids.index(lora_id) and
+                    route[-1][1]['class_type'] == 'UNETLoader' and
+                    route[-1][1]['inputs'].get('unet_name') ==
+                    'minimax_h3_ref2va_pruned_int8_convrot.safetensors'):
+                return {'branch': 'pdd8_people_lora', 'model_route': route_ids,
+                        'pdd_node': pdd_id, 'people_lora_node': lora_id,
+                        'people_lora': name, 'people_lora_strength': float(strength),
+                        'people_lora_sha256':
+                        'ACC529601D2DA117FB81179E76C56E488A3BEAB1171659D305F04FA3655B787E'}
+        raise RuntimeError('Unknown H3 branch: PDD8 permits only the allowlisted People LoRA')
+    if not pdds and not all_pdds and len(loras) == 1 and all_loras == [loras[0][0]]:
         inputs = loras[0][1]['inputs']
         name = inputs.get('lora_name', '').replace('\\', '/')
         strength = inputs.get('strength_model')
@@ -124,6 +163,118 @@ def branch_identity(prompt, unique_id, ancestors):
     raise RuntimeError('Unknown or conflicting H3 branch; fail closed')
 
 
+def verify_pdd_people_patch_stack(patcher, prompt, branch):
+    """Prove exact PDD and allowlisted People-LoRA patches, including overlays."""
+    import comfy.lora
+    import comfy.utils
+    import folder_paths
+    # The PDD node package keeps this helper as a relative module; its folder
+    # is not on sys.path as a top-level import in this isolated runtime.
+    try:
+        import pdd_acc_core
+    except ModuleNotFoundError as exc:
+        if exc.name != 'pdd_acc_core':
+            raise
+        import importlib
+        # Match MiniMaxH3PDDAccApply's registered Comfy package and its normal
+        # relative submodule import instead of changing sys.path or duplicating
+        # the PDD core module.
+        pdd_acc_core = importlib.import_module(
+            'custom_nodes.ComfyUI-MiniMax-H3-PDD-Acc.pdd_acc_core')
+
+    people_name = branch['people_lora']
+    people_path = Path(folder_paths.get_full_path_or_raise('loras', people_name))
+    digest = hashlib.sha256()
+    with people_path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    if digest.hexdigest().upper() != branch['people_lora_sha256']:
+        raise RuntimeError('People LoRA file SHA256 mismatch')
+    people_sd = comfy.utils.load_torch_file(str(people_path), safe_load=True)
+    key_map = comfy.lora.model_lora_keys_unet(patcher.model, {})
+    people_loaded = comfy.lora.load_lora(people_sd, key_map)
+    if not people_loaded:
+        raise RuntimeError('People LoRA matched no H3 model patch keys')
+
+    pdd_name = prompt[branch['pdd_node']]['inputs']['pdd_file']
+    pdd_path = folder_paths.get_full_path_or_raise('pdd_acc', pdd_name)
+    pdd_sd, metadata = comfy.utils.load_torch_file(
+        pdd_path, safe_load=True, return_metadata=True)
+    pdd_lora_sd, _heads, _config = pdd_acc_core.split_pdd_state_dict(
+        pdd_sd, metadata, pdd_name)
+    # Mirror MiniMaxH3PDDAccApply exactly. On pruned H3 checkpoints the PDD
+    # node rebases each AdaLN curve LoRA into both a weight diff and a bias
+    # diff. comfy.lora.load_lora maps each .diff_b to a separate target .bias
+    # patch; omitting this official transformation makes those legitimate
+    # PDD patches look like unknown extras at the release gate.
+    pdd_nodes = __import__(
+        'custom_nodes.ComfyUI-MiniMax-H3-PDD-Acc.nodes',
+        fromlist=['_curve_rebase_if_pruned'])
+    # PDD Apply receives Comfy's ModelPatcher. Its helper calls
+    # get_model_object("diffusion_model"), which belongs to the patcher;
+    # patcher.model is only the MiniMaxH3 model-base object. Mirror Apply.
+    pdd_lora_sd, curve_note = pdd_nodes._curve_rebase_if_pruned(
+        patcher, pdd_lora_sd, pdd_name)
+    pdd_loaded = comfy.lora.load_lora(pdd_lora_sd, key_map)
+    pdd_expected_modules = sum(
+        1 for key in pdd_lora_sd
+        if key.endswith(('.lora_A.weight', '.diff')))
+    pdd_expected_entries = sum(
+        1 for key in pdd_lora_sd
+        if key.endswith(('.lora_A.weight', '.diff', '.diff_b')))
+    if (not pdd_expected_modules or
+            len(pdd_loaded) != pdd_expected_entries):
+        raise RuntimeError(
+            'PDD patch key identity mismatch: '
+            f'expected {pdd_expected_entries} patch entries from '
+            f'{pdd_expected_modules} trained modules, got {len(pdd_loaded)}')
+
+    def patch_key(key):
+        return key if isinstance(key, str) else key[0]
+
+    expected = {}
+    for key in pdd_loaded:
+        expected[patch_key(key)] = expected.get(patch_key(key), 0) + 1
+    for key in people_loaded:
+        expected[patch_key(key)] = expected.get(patch_key(key), 0) + 1
+    actual = {patch_key(key): len(value) for key, value in patcher.patches.items()}
+    if actual != expected:
+        missing = sorted(set(expected) - set(actual))
+        extra = sorted(set(actual) - set(expected))
+        bad_counts = sorted((key, expected[key], actual.get(key, 0))
+                            for key in set(expected) & set(actual)
+                            if expected[key] != actual[key])
+        raise RuntimeError('PDD/People patch provenance mismatch: '
+                           f'missing={len(missing)} extra={len(extra)} overlays={len(bad_counts)}; '
+                           f'missing_keys={missing[:64]} extra_keys={extra[:64]} '
+                           f'overlay_keys={bad_counts[:64]}')
+
+    # PDD Apply stores the Head Bank as a ModelPatcher object patch and its
+    # sampler wrapper in ModelPatcher.wrappers (not model_options).
+    pdd_nodes = __import__(
+        'custom_nodes.ComfyUI-MiniMax-H3-PDD-Acc.nodes',
+        fromlist=['WRAPPER_KEY'])
+    pdd_wrappers = patcher.get_wrappers(
+        comfy.patcher_extension.WrappersMP.DIFFUSION_MODEL,
+        pdd_nodes.WRAPPER_KEY)
+    if ('diffusion_model.final_layer.forward' not in patcher.object_patches or
+            len(pdd_wrappers) != 1):
+        raise RuntimeError('PDD Head Bank forward patch or sampler wrapper missing')
+    shared = set(map(patch_key, pdd_loaded)) & set(map(patch_key, people_loaded))
+    curve_bias_count = sum(1 for key in pdd_lora_sd if key.endswith('.diff_b'))
+    return {'PDD_PATCH_KEYS': len(pdd_loaded),
+            'PDD_TRAINED_MODULES': pdd_expected_modules,
+            'PDD_CURVE_BIAS_PATCHES': curve_bias_count,
+            'PDD_CURVE_REBASE_NOTE': curve_note,
+            'PDD_DIFF_B_SOURCE_KEYS': sorted(
+                key for key in pdd_lora_sd if key.endswith('.diff_b')),
+            'PEOPLE_LORA_MATCHED_KEYS': len(people_loaded),
+            'SHARED_PATCH_KEYS': len(shared), 'PATCH_DICT_KEYS': len(actual),
+            'TOTAL_PATCH_ENTRIES': sum(actual.values()), 'PDD_HEAD_BANK_FORWARD': True,
+            'PDD_SAMPLER_WRAPPER_COUNT': len(pdd_wrappers),
+            'PEOPLE_LORA_SHA256': digest.hexdigest().upper()}
+
+
 def classify_model_roles(prompt, ancestors, branch):
     """Classify MODEL loaders by their consumers, before releasing only H3."""
     consumers = {}
@@ -133,7 +284,7 @@ def classify_model_roles(prompt, ancestors, branch):
                 consumers.setdefault(str(ref[0]), []).append((nid, field))
     forward = {'ModelAttentionBackend', 'H3MemoryOptimization', 'ModelPreviewOverrideKJ',
                'MiniMaxH3SigmaShift', 'LoraLoaderModelOnly', 'MiniMaxH3PDDAccApply',
-               'MiniMaxH3FunControlNetApply'}
+               'MiniMaxH3FunControlNetApply', 'H3PrecisionAudit'}
     auxiliary = {'RTDETR_detect', 'SDPoseKeypointExtractor'}
     loaders = {'UNETLoader', 'CheckpointLoaderSimple'}
     for nid in ancestors:
@@ -230,7 +381,7 @@ class H3PartialDiffusionEvictBeforeVAE:
     def release(self,latent,prompt,unique_id):
         started=time.perf_counter()
         record={'schema':'H3_V29_PARTIAL_EVICT_CURRENT_RESIDENCY_V2','pid':os.getpid(),'epoch':time.time(),'node_id':str(unique_id),'status':'FAIL_CLOSED','MEASUREMENT_PHASE_COUNT':0}
-        folder=Path(__file__).resolve().parents[2]/'user'/'h3_partial_diffusion_evict'
+        folder=Path(folder_paths.get_user_directory())/'h3_partial_diffusion_evict'
         folder.mkdir(parents=True,exist_ok=True)
         output=folder/f'release_{os.getpid()}_{time.time_ns()}.json'
         try:
@@ -250,7 +401,7 @@ class H3PartialDiffusionEvictBeforeVAE:
             loaders=[prompt[r['loader']] for r in record['model_roles'] if r['role']=='H3_MAIN_MODEL']
             if len(loaders)!=1 or loaders[0]['inputs'].get('unet_name') not in {v['checkpoint'] for v in H3_VARIANT_CONTRACTS.values()}:
                 raise RuntimeError('Unique graph supported H3 variant identity not proven')
-            if branch['branch'] == 'pdd8' and (len(pdds)!=1 or pdds[0]['inputs'].get('pdd_file')!='MiniMax-H3-Ref2VA-Acc-8Step.safetensors'):
+            if branch['branch'] in ('pdd8', 'pdd8_people_lora') and (len(pdds)!=1 or pdds[0]['inputs'].get('pdd_file')!='MiniMax-H3-Ref2VA-Acc-8Step.safetensors'):
                 raise RuntimeError('Unique graph INT8 H3/PDD identity not proven')
             targets=[]
             for entry in tuple(mm.current_loaded_models):
@@ -263,10 +414,21 @@ class H3PartialDiffusionEvictBeforeVAE:
             if entry.real_model is None or entry.real_model() is not model or entry.model is not patcher or not patcher.is_dynamic():
                 raise RuntimeError('LoadedModel/patcher/model identity mismatch')
             record['H3_VARIANT_IDENTITY'] = h3_variant_identity(entry, loaders[0]['inputs']['unet_name'])
-            if branch['branch'] == 'pdd8' and len(patcher.patches)!=308:
-                raise RuntimeError('H3 PDD 308 patch guard failed')
-            record['PDD_PATCH_COUNT'] = len(patcher.patches) if branch['branch'] == 'pdd8' else None
-            record['TOTAL_PATCH_COUNT'] = len(patcher.patches)
+            if branch['branch'] == 'pdd8_people_lora':
+                stack = verify_pdd_people_patch_stack(patcher, prompt, branch)
+                record['PATCH_STACK_IDENTITY'] = stack
+                record['PDD_PATCH_COUNT'] = stack['PDD_PATCH_KEYS']
+                record['TOTAL_PATCH_COUNT'] = stack['TOTAL_PATCH_ENTRIES']
+            elif branch['branch'] == 'pdd8':
+                if len(patcher.patches) != 308:
+                    raise RuntimeError('H3 PDD 308 patch guard failed')
+                record['PDD_PATCH_COUNT'] = 308
+                record['TOTAL_PATCH_COUNT'] = sum(
+                    len(v) for v in patcher.patches.values())
+            else:
+                record['PDD_PATCH_COUNT'] = None
+                record['TOTAL_PATCH_COUNT'] = sum(
+                    len(v) for v in patcher.patches.values())
             before=audit.shared.snapshot()
             before['target']=audit.model_snapshot(entry)
             record['before']=before

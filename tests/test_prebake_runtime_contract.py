@@ -9,6 +9,9 @@ os.environ['CUDA_VISIBLE_DEVICES']='-1'
 ARGS=argparse.ArgumentParser();ARGS.add_argument('--host',required=True);ARGS.add_argument('--rpc',action='store_true');opts,remaining=ARGS.parse_known_args()
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(Path(opts.host).resolve()))
+host_package=types.ModuleType('custom_nodes.H3_LongSong')
+host_package.__path__=[str(ROOT/'custom_nodes/local_author/H3_LongSong')]
+sys.modules['custom_nodes.H3_LongSong']=host_package
 import torch
 assert not torch.cuda.is_initialized()
 PKG='_h3_prebake_cpu_contract';pkg=types.ModuleType(PKG);pkg.__path__=[str(ROOT/'custom_nodes/local_author/h3_conditioning_prebake')];sys.modules[PKG]=pkg
@@ -35,7 +38,7 @@ class Harness:
  def plan(self,ctx):
   texts=['Synthetic daylight scene '+str(i) for i in range(6)];result=P.plan({'graph':self.graph(),'context':ctx,'texts':texts});return texts,result
  def prepare(self):
-  ctx=self.bind();texts,planned=self.plan(ctx);result=P.fallback({'graph':self.graph(),'context':ctx,'index':0,'text':texts[0],'cache_key':planned['plans'][0]['cache_key']});return {'context':ctx,'index':0,'attempt_id':result['attempt_id'],'graph':result['graph']}
+  ctx=self.bind();texts,planned=self.plan(ctx);result=P.fallback({'graph':self.graph(),'context':ctx,'index':0,'text':texts[0],'cache_key':planned['plans'][0]['cache_key']});graph=result['graph'];graph['TEST_SAVE']={'class_type':'H3ContinuationSave','inputs':{'enabled':True,'project_id':ctx['project_id'],'segment_index':0}};return {'context':ctx,'index':0,'attempt_id':result['attempt_id'],'graph':graph}
  def close(self):self.temp.cleanup()
  async def rpc(self,cmd,payload):
   if cmd=='story':return P.story(payload)
@@ -53,6 +56,14 @@ class Harness:
   if cmd=='accepted':return P.accepted(payload,self.server)
   raise ValueError('Unsupported test route')
 class DynamicContracts(unittest.IsolatedAsyncioTestCase):
+ def test_saved_binding_restore_does_not_select_later_execution(self):
+  original=self.h.bind();self.h.plan(original)
+  _,ledger=P.bound_context(original)
+  newer,_=P.execution_state.fork(original,ledger)
+  P.execution_state.select(newer)
+  restored=P.story({'action':'restore','story_id':original['story_id'],'context':original})
+  self.assertEqual(restored['binding']['execution_version'],original['execution_version'])
+  self.assertNotEqual(restored['binding']['execution_version'],newer['execution_version'])
  def setUp(self):self.h=Harness()
  def tearDown(self):self.h.close();self.assertFalse(torch.cuda.is_initialized())
  def test_real_safetensors_roundtrip_and_corruption(self):

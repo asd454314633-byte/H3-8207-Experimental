@@ -1,12 +1,12 @@
-import {installCompilerPreview} from './h3_six_compiler_preview_ui.js?v=20261019preview1';
+import {installCompilerPreview} from './h3_six_compiler_preview_ui.js?v=20261020closeout5';
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
 import {uploadGuide,previewGuide,guideImageURL,watchGuideFrames} from './h3_six_guides.js?v=20261017guide3';
-import {executeVisiblePrompt} from './h3_six_execute.js?v=20261017guide3';
+import {executeVisiblePrompt} from './h3_six_execute.js?v=20261020closeout6';
 import {installNativeMerge,beforeSixExecution} from './h3_native_merge.js?v=20261006switchbackend';
 
 import {SIX_MIN_WIDTH,installSixWidthContract} from './h3_six_width_contract.js?v=20261006d';
-import {storyId,restoreProductionIdentity,restoreProductionExecution,syncProductionTexts} from '/extensions/h3_conditioning_prebake/production.js?v=20261014queue';
+import {enabled as prebakeEnabled,storyId,restoreProductionIdentity,restoreProductionExecution,syncProductionTexts} from '/extensions/h3_conditioning_prebake/production.js?v=20261020recovery2';
 
 function saveVideoNodeId(){
   const nodes=app.graph._nodes.filter(n=>(n.comfyClass||n.type)==='SaveVideo'&&n.properties?.h3_operation==='pass1');
@@ -88,10 +88,12 @@ async function mount(node) {
     const saved=node.properties.six_prompt_state;
     if(saved){root.querySelector('.six-settings').value=saved.settings||'';root.querySelector('.six-goal').value=saved.goal||'';if(saved.model)root.querySelector('.six-model').value=saved.model;ui.cards.forEach((c,i)=>{if(saved.texts?.[i]!==undefined)c.area.value=saved.texts[i]});root.querySelector('.six-model').dispatchEvent(new Event('h3-model-display'))}
     const binding=node.properties.h3_prebake_binding;
-    if(binding){root.querySelector('.six-project').value=binding.project_id;root.querySelector('.six-start').value=String(binding.start_index);root.querySelector('.six-inheritance').value=binding.start_mode}
-    node.__sixUI=ui;ready=true;snapshot();await restoreProductionExecution(node);
+    if(prebakeEnabled()&&binding){root.querySelector('.six-project').value=binding.project_id;root.querySelector('.six-start').value=String(binding.start_index);root.querySelector('.six-inheritance').value=binding.start_mode}
+    node.__sixUI=ui;ready=true;
+    if(!prebakeEnabled())ui.cards.forEach(c=>{if(c.videoRef)c.status.textContent='已恢复已保存视频';else c.status.textContent='未生成'});
+    snapshot();await restoreProductionExecution(node);
     installCompilerPreview(ui,root,app);
-    try{await installNativeMerge(root,()=>{const b=node.properties.h3_prebake_binding,g=ui.group?.id;return {group_id:g||b?.group_id||node.properties.h3_prebake_last_plan?.group_id||storyId(node),project_id:g&&b&&g!==b.group_id?g:(b?.project_id||ui.executionSnapshot().project_id),save_video_node_id:saveVideoNodeId()}})}
+    try{await installNativeMerge(root,()=>{const b=prebakeEnabled()?node.properties.h3_prebake_binding:null,g=ui.group?.id;return {group_id:g||b?.group_id||node.properties.h3_prebake_last_plan?.group_id||storyId(node),project_id:g&&b&&g!==b.group_id?g:(b?.project_id||ui.executionSnapshot().project_id),save_video_node_id:saveVideoNodeId()}})}
     catch(error){root.querySelector('.six-status').textContent+='\n自动拼接未就绪：'+error.message}
   }catch(error){root.textContent='六段面板加载失败：'+error.message+'；请检查当前实例 Director接口'}
 }

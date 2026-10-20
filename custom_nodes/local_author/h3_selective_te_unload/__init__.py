@@ -1,4 +1,6 @@
 """Narrow post-conditioning H3 TE lifecycle canary; fail closed."""
+
+import folder_paths
 import importlib.util
 import gc
 import json
@@ -123,7 +125,7 @@ class H3SelectiveTEUnload:
 
     def unload(self, conditioning, prompt, unique_id):
         record = {"schema": "H3_SELECTIVE_TE_UNLOAD_RUNTIME_CANARY_V1", "pid": os.getpid(), "utc_epoch": time.time(), "status": "FAIL_CLOSED"}
-        folder = Path(__file__).resolve().parents[2] / "user" / "h3_selective_te_unload"
+        folder = Path(folder_paths.get_user_directory()) / "h3_selective_te_unload"
         folder.mkdir(parents=True, exist_ok=True)
         path = folder / f"unload_{os.getpid()}_{time.time_ns()}.json"
         try:

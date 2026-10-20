@@ -124,6 +124,12 @@ def story(payload,state_lock=None):
   registry=read_state(story_registry()) or {};binding=registry.get(sid)
   if action=='restore':binding=execution_state.selected_story(sid)
   if action=='restore':
+   requested=payload.get('context')
+   if requested:
+    if requested.get('story_id')!=sid:raise ValueError('Saved workflow Story identity mismatch')
+    matches=[b for b in execution_state.bindings() if all(b.get(k)==requested.get(k) for k in ('story_id','project_id','group_id','execution_version'))]
+    if len(matches)!=1:raise ValueError('Saved workflow execution binding is unavailable; refusing latest-execution substitution')
+    binding=matches[0]
    if not binding:return {'state':'UNINITIALIZED','binding':None}
    data=read_state(ledger_path(binding))
    if not data or not data.get('execution'):raise ValueError('MISSING story execution ledger; no directory fallback')
@@ -396,11 +402,18 @@ def anchor_clean_rebase(graph,ctx,index,enabled=False,attempt_id=None,cached_con
  prep=next((n['inputs'] for n in graph.values() if n['class_type']=='H3ContinuationPrepare'),{})
  rebase=prep.get('enabled') is True and prep.get('clean_rebase_enabled') is True and index==prep.get('clean_rebase_segment')
  independent=ctx.get('start_mode')=='independent' and index==ctx.get('start_index')
- if not rebase or independent:return graph
+ if prep.get('enabled') is not True or independent or (index<=0 and not rebase):return graph
+ # Native masking protects the inherited interval, but does not itself anchor
+ # the first newly generated visible frame. Use the accepted predecessor's
+ # actual final picture as an official Guide at that boundary as well.
+ if not rebase:
+  from .user_guides import spec
+  explicit=spec(graph,index)
+  if explicit and explicit.get('model_frame')==39:return graph
  if index<=0:raise ValueError('Rebase composition anchor needs a predecessor')
  if any(k in graph for k in ('SEAM_GUIDE','SEAM_PRECHECK','SEAM_AUDIT','SEAM_IMAGE')):raise ValueError('Repeated automatic Guide injection; prepare a fresh graph')
  # Anchor the first frame that will survive the explicit rebase output crop.
- anchor_frame_idx=scalar(graph.get('LONG_SONG',{}).get('inputs',{}).get('clean_rebase_output_discard_frames',0),graph)
+ anchor_frame_idx=scalar(graph.get('LONG_SONG',{}).get('inputs',{}).get('clean_rebase_output_discard_frames',0),graph) if rebase else 39
  if type(anchor_frame_idx) is not int or anchor_frame_idx<0:raise ValueError('Invalid Clean Rebase output discard target')
  if check_guide_ancestry(graph):raise ValueError('Existing Guide conflicts with requested Clean Rebase output anchor')
  length=scalar(graph.get('136',{}).get('inputs',{}).get('length'),graph)
@@ -416,7 +429,7 @@ def anchor_clean_rebase(graph,ctx,index,enabled=False,attempt_id=None,cached_con
  receipt=(read_state(ledger_path(ctx).parent/'six_acceptance.json') or {}).get(str(index-1),{})
  output=Path(folder_paths.get_output_directory()).resolve();video=Path(receipt.get('video_path','')).resolve()
  if not video.is_relative_to(output) or not video.is_file() or not receipt.get('video_sha256') or codec.file_sha(video)!=receipt['video_sha256']:raise ValueError('Rebase accepted predecessor video missing or SHA256 changed')
- info=subprocess.run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=nb_frames,width,height','-of','json',str(video)],capture_output=True,text=True,timeout=15,check=True)
+ info=subprocess.run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=nb_frames,width,height','-of','json',str(video)],capture_output=True,text=True,encoding='utf-8',timeout=15,check=True)
  stream=json.loads(info.stdout)['streams'][0];last=int(stream['nb_frames'])-1
  if last<0:raise ValueError('Rebase predecessor has no video frames')
  if 'PREBAKE_LOAD' in graph:
@@ -444,6 +457,7 @@ def anchor_clean_rebase(graph,ctx,index,enabled=False,attempt_id=None,cached_con
  from PIL import Image
  with Image.open(image) as img:pixels=(np.array(img.convert('RGB')).astype(np.float32)/255.0)[None]
  policy={'context':copy.deepcopy(ctx),'index':index,'attempt_id':attempt_id,'revision':ctx['revisions'][index],'cache_key':ctx['cache_keys'][index],'source':{k:receipt[k] for k in ('prompt_id','video_sha256','latent_sha256')},'source_frame':last,'image':graph['SEAM_IMAGE']['inputs']['image'],'image_sha256':codec.file_sha(image),'pixel_sha256':codec.digest(pixels.tobytes()),'image_shape':list(pixels.shape),'width':stream['width'],'height':stream['height'],'frame_idx':anchor_frame_idx}
+ policy['continuation_kind']='clean_rebase' if rebase else 'native_prefix'
  prepare=next(k for k,n in graph.items() if n['class_type']=='H3ContinuationPrepare')
  plan=copy.deepcopy(graph.get('PREBAKE_AUDIT',{}).get('inputs',{}).get('plan_json',[prepare,1]))
  common={'latent':copy.deepcopy(graph['125']['inputs']['latent_image']),'project_id':ctx['project_id'],'segment_index':index,'plan_json':plan,'guide_image':['SEAM_IMAGE',0]}
@@ -514,6 +528,7 @@ def plan(payload,state_lock=None):
  return {'invalidated_video_from':min(invalidated) if invalidated else None,'plans':plans,'group_id':ctx['group_id'],'project_id':ctx['project_id'],'binding':binding}
 def generate(payload,state_lock=None):
  g=clean_graph(payload['graph']);ctx=payload['context'];i=int(payload['index']);ct=payload['contract_json'];c,key=codec.verified_contract(ct)
+ long_song_graph_gate(g,ctx,i)
  if g.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json'):raise ValueError('跨组仅允许现有长歌动态参考链，禁止绕过受控Fallback提交')
  if c['group_id']!=ctx['group_id'] or c['segment_id']!=str(i) or c['prompt_sha256']!=codec.digest(payload['text'].encode()):raise ValueError('Final text/group mismatch')
  cached,_,_=codec.load(ct,restore_device=False) # complete content validation before Generate; never old cache fallback
@@ -588,13 +603,66 @@ def archive_attempt(entry):
 
 def graph_digest(graph):return codec.digest(codec.canonical(clean_graph(graph)))
 
+def long_song_graph_gate(graph,ctx,index):
+ """Reject long-song groups whose submitted graph omits the timeline node."""
+ from custom_nodes.H3_LongSong.timeline_contract import validate_graph_identity
+ return validate_graph_identity(graph,ctx.get('project_id'),ctx.get('group_id'),index)
+
+def validate_long_song_timeline(graph,root,ctx,index,prompt_id,attempt,receipts):
+ """Verify a persisted plan against the exact successful long-song graph."""
+ inputs=long_song_graph_gate(graph,ctx,index)
+ if inputs is None:return None
+ import folder_paths
+ from custom_nodes.H3_LongSong.timeline_contract import validate_plan_chain
+ raw=Path(inputs['source'])
+ source=raw if raw.is_absolute() else Path(folder_paths.get_annotated_filepath(str(inputs['source'])))
+ source=source.resolve(strict=True)
+ source_sha=codec.file_sha(source).lower()
+ song_start=float(inputs['start_seconds'])
+ cross_raw=inputs.get('cross_group_json')
+ cross=json.loads(cross_raw) if cross_raw else None
+ timeline_path=root/'long_song_timeline.json'
+ timeline=read_state(timeline_path)
+ if not isinstance(timeline,dict):
+  raise ValueError('长歌执行成功但没有持久化long_song_timeline.json')
+ require_from_zero=str(ctx.get('group_id','')).startswith('H3_SONG_')
+ validate_plan_chain(timeline,index,source_sha,song_start,cross,require_from_zero)
+ plan=timeline.get(str(index),{})
+ if plan.get('project_id')!=ctx.get('project_id') or plan.get('segment_index')!=index:
+  raise ValueError('已保存长歌计划与本次项目身份/段号不匹配')
+ if str(Path(plan.get('source','')).resolve(strict=True)).lower()!=str(source).lower():
+  raise ValueError('已保存长歌计划原曲路径与实际提交图不一致')
+ if type(inputs.get('frames')) is int and plan.get('frames')!=inputs['frames']:
+  raise ValueError('已保存长歌计划帧数与实际提交图不一致')
+ if plan.get('cross_group')!=cross:
+  raise ValueError('已保存长歌计划跨组前驱合同与实际提交图不一致')
+ old_binding=plan.get('execution_receipt')
+ if old_binding and old_binding.get('prompt_id')!=prompt_id:
+  raise ValueError('长歌计划仍绑定到另一个prompt_id')
+ first=0 if require_from_zero else int(plan.get('origin_index',index))
+ for prior_index in range(first,index):
+  prior_receipt=(receipts or {}).get(str(prior_index),{})
+  if prior_receipt.get('status')!='SUCCESS':
+   raise ValueError(f'第{prior_index+1}段没有SUCCESS回执，不能验收完整长歌时间轴')
+  prior_binding=timeline[str(prior_index)].get('execution_receipt')
+  if prior_binding and any(prior_binding.get(k)!=prior_receipt.get(k) for k in ('prompt_id','project_id','group_id','execution_version')):
+   raise ValueError(f'第{prior_index+1}段时间轴执行身份与SUCCESS回执不匹配')
+ return timeline,graph_digest(graph)
+
 def cross_group_gate(graph,ctx,index):
  raw=graph.get('LONG_SONG',{}).get('inputs',{}).get('cross_group_json')
  if not raw and 'CROSS_GROUP_PREVIOUS' not in graph:return None
  import nodes
  guard=nodes.NODE_CLASS_MAPPINGS.get('H3CrossGroupPrevious')
  if guard is None:raise ValueError('跨组校验节点未加载，禁止提交GPU')
- return guard.verify_graph(graph,ctx,index)
+ proof=guard.verify_graph(graph,ctx,index)
+ if proof and index==0:
+  from custom_nodes.H3_LongSong.cross_group import discover_predecessor
+  song=graph['LONG_SONG']['inputs']
+  latest=discover_predecessor(ctx['project_id'],song['source'],proof['song_start'],None,proof['source_group'])['contract']
+  if latest!=proof:
+   raise ValueError('跨组前驱已不是当前同组最新可核验执行，请重新发现绑定；未提交GPU')
+ return proof
 
 def validate_deadline(attempt,h=None):
  if attempt.get('stop_reason'):raise ValueError('Attempt stopped: '+attempt['stop_reason'])
@@ -602,6 +670,7 @@ def validate_deadline(attempt,h=None):
 
 def fallback(payload,state_lock=None):
  ctx=payload['context'];i=int(payload['index']);g=clean_graph(payload['graph'])
+ long_song_graph_gate(g,ctx,i)
  cross=cross_group_gate(g,ctx,i)
  with LOCK,state_lock or nullcontext():
   binding,data=bound_context(ctx);entry=data['segments'].get(str(i),{})
@@ -641,13 +710,24 @@ def accepted(payload,server,state_lock=None):
  ctx=payload['context'];i=int(payload['index']);pid=payload['prompt_id'];path=ledger_path(ctx);root=path.parent
  def validate(data,receipts):
   entry=data['segments'].get(str(i),{});r=(receipts or {}).get(str(i),{});attempt=entry.get('attempt')
+  retry_history=(payload.get('revalidate_failed') is True and attempt is not None and
+    attempt.get('status')=='RECOVERY_FAILED' and
+    attempt.get('terminal_reason')=='关键帧提交图或执行快照被删除/修改，未提交GPU' and
+    attempt.get('snapshot',{}).get('user_guide') is not None)
+  if retry_history:
+   # Validate a candidate in memory. No receipt or attempt is changed unless
+   # every original History/graph/guide/Native/video/timeline check succeeds.
+   original=attempt;attempt=copy.deepcopy(original)
+   attempt['revalidated_from']={k:copy.deepcopy(original.get(k)) for k in ('status','terminal_reason','terminal_epoch','end_evidence')}
+   attempt['status']='PENDING'
   if data.get('group_id')!=ctx['group_id'] or data.get('project_id',ctx['project_id'])!=ctx['project_id']:raise ValueError('Acceptance ledger group/project mismatch')
   if entry.get('cache_key')!=payload['cache_key']:raise ValueError('STALE acceptance cache_key')
   if attempt:
    attempt_check(ctx,i,data,attempt)
    validate_deadline(attempt,h=None)
    if attempt.get('prompt_id')!=pid or attempt['status'] not in ('PENDING','SUCCESS'):raise ValueError('Acceptance prompt_id/attempt mismatch')
-   if r and (r.get('status') not in ('PENDING','SUCCESS') or any(r.get(k)!=attempt[k] for k in ('group_id','project_id','execution_version','revision','cache_key','attempt_id')) or r.get('prompt_id') not in (None,pid)):raise ValueError('STALE acceptance receipt identity/revision/cache/attempt changed')
+   allowed_receipt=('PENDING','SUCCESS','RECOVERY_FAILED') if retry_history else ('PENDING','SUCCESS')
+   if r and (r.get('status') not in allowed_receipt or any(r.get(k)!=attempt[k] for k in ('group_id','project_id','execution_version','revision','cache_key','attempt_id')) or r.get('prompt_id') not in (None,pid)):raise ValueError('STALE acceptance receipt identity/revision/cache/attempt changed')
   else:
    # Legacy receipts remain valid only with exact existing acceptance lineage.
    group=(receipts or {}).get('_native_merge',{}).get('groups',{}).get(ctx['group_id'],{})
@@ -658,9 +738,10 @@ def accepted(payload,server,state_lock=None):
   if attempt:validate_deadline(attempt,h)
   if h['prompt'][1]!=pid:raise ValueError('History prompt_id mismatch')
   graph=h['prompt'][2];saves=[n for n in graph.values() if n['class_type']=='H3ContinuationSave' and n['inputs'].get('enabled') is True]
+  timeline_result=validate_long_song_timeline(graph,root,ctx,i,pid,attempt,receipts)
   if attempt:
    from .user_guides import submission_check
-   submission_check(graph,ctx,i,attempt)
+   submission_check(graph,ctx,i,attempt,history=True)
   if 'SEAM_GUIDE' in graph:
    if attempt and attempt.get('guide_anchor_sha256') and not __import__(__package__+'.adaptive_bridge',fromlist=['graph_matches']).graph_matches(attempt,graph):raise ValueError('Guide submitted graph changed before acceptance')
    verify_predecessor(ctx,i)
@@ -698,7 +779,7 @@ def accepted(payload,server,state_lock=None):
   latent_sha=codec.file_sha(latent)
   for expected in (r.get('latent_sha256'),entry.get('latent_sha256') if entry.get('prompt_id')==pid else None):
    if expected and expected!=latent_sha:raise ValueError('Latent SHA256 changed after acceptance')
-  return entry,r,latent,latent_sha,attempt,files[0],str(video),codec.file_sha(video)
+  return entry,r,latent,latent_sha,attempt,files[0],str(video),codec.file_sha(video),timeline_result
  with LOCK, state_lock or nullcontext():
   data=read_state(path);receipts=read_state(root/'six_acceptance.json')
   if data is None:raise ValueError('MISSING PreBake ledger')
@@ -706,10 +787,24 @@ def accepted(payload,server,state_lock=None):
  with LOCK, state_lock or nullcontext():
   data=read_state(path);receipts=read_state(root/'six_acceptance.json')
   if data is None:raise ValueError('MISSING ledger before commit')
-  entry,r,latent,latent_sha,attempt,video_ref,video_path,video_sha=validate(data,receipts)
+  entry,r,latent,latent_sha,attempt,video_ref,video_path,video_sha,timeline_result=validate(data,receipts)
   receipts=receipts or {};stamp=r.get('accepted_at_epoch') or time.time()
+  if timeline_result is not None:
+   timeline,submitted_graph_sha=timeline_result
+   plan=timeline[str(i)]
+   plan['execution_receipt']={'schema':'H3_LONG_SONG_EXECUTION_RECEIPT_V1',
+     'prompt_id':pid,'attempt_id':attempt.get('attempt_id') if attempt else None,
+     'project_id':ctx['project_id'],'execution_version':ctx.get('execution_version'),
+     'group_id':ctx['group_id'],'segment_index':i,
+     'source_sha256':plan['source_sha256'].lower(),
+     'graph_sha256':submitted_graph_sha,'accepted_at_epoch':stamp}
+   atomic_json(root/'long_song_timeline.json',timeline)
   entry.update(group_id=ctx['group_id'],project_id=ctx['project_id'],video_status='SUCCESS',prompt_id=pid,latent_sha256=latent_sha,accepted_at_epoch=stamp,receipt_status='SUCCESS')
-  if attempt:attempt.update(status='SUCCESS',terminal_status='SUCCESS')
+  if attempt:
+   if attempt.get('revalidated_from') and entry.get('attempt',{}).get('status')=='RECOVERY_FAILED':
+    entry.setdefault('attempt_history',[]).append(copy.deepcopy(entry['attempt']))
+    attempt.update(terminal_reason='Original successful GPU History revalidated after declared FLOAT coercion fix',terminal_epoch=time.time())
+   attempt.update(status='SUCCESS',terminal_status='SUCCESS');entry['attempt']=attempt
   receipt={**(attempt or {}),'status':'SUCCESS','prompt_id':pid,'group_id':ctx['group_id'],'project_id':ctx['project_id'],'revision':entry['revision'],'cache_key':entry['cache_key'],'latent_path':str(latent),'latent_sha256':latent_sha,'accepted_at_epoch':stamp,'video_output_ref':{**video_ref,'prompt_id':pid},'video_path':video_path,'video_sha256':video_sha}
   # Ledger first: an interrupted second write is recovered only by the same
   # exact history/attempt validator, never by interpreting a saved file as success.

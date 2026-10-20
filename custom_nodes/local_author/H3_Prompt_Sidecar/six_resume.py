@@ -142,6 +142,19 @@ def inspect_segment(root, project, index, require_accepted=True, expected_prompt
         raise ValueError("缺少第%d段已接受状态" % (index + 1))
     if ledger.get("provider") != PROVIDER or entry.get("provider") != PROVIDER:
         raise ValueError("存档不是CORE_NATIVE_MASKED_AV")
+    verified_receipt = bool(receipt and receipt.get('status') == 'SUCCESS')
+    if verified_receipt:
+        receipt_prompt = receipt.get('prompt_id')
+        if not receipt_prompt:
+            raise ValueError('SUCCESS receipt has no exact prompt_id')
+        if expected_prompt_id is not None and expected_prompt_id != receipt_prompt:
+            raise ValueError('Requested prompt_id differs from SUCCESS receipt')
+        expected_prompt_id = receipt_prompt
+        claimed_sha = receipt.get('latent_sha256')
+        if not claimed_sha or hashlib.sha256(path.read_bytes()).hexdigest().upper() != claimed_sha.upper():
+            raise ValueError('SUCCESS receipt latent SHA256 mismatch')
+    if expected_prompt_id is not None and entry.get('prompt_id') != expected_prompt_id:
+        raise ValueError('Native index differs from exact SUCCESS/History prompt_id')
     # Read tensor headers only, without loading a model or tensor into GPU memory.
     with safe_open(str(path), framework="pt", device="cpu") as handle:
         meta = handle.metadata()
@@ -154,7 +167,7 @@ def inspect_segment(root, project, index, require_accepted=True, expected_prompt
         if len(video) != 5 or video[2] < 12 or len(audio) < 3 or audio[-1] < 65:
             raise ValueError("latent不满足39帧/65步前缀条件")
     return {"segment_index": index, "path": str(path), "provider": PROVIDER,
-            "video_shape": video, "audio_shape": audio, "accepted": True}
+            "video_shape": video, "audio_shape": audio, "accepted": verified_receipt}
 
 
 def register_routes():

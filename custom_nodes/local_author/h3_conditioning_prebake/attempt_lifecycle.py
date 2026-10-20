@@ -135,6 +135,12 @@ class AttemptManager:
    if len(bindings)!=1:return False
    ctx=bindings[0];data,entry,a=self.load(ctx,index)
    if not a:return False
+   frozen=a.get('snapshot',{}).get('context')
+   if frozen:
+    if any(frozen.get(k)!=ctx.get(k) for k in ('story_id','project_id','group_id','execution_version')):raise ValueError('Recovery snapshot ownership mismatch')
+    # Registry bindings omit execution-only fields such as fps. Reconcile the
+    # exact task with its immutable submitted context, not a lossy UI binding.
+    ctx=copy.deepcopy(frozen)
    if a['status']=='STALE' and a.get('prompt_id'):
     running,queued=self.queue_items()
     if any(x[1]==a['prompt_id'] for x in running+queued):
@@ -270,7 +276,7 @@ class AttemptManager:
   try:
    stat=path.stat()
    return (getattr(stat,'st_ino',None),stat.st_size,stat.st_mtime_ns)
-  except FileNotFoundError:return ('missing',)
+  except FileNotFoundError:return None # Missing evidence is never a reusable identity proof.
   except OSError:return None
  async def tick(self):
   bindings=p.execution_state.bindings();parent_cache={};identity_audit=[]
@@ -345,11 +351,14 @@ def install(server):
  _pq.get=_traced_get
  _orig_done=_pq.task_done
  def _traced_done(*args,**kwargs):
+  # Publish History before dropping the worker liveness proof. Removing it
+  # first leaves a queue-to-History handoff race for the watchdog.
+  result=_orig_done(*args,**kwargs)
   try:
    _pid=manager.executing_items.pop(int(args[0]),None)
    if _pid is not None:manager.executing_pids.discard(_pid)
   except Exception:pass
-  return _orig_done(*args,**kwargs)
+  return result
  _pq.task_done=_traced_done
  import hashlib
  logging.info('H3_ATTEMPT_LIFECYCLE_LOADED module=%s sha256=%s monotonic=true cancel_confirmation_seconds=30',__file__,hashlib.sha256(open(__file__,'rb').read()).hexdigest())

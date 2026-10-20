@@ -64,11 +64,12 @@ def decode(tree,tensors,restore_device=True):
  return visit(tree)
 def load(text,restore_device=True):
  c,key=verified_contract(text);folder=ROOT/key
- manifest=json.loads((folder/'manifest.json').read_text())
+ # Cache JSON is emitted by canonical() as UTF-8. Do not inherit Windows' GBK default.
+ manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
  if manifest['schema']!=SCHEMA or manifest['key']!=key or manifest['contract']!=c:raise ValueError('Cache contract mismatch')
  for name in ('tensors.safetensors','metadata.json'):
   if file_sha(folder/name)!=manifest['files'][name]:raise ValueError('Cache corruption: '+name)
- meta=json.loads((folder/'metadata.json').read_text());tensors=load_bytes((folder/'tensors.safetensors').read_bytes())
+ meta=json.loads((folder/'metadata.json').read_text(encoding='utf-8'));tensors=load_bytes((folder/'tensors.safetensors').read_bytes())
  if set(tensors)!=set(v['key']for v in meta['inventory']):raise ValueError('Tensor count mismatch')
  for rec in meta['inventory']:
   t=tensors[rec['key']]

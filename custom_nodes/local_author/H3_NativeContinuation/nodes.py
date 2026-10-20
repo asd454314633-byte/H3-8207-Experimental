@@ -234,7 +234,8 @@ class H3ContinuationPrepare:
         out = _pack_av(video, audio)
         out["noise_mask"] = NestedTensor((vmask, amask))
 
-        plan.update({"prev_source": prev_source,
+        plan.update({"project_id": project_id, "segment_index": int(segment_index),
+                     "prev_source": prev_source,
                      "video_prefix_transform": spatial_transform,
                      "protected_frames": VIDEO_PREFIX_FRAMES,
                      "mask_video_zero_tokens": int(vt),
@@ -369,6 +370,8 @@ class H3ContinuationTrimOnce:
                 "trim_frames": ("INT", {"default": VIDEO_PREFIX_FRAMES, "min": 0, "max": 4096}),
                 "clean_rebase_enabled": ("BOOLEAN", {"default": False}),
                 "clean_rebase_segment": ("INT", {"default": 3, "min": 0, "max": 99999}),
+                "rebase_output_discard_frames": ("INT", {"default": 0, "min": 0, "max": 39}),
+                "timeline_json": ("STRING", {"default": ""}),
             },
         }
 
@@ -379,7 +382,8 @@ class H3ContinuationTrimOnce:
 
     def run(self, images, enabled=False, project_id="", segment_index=0,
             audio=None, fps=float(core.FPS), trim_frames=VIDEO_PREFIX_FRAMES,
-            clean_rebase_enabled=False, clean_rebase_segment=3):
+            clean_rebase_enabled=False, clean_rebase_segment=3,
+            rebase_output_discard_frames=0, timeline_json=""):
         import torch
 
         if not enabled:
@@ -392,11 +396,42 @@ class H3ContinuationTrimOnce:
             clean_rebase_enabled=clean_rebase_enabled,
             clean_rebase_segment=clean_rebase_segment)
         if policy["clean_rebase_active"]:
-            return (images, audio, json.dumps(
-                {"active": True, "segment_index": int(segment_index),
-                 "clean_rebase": True, "trimmed_frames": 0,
-                 "audio_steps": 0, "reason": "fresh_epoch_has_no_prefix"},
-                ensure_ascii=False))
+            if rebase_output_discard_frames not in (0, VIDEO_PREFIX_FRAMES):
+                raise ValueError("Clean Rebase output discard must be 0 or exactly %d frames"
+                                 % VIDEO_PREFIX_FRAMES)
+            if rebase_output_discard_frames == 0:
+                if timeline_json:
+                    timeline = json.loads(timeline_json)
+                    if (int(timeline.get("segment_index", -1)) != int(segment_index)
+                            or timeline.get("clean_rebase") is not True
+                            or int(timeline.get("output_discard_frames", -1)) != 0):
+                        raise ValueError("Clean Rebase timeline disagrees with the zero-discard trim plan")
+                return (images, audio, json.dumps(
+                    {"active": True, "segment_index": int(segment_index),
+                     "clean_rebase": True, "trimmed_frames": 0,
+                     "audio_steps": 0, "reason": "fresh_epoch_has_no_prefix"},
+                    ensure_ascii=False))
+            if not timeline_json:
+                raise ValueError("Clean Rebase output discard requires its H3 LongSong timeline contract")
+            timeline = json.loads(timeline_json)
+            if (int(timeline.get("segment_index", -1)) != int(segment_index)
+                    or timeline.get("project_id") != project_id
+                    or timeline.get("clean_rebase") is not True
+                    or int(timeline.get("prefix_frames", -1)) != 0
+                    or int(timeline.get("output_discard_frames", -1)) != int(rebase_output_discard_frames)
+                    or int(timeline.get("kept_frames", -1)) != images.shape[0] - int(rebase_output_discard_frames)):
+                raise ValueError("Clean Rebase timeline and output discard contract do not match")
+            trim_frames = int(rebase_output_discard_frames)
+        elif rebase_output_discard_frames:
+            raise ValueError("rebase_output_discard_frames requires active Clean Rebase")
+        elif timeline_json:
+            timeline = json.loads(timeline_json)
+            if (int(timeline.get("segment_index", -1)) != int(segment_index)
+                    or timeline.get("project_id") != project_id
+                    or int(timeline.get("prefix_frames", -1)) != int(trim_frames)
+                    or int(timeline.get("output_discard_frames", 0)) != 0
+                    or int(timeline.get("kept_frames", -1)) != images.shape[0] - int(trim_frames)):
+                raise ValueError("Native continuation timeline and prefix trim contract do not match")
 
         if images.shape[0] <= trim_frames:
             raise ValueError("cannot trim %d frames from a %d frame clip"
@@ -417,9 +452,12 @@ class H3ContinuationTrimOnce:
 
         store = core.ContinuationStore(_output_root(), project_id)
         events = store.record_trim(int(segment_index), int(trim_frames), audio_steps)
+        mode = "clean_rebase_output_discard" if policy["clean_rebase_active"] else "native_prefix"
         return (out_images, out_audio,
                 json.dumps({"active": True, "trimmed_frames": int(trim_frames),
-                            "audio_steps": audio_steps,
+                            "audio_steps": audio_steps, "mode": mode,
+                            "clean_rebase": bool(policy["clean_rebase_active"]),
+                            "output_frames": int(out_images.shape[0]),
                             "events_for_this_segment":
                                 [e for e in events if int(e["segment_index"]) == int(segment_index)]},
                            ensure_ascii=False))
