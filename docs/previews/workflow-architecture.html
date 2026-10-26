@@ -1,0 +1,243 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>H3 导演台工作流架构</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of ~1100px; each diagram in its own scroll box; reference tables below each. */
+:root{
+  --bg:#f5f6f4; --panel:#ffffff; --fg:#1c1f22; --muted:#5d646c; --line:#d9ddd8;
+  --accent:#2f6fd0; --accent2:#7a52c7; --warn:#b5651d; --ok:#2c8a5a;
+  --sans:'Noto Sans SC','Microsoft YaHei',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#16181b; --panel:#1f2226; --fg:#e7e9ec; --muted:#9aa1a9; --line:#33373d;
+  --accent:#6ea2f0; --accent2:#a98be6; --warn:#e3a15f; --ok:#5fc48f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16181b; --panel:#1f2226; --fg:#e7e9ec; --muted:#9aa1a9; --line:#33373d;
+  --accent:#6ea2f0; --accent2:#a98be6; --warn:#e3a15f; --ok:#5fc48f; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:36px}
+h1{font-size:30px;margin:0;text-wrap:balance;letter-spacing:.01em}
+h2{font-size:21px;margin:0 0 6px;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lead{color:var(--muted)}
+.meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+section{display:flex;flex-direction:column;gap:14px}
+.fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
+.fig pre.mermaid{margin:0;min-width:900px;background:transparent}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:720px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:500;background:color-mix(in srgb,var(--panel) 85%,var(--line))}
+tr:last-child td{border-bottom:0}
+code,.mono{font-family:var(--mono);font-size:12.5px}
+.chip{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.op{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.in{color:var(--muted)}
+.ex{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.rm{color:var(--accent2);border-color:color-mix(in srgb,var(--accent2) 45%,transparent)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card h3{margin:0;font-size:15px}
+.card ul{margin:0;padding-left:18px;font-size:13.5px}
+</style>
+
+</head><body><div class="wrap">
+<header style="display:flex;flex-direction:column;gap:10px">
+<h1>H3 导演台工作流架构</h1>
+<p class="lead">MiniMax H3 FastH3 OmniRef8 INT8 · 8 步 Euler · VSA 稀疏注意力 · Native 六段音画续接。画布 188 个节点、23 个分组、2 个子图；每段实际执行 70 个节点。</p>
+<div class="meta"><span>依据：FastH3_Native_Six 完整可编辑工作流 + 实际 API 执行图（2026-10-25）</span><span>环境：ComfyUI 0.36.0 · 前端 1.52.7 · Python 3.13 · Torch 2.12 cu130 · RTX 5090 D v2</span><span>更新：2026-10-26</span></div>
+</header>
+
+<section>
+<h2>1. 系统分层</h2>
+<p>用户只碰最上层两块面板；面板通过本机接口驱动 ComfyUI 队列，生成结果与续接存档都落在 output 目录。8210 中文提示词编译器是独立进程，经代理接口访问。</p>
+<div class="fig"><pre class="mermaid">
+flowchart TB
+  subgraph UI["操作层（浏览器 · 只操作这两块）"]
+    C159["H3 总控台 N159<br/>参考素材 · 路线 · 尺寸/时长 · 提示词 · ▶生成本段"]
+    C992["H3 六段导演台 N992<br/>六段卡片 · ▶连续生成六段 · 重抽这段 · 合并状态"]
+  end
+  subgraph EXT["前端扩展（web JS）"]
+    E1["six_ui.js / h3_six_segment_director<br/>六段调度 · 改词分叉 · 重抽"]
+    E2["chinese_director.js / depth_control.js<br/>中文化 · 景深"]
+    E3["workflow_ux / dashboard v3 / production.js<br/>路线合同 · 预烘焙 · 进度"]
+    E4["h3_workflow_identity_guard / h3_execution_policy<br/>错图拦截 · 执行策略"]
+  end
+  subgraph SRV["ComfyUI 服务 8207（本机 127.0.0.1）"]
+    Q["/prompt 队列 · /history · /view"]
+    R1["/h3/six/*<br/>回执 acceptance · 旧段存档 archive-segment · 段检查"]
+    R2["/h3/six/native-merge<br/>六段自动合并"]
+    R3["/h3-director/*<br/>任务 · 模型 · 偏好 · 组生成"]
+    R4["/h3/cross-group/*<br/>跨组续接 bind/discover/validate/merge"]
+    R5["/h3/compiler/* 代理"]
+  end
+  subgraph GPU["执行（每段 70 节点，见第 2 节）"]
+    G["FastH3 OmniRef8 · 8 步 · Native 续接"]
+  end
+  subgraph DISK["output 目录"]
+    D1["h3_continuation/项目/<br/>seg_0000N.safetensors · index.json<br/>six_acceptance.json · _superseded/"]
+    D2["项目/S1…S6.mp4 · 合并视频"]
+    D3["History 快照 snapshot-*.json"]
+  end
+  P8210["8210 中文提示词编译器<br/>（计划任务 H3-8210-Managed）"]
+  CLOUD["云端提示词模型（可选 · 会上传）"]
+  C159 --> E3 --> Q
+  C992 --> E1 --> Q
+  E1 --> R1 & R2
+  E2 -.-> C159
+  E4 -.-> Q
+  C992 --> R3
+  R5 --> P8210
+  R3 -.-> CLOUD
+  Q --> G
+  G --> D1 & D2
+  R1 --> D1
+  R2 --> D2
+  R4 --> D1
+  Q -.-> D3
+</pre></div>
+</section>
+
+<section>
+<h2>2. 单段执行图（70 个节点）</h2>
+<p>数据从左到右：素材与提示词 → 参考条件 → 续接准备 → 8 步采样 → VAE 前卸载 → 存档与解码 → 去重叠前缀 → 出片。方括号内是节点编号。</p>
+<div class="fig"><pre class="mermaid">
+flowchart LR
+  subgraph SRC["素材与选择器"]
+    IMG["LoadImageCrop ×5<br/>[687][688][689][690][1001]"]
+    AUD["LoadAudio [143]<br/>H3AudioFile [1047]"]
+    TXT["提示词 [138]"]
+    SEL["模式选择器<br/>操作[159] 参考源[150] 尺寸[627]<br/>生成[647] 图像[761] 速度[873]<br/>FL2V[886] 后端[931] 注意力[952] 引导[991]"]
+    RES["ResolutionSelector [115]<br/>→ 宽[626] 高[628] · 时长[131][132]"]
+  end
+  subgraph MOD["模型链"]
+    U["UNETLoader [1100]<br/>fasth3_omniref_8step<br/>pruned_int8_convrot"]
+    SS["SigmaShift [1101]"]
+    AB["AttentionBackend [1102]"]
+    VSA["BlockSparseAttention [1103]<br/>VSA 保留 10%"]
+    PO["预览覆盖 KJ [691]"]
+    SW["切换 [930]"]
+    CL["CLIPLoader [128]"]
+    VV["视频 VAE [862→872]"]
+    VA["音频 VAE [120]"]
+  end
+  subgraph CON["参考条件"]
+    PF["音频参考预检 [1042]"]
+    R2V["MiniMaxH3ReferenceToVideo [1106]"]
+    POS["正向条件 [648]"]
+    LAT["空 latent [682]"]
+  end
+  subgraph NC["Native 续接子图 [1056]"]
+    PV["Provider [1048]<br/>AudioBranch [1049]"]
+    PR["Prepare [1050]<br/>读上一段尾 39 帧<br/>12 视频 token / 65 音频步<br/>第 4 段 Clean Rebase"]
+    GD["Guides [1051]<br/>保护前缀帧"]
+  end
+  subgraph SMP["8 步采样"]
+    TE["文本编码器选择性卸载 [1057]"]
+    BG["BasicGuider [126]"]
+    NZ["RandomNoise [129] ← 种子[142]"]
+    KS["Euler [1105→870]"]
+    SC["BasicScheduler 8 步 simple [1104→885]"]
+    SA["SamplerCustomAdvanced [125]"]
+  end
+  subgraph OUT["解码与出片"]
+    EV["VAE 前卸载扩散模型 [1058]"]
+    SV["Save [1052]<br/>seg_0000N.safetensors"]
+    VD["VAEDecode [122]"]
+    AD["VAEDecodeAudio [121]"]
+    JO["坏段检测 JerkOracle [725]→[779]"]
+    TR["TrimOnce [1053]<br/>去掉与上段重叠的前缀"]
+    AS["Assemble [1054]"]
+    CV["CreateVideo [764]"]
+    SVV["SaveVideo [961]<br/>项目/Sn"]
+  end
+  IMG --> R2V
+  TXT --> PF
+  AUD --> PF --> R2V
+  RES --> R2V
+  CL --> R2V
+  VV --> R2V
+  VA --> R2V
+  U --> SS --> AB --> VSA --> PO --> SW --> BG
+  R2V --> POS & LAT
+  PV --> PR
+  LAT --> PR
+  POS --> GD
+  PR --> GD --> TE --> BG
+  PR -- latent_image --> SA
+  BG --> SA
+  NZ --> SA
+  KS --> SA
+  SC --> SA
+  SA --> EV
+  EV --> SV
+  EV --> VD & AD
+  EV --> JO
+  VD --> TR
+  AD --> TR
+  TR --> AS
+  TR --> CV --> SVV
+</pre></div>
+</section>
+
+<section>
+<h2>3. 六段连续生成流程</h2>
+<p>每段读取上一段存档的尾部作为受保护前缀，生成后立刻存档并写回执；六段回执都为成功后自动合并。第 4 段做一次 Clean Rebase，切断累积漂移。</p>
+<div class="fig"><pre class="mermaid">
+flowchart LR
+  S1["S1 新起点<br/>不读前缀"] --> S2["S2 续接<br/>前缀 = S1 尾 39 帧"] --> S3["S3 续接"] --> S4["S4 续接 + Clean Rebase<br/>重置画面基准"] --> S5["S5 续接"] --> S6["S6 续接"]
+  S1 & S2 & S3 & S4 & S5 & S6 -.-> ST[("h3_continuation/项目<br/>seg_00000…00005<br/>index.json")]
+  S1 & S2 & S3 & S4 & S5 & S6 -.-> RC[("six_acceptance.json<br/>每段 SUCCESS 回执")]
+  RC --> MG{"六段都成功？"}
+  MG -- 是 --> M["native-merge 自动合并<br/>取每段最新成功回执"]
+  MG -- 否 --> W["合并：等待 n/6"]
+  M --> OUTV["合并视频"]
+  ED["改某段提示词 / 重抽这段"] --> AR["archive-segment<br/>旧段复制到 _superseded"] --> RE["只重跑该段及之后"]
+</pre></div>
+<div class="grid2">
+<div class="card"><h3>前缀合同（每段 i&gt;0，Rebase 段除外）</h3><ul>
+<li>视频前缀 max|Δ| ≤ 1e-6，音频 ≤ 5e-7</li>
+<li>p99 ≤ 32 ULP，相关系数 ≥ 0.999999，不随段数累积</li>
+<li>Rebase 边界必须去相关</li></ul></div>
+<div class="card"><h3>提交器七项合同（tools\h3_six_contract）</h3><ul>
+<li>提交前：段号一致、enabled 正确、项目与前缀一致、链内只差允许变量</li>
+<li>每段后：index 恰好 0..i、前缀合同通过、锚定文件存在</li>
+<li>任一失败立即停止，不提交下一段</li></ul></div>
+<div class="card"><h3>漂移锚定（实验 · 默认关）</h3><ul>
+<li>节点 H3LatentDriftAnchor，插在采样输出与所有消费者之间</li>
+<li>第 1 段记录每类/每通道统计，之后按斜坡回拉均值与高频能量</li>
+<li>结论：固定机位近景有效，尚未泛化验证</li></ul></div>
+</div>
+</section>
+
+<section>
+<h2>4. 画布分组与改版处理</h2>
+<p>23 个分组中只有操作区需要用户碰；其余为内部执行、冻结功能或说明。改版处理列对应「8207 晋升与双台改版方案」。</p>
+<div class="tbl"><table>
+<thead><tr><th>分组</th><th>节点数</th><th>主要内容</th><th>角色</th><th>改版处理</th></tr></thead>
+<tbody>
+<tr><td>02｜唯一用户入口（只操作 N159）</td><td>5</td><td>参考源/后端/注意力选择器、ControlNet、提示词</td><td><span class="chip op">操作</span></td><td>改名「02｜操作区」，总控台 + 六段导演台都放进来</td></tr>
+<tr><td>六段提示词 · 连续生产</td><td>20</td><td>六段导演台、LoadImageCrop×4、LoadVideo×2、选择器</td><td><span class="chip op">操作</span></td><td>并入 02，不再压住 01</td></tr>
+<tr><td>01｜内部素材源</td><td>18</td><td>LoadImageCrop×11、LoadAudio×2、H3SixDirectorState</td><td><span class="chip in">内部</span></td><td>保留</td></tr>
+<tr><td>03｜内部模式源</td><td>8</td><td>分辨率、尺寸/生成/图像/速度模式</td><td><span class="chip in">内部</span></td><td>保留</td></tr>
+<tr><td>04｜内部提示词源</td><td>1</td><td>提示词文本</td><td><span class="chip in">内部</span></td><td>N138 执行文本缓存移入并只读</td></tr>
+<tr><td>05｜内部模型与采样执行层</td><td>76</td><td>Any Switch×12、KSamplerSelect×8、LoRA×4、SigmaShift×4</td><td><span class="chip in">内部</span></td><td>OmniRef8 组与 16 组移到旁边</td></tr>
+<tr><td>OmniRef8 | FastH3 VSA 8-step</td><td>7</td><td>OmniRef8 UNET、VSA、调度、ReferenceToVideo</td><td><span class="chip in">内部 · 主路线</span></td><td>从 y=8714 移到 05 旁</td></tr>
+<tr><td>【生成引擎·官方 Ref2VA 8步】</td><td>10</td><td>INT8 主模型 + Turbo8 LoRA</td><td><span class="chip in">内部</span></td><td>保留（稳定多参考路线）</td></tr>
+<tr><td>06｜内部一采生成引擎</td><td>1</td><td>CreateVideo</td><td><span class="chip in">内部</span></td><td>保留</td></tr>
+<tr><td>07｜内部冻结：坏段检测</td><td>6</td><td>JerkOracle 相关、二次采样</td><td><span class="chip in">冻结</span></td><td>保留</td></tr>
+<tr><td>08｜内部冻结：放大扩时</td><td>8</td><td>TimeSmear、ManualHoldMap</td><td><span class="chip in">冻结</span></td><td>保留</td></tr>
+<tr><td>09｜内部冻结：二采修复</td><td>10</td><td>V2VInit、ExactRecover</td><td><span class="chip in">冻结</span></td><td>保留</td></tr>
+<tr><td>10｜内部冻结：自动修复</td><td>3</td><td>WindowLoop</td><td><span class="chip in">冻结</span></td><td>保留</td></tr>
+<tr><td>11｜内部停用：实验功能</td><td>3</td><td>WindowLoop、参数</td><td><span class="chip ex">停用</span></td><td>保留</td></tr>
+<tr><td>12｜历史废版保留（不执行）</td><td>11</td><td>旧 UNET、旧切换</td><td><span class="chip rm">废版</span></td><td>移出画布，另存归档 json</td></tr>
+<tr><td>13｜帮助与说明（只读）</td><td>10</td><td>Note×7、MarkdownNote×3</td><td><span class="chip in">说明</span></td><td>吸收 17–20 的说明</td></tr>
+<tr><td>15｜时间轴关键帧（可选·默认关）</td><td>8</td><td>GuideTimeline、GuideImageGuard×3</td><td><span class="chip ex">可选</span></td><td>开关放进总控台</td></tr>
+<tr><td>16｜快速平衡·FastH3 V2 8-Step（默认关闭）</td><td>8</td><td>FastH3 V2 模型链</td><td><span class="chip ex">默认关</span></td><td>并入 05</td></tr>
+<tr><td>17 / 18 / 19 / 20 占位组</td><td>1–3</td><td>只有说明文字</td><td><span class="chip rm">占位</span></td><td>说明并入 13，组删除</td></tr>
+<tr><td>22｜内部接续执行层</td><td>0</td><td>空组（续接节点在子图内）</td><td><span class="chip rm">空</span></td><td>删除空组</td></tr>
+</tbody></table></div>
+<p class="lead">子图：「连续-封装」含 Provider / AudioBranch / Prepare / Guides / Save / TrimOnce / Assemble 与一个开关；「SDPose 多人姿态提取」含 SDPose 关键点提取与 RTDETR 检测。</p>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral"});</script></body></html>
