@@ -1,0 +1,279 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>H3 双台操作区界面稿（静态）</title></head><body style="margin:0;background:#111">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#7fb4ff}a:hover{color:#a9ccff}
+</style>
+
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; background: #17191c; background-image: radial-gradient(#2a2d32 1px, transparent 1px); background-size: 22px 22px; font-family: 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif; color: #e6e8eb; position: relative; display: flex; flex-direction: column">
+
+<header style="height: 44px; flex: none; background: #101113; border-bottom: 1px solid #2b2e33; display: flex; align-items: center; gap: 16px; padding: 0 20px">
+<span style="font-weight: 700; font-size: 15px; letter-spacing: 0.04em">ComfyUI</span>
+<span style="font-size: 13px; color: #8b9097">H3 导演台 · 8207</span>
+<nav style="display: flex; align-items: center; gap: 6px; margin-left: 24px; font-size: 13px" aria-label="跳转">
+<span style="color: #8b9097">跳到</span>
+<a href="#console" style="padding: 6px 12px; border-radius: 6px; background: #23262b; color: #e6e8eb; text-decoration: none">总控台</a>
+<a href="#six" style="padding: 6px 12px; border-radius: 6px; background: #23262b; color: #e6e8eb; text-decoration: none">六段台</a>
+<a href="#out" style="padding: 6px 12px; border-radius: 6px; background: #23262b; color: #e6e8eb; text-decoration: none">最新输出</a>
+</nav>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #4cc38a"></span>队列空闲</span>
+<span style="color: #8b9097">显存 [实时读数]</span>
+<button style="height: 32px; padding: 0 16px; border-radius: 6px; border: 1px solid #5a3b2a; background: #2a1d16; color: #ffb38a; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer">■ 停止</button>
+</div>
+</header>
+
+<div style="flex: 1; display: flex; gap: 0; padding: 24px 28px; box-sizing: border-box; min-height: 0">
+<div style="flex: 1; border: 1px dashed #3a4a5e; border-radius: 10px; padding: 34px 18px 18px; position: relative; display: flex; gap: 20px; background: rgba(58, 90, 130, 0.06)">
+<span style="position: absolute; top: 8px; left: 14px; font-size: 13px; color: #8fb3dd; font-weight: 500">02｜操作区：总控台 + 六段导演台（其余分组为内部，无需操作）</span>
+
+<section id="console" style="width: 880px; flex: none; background: #222428; border: 1px solid #353840; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden" aria-label="H3 总控台">
+<div style="height: 46px; flex: none; background: #2a3a52; display: flex; align-items: center; padding: 0 16px; gap: 10px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700">H3 总控台</h2>
+<span style="font-size: 12px; color: #b9c9de">单段生成的全部设置都在这里</span>
+<span style="margin-left: auto; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #1d3a2c; color: #7fe0ae">就绪</span>
+</div>
+
+<div style="flex: 1; display: grid; grid-template-columns: 372px minmax(0, 1fr); gap: 18px; padding: 16px; min-height: 0">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: baseline; gap: 8px"><h3 style="margin: 0; font-size: 14px; font-weight: 700">参考素材</h3><span style="font-size: 12px; color: #8b9097">点图片或拖入即可更换，× 清除</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px solid #46505c; background: linear-gradient(160deg, #3b4a5c, #2a313a); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+<button aria-label="清除" style="position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 6px; border: 0; background: rgba(0,0,0,0.55); color: #fff; font-size: 14px; cursor: pointer">×</button>
+
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">主角</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px solid #46505c; background: linear-gradient(160deg, #3b4a5c, #2a313a); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+<button aria-label="清除" style="position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 6px; border: 0; background: rgba(0,0,0,0.55); color: #fff; font-size: 14px; cursor: pointer">×</button>
+
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">配角</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px solid #46505c; background: linear-gradient(160deg, #3b4a5c, #2a313a); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+<button aria-label="清除" style="position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 6px; border: 0; background: rgba(0,0,0,0.55); color: #fff; font-size: 14px; cursor: pointer">×</button>
+
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">场景</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">服装</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">道具</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">风格</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">参考 7</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">参考 8</span>
+</div>
+
+<div style="position: relative; height: 104px; border-radius: 8px; border: 1px dashed #3d4249; background: #1b1d20; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+
+
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #5c626b">+</span>
+
+<span style="font-size: 12px; padding: 4px 8px; background: rgba(0,0,0,0.45)">参考 9</span>
+</div>
+
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 14px; font-weight: 700">音频</h3>
+<div style="display: flex; align-items: center; gap: 10px; background: #1b1d20; border: 1px solid #353840; border-radius: 8px; padding: 10px 12px">
+<span style="font-size: 13px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">口播参考.wav · 00:48</span>
+<button style="height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #e6e8eb; font: inherit; font-size: 13px; cursor: pointer">更换</button>
+<button aria-label="清除音频" style="height: 32px; width: 32px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #e6e8eb; font: inherit; cursor: pointer">×</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 14px; font-weight: 700">时间轴关键帧</h3>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #b6bbc2">
+<label for="kf" style="flex: 1">按时间点插入参考图（可选）</label>
+<input id="kf" type="checkbox" style="width: 20px; height: 20px">
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 14px; font-weight: 700">生成路线</h3>
+<div role="radiogroup" aria-label="生成路线" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<button style="text-align: left; padding: 10px 12px; border-radius: 8px; border: 2px solid #4d8fe8; background: #1f3350; color: #fff; font: inherit; cursor: pointer"><div style="font-size: 14px; font-weight: 700">极速 OmniRef8</div><div style="font-size: 12px; color: #b9c9de">默认 · 8 步 · 最快</div></button>
+<button style="text-align: left; padding: 10px 12px; border-radius: 8px; border: 1px solid #3a3e45; background: #26292e; color: #e6e8eb; font: inherit; cursor: pointer"><div style="font-size: 14px; font-weight: 500">稳定多参考 8 步</div><div style="font-size: 12px; color: #8b9097">参考多时更稳</div></button>
+<button style="text-align: left; padding: 10px 12px; border-radius: 8px; border: 1px solid #3a3e45; background: #26292e; color: #e6e8eb; font: inherit; cursor: pointer"><div style="font-size: 14px; font-weight: 500">PDD 多参考 8 步</div><div style="font-size: 12px; color: #8b9097">动作幅度更大</div></button>
+<button style="text-align: left; padding: 10px 12px; border-radius: 8px; border: 1px solid #3a3e45; background: #26292e; color: #e6e8eb; font: inherit; cursor: pointer"><div style="font-size: 14px; font-weight: 500">原版 Ref2VA</div><div style="font-size: 12px; color: #8b9097">官方原始路线</div></button>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px"><label for="size" style="font-size: 12px; color: #8b9097">画面尺寸</label><select id="size" style="height: 34px; border-radius: 6px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px"><option>横屏 1280×720</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><label for="dur" style="font-size: 12px; color: #8b9097">时长（秒）</label><input id="dur" value="10" style="height: 30px; border-radius: 6px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px; padding: 0 8px"></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><label for="spd" style="font-size: 12px; color: #8b9097">速度模式</label><select id="spd" style="height: 34px; border-radius: 6px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px"><option>极速</option></select></div>
+<div style="display: flex; flex-direction: column; gap: 4px"><label for="seed" style="font-size: 12px; color: #8b9097">种子</label><select id="seed" style="height: 34px; border-radius: 6px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px"><option>每次随机</option></select></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0">
+<label for="prompt" style="font-size: 14px; font-weight: 700">提示词</label>
+<textarea id="prompt" style="flex: 1; min-height: 150px; resize: none; border-radius: 8px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px; line-height: 1.6; padding: 10px 12px">近景，女主播坐在演播台前，面向镜头开始讲解，自然手势，柔和顶光。</textarea>
+</div>
+<button style="height: 52px; border-radius: 8px; border: 0; background: #2f7be0; color: #fff; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer">▶ 生成本段</button>
+</div>
+</div>
+
+<div style="flex: none; border-top: 1px solid #353840; background: #1d1f22; padding: 10px 16px; display: flex; align-items: center; gap: 22px; font-size: 13px">
+<span style="font-weight: 700; color: #c8ccd2">诊断与实验</span>
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" style="width: 18px; height: 18px">Native Ref2VA 20 步诊断 <span style="color: #8b9097">（慢，只用于排查）</span></label>
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" style="width: 18px; height: 18px">漂移锚定 <span style="color: #e0a35c">实验 · 默认关</span></label>
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" style="width: 18px; height: 18px">景深控制</label>
+</div>
+</section>
+
+<section id="six" style="flex: 1; min-width: 0; background: #222428; border: 1px solid #353840; border-radius: 10px; display: flex; flex-direction: column; overflow: hidden" aria-label="H3 六段导演台">
+<div style="height: 46px; flex: none; background: #3a2f4f; display: flex; align-items: center; padding: 0 16px; gap: 10px">
+<h2 style="margin: 0; font-size: 17px; font-weight: 700">H3 六段导演台</h2>
+<span style="font-size: 12px; color: #cdbfe4">项目 [项目名]</span>
+<span style="margin-left: auto; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #3b3220; color: #f0c674">合并：等待 3/6 段</span>
+</div>
+
+<div style="flex: none; display: flex; align-items: center; gap: 20px; padding: 12px 16px; border-bottom: 1px solid #30333a; font-size: 13px">
+<label style="display: flex; align-items: center; gap: 8px"><input type="checkbox" checked style="width: 18px; height: 18px">第 4 段重置画面 <span style="color: #8b9097">（推荐开）</span></label>
+<div style="display: flex; align-items: center; gap: 8px; margin-left: auto"><label for="llm" style="color: #8b9097">提示词助手模型</label><select id="llm" style="height: 32px; border-radius: 6px; background: #1b1d20; color: #e6e8eb; border: 1px solid #3a3e45; font: inherit; font-size: 13px"><option>本地模型（默认）</option><option>云端 · 会上传提示词</option></select></div>
+</div>
+
+<div style="flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px 16px; min-height: 0">
+
+<div style="background: #1b1d20; border: 1px solid #2f4a3b; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S1</span>
+<span style="font-size: 12px; color: #8b9097">0–10 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #1d3a2c; color: #7fe0ae">已完成</span>
+</div>
+
+<textarea aria-label="S1 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">近景，主播面向镜头问好，介绍今天的主题。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">新起点</span>
+<button  style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #e6e8eb; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+<div style="background: #1b1d20; border: 1px solid #2f4a3b; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S2</span>
+<span style="font-size: 12px; color: #8b9097">10–20 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #1d3a2c; color: #7fe0ae">已完成</span>
+</div>
+
+<textarea aria-label="S2 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">同机位，主播拿起桌上的产品展示正面。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">接上一段</span>
+<button  style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #e6e8eb; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+<div style="background: #1b1d20; border: 1px solid #2f4a3b; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S3</span>
+<span style="font-size: 12px; color: #8b9097">20–30 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #1d3a2c; color: #7fe0ae">已完成</span>
+</div>
+
+<textarea aria-label="S3 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">主播转动产品展示侧面细节，语气轻快。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">接上一段</span>
+<button  style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #e6e8eb; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+<div style="background: #1b1d20; border: 1px solid #3a5a86; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S4</span>
+<span style="font-size: 12px; color: #8b9097">30–40 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #1f3350; color: #9cc4ff">生成中 62%</span>
+</div>
+
+<div style="height: 4px; border-radius: 2px; background: #30333a; overflow: hidden"><div style="width: 62%; height: 4px; background: #4d8fe8"></div></div>
+
+<textarea aria-label="S4 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">切到中景，主播起身走到屏幕旁指向图表。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">接上一段 · 重置画面</span>
+<button disabled style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #6b7078; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+<div style="background: #1b1d20; border: 1px solid #353840; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S5</span>
+<span style="font-size: 12px; color: #8b9097">40–50 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #2b2e33; color: #a6abb2">等待</span>
+</div>
+
+<textarea aria-label="S5 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">主播回到座位，总结三个要点。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">接上一段</span>
+<button disabled style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #6b7078; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+<div style="background: #1b1d20; border: 1px solid #353840; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; font-weight: 500">S6</span>
+<span style="font-size: 12px; color: #8b9097">50–60 秒</span>
+<span style="margin-left: auto; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #2b2e33; color: #a6abb2">等待</span>
+</div>
+
+<textarea aria-label="S6 提示词" style="flex: 1; min-height: 0; resize: none; border-radius: 6px; background: #222428; color: #d5d8dc; border: 1px solid #353840; font: inherit; font-size: 12.5px; line-height: 1.55; padding: 8px">主播微笑挥手道别，画面缓慢推近。</textarea>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; color: #8b9097">接上一段</span>
+<button disabled style="margin-left: auto; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #44484f; background: #2b2e33; color: #6b7078; font: inherit; font-size: 13px; cursor: pointer">重抽这段</button>
+</div>
+</div>
+
+</div>
+
+<div id="out" style="flex: none; border-top: 1px solid #353840; background: #1d1f22; padding: 12px 16px; display: flex; align-items: center; gap: 14px">
+<button style="height: 52px; padding: 0 28px; border-radius: 8px; border: 0; background: #7c5cd6; color: #fff; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer">▶ 连续生成六段</button>
+<span style="font-size: 13px; color: #b6bbc2">六段全部完成后自动合并成一个视频；改了某段提示词只需点那段的「重抽这段」。</span>
+<a href="#out" style="margin-left: auto; font-size: 13px">最新输出：S3.mp4</a>
+</div>
+</section>
+</div>
+</div>
+</div>
+</body></html>
+
