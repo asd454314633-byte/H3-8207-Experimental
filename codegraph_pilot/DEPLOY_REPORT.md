@@ -131,4 +131,4 @@
 
 - 仓库：`asd454314633-byte/H3-8207-Experimental`
 - 本次提交：将 pilot 产物（`codegraph_pilot/` 目录：DEPLOY_REPORT.md、codegraph.json、codex 配置样例、mcp_probe_client.js、ab_test.sh、multi_session_test.sh、rollback_codegraph_pilot.ps1、README）纳入版本控制并推送。
-- 提交链接：`<GitHub commit URL — 由 git push 输出填入>`
+- 提交链接：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/984438c`
