@@ -143,6 +143,6 @@
 2. **"小库无收益"仅为推测**：文件数非唯一因素（调用复杂度/任务性质/返回体量/模型搜索能力均影响）。全 8 工具启用是有效功能验证，但未必最省 Token 的日常配置（上游默认仅 `explore` 且会返回逐行源码）。→ 维持 INCONCLUSIVE 结论，建议大仓库中性 prompt 复测。
 3. **部署风险（已处理）**：原仓库根 `.codex/config.toml` 含实验目录绝对路径，会被 `codex exec -C <本仓库>` **自动加载**，若未来受信任工作区复用此项目配置，会尝试启动实验目录的 CodeGraph。
    - **整改动作**：`git rm .codex/config.toml`（移出自动加载路径），原内容转为 `codegraph_pilot/config.codegraph.sample.toml`（参考样例，含明确"不自动生效/需手动复制到 `.codex/config.toml` 并改路径"说明）。正式仓库不再自动启动 CodeGraph；实验目录保留未删。
-   - **整改提交**：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/<见下方链接>`
+   - **整改提交**：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/9152d92`
 
 > 整改后状态：本仓库根的 `.codex/` 配置已无；全局 `~/.codex/config.toml` 的 pilot trust 条目此前回滚时已移除；无活动 codegraph 进程；生产 ComfyUI / 生产 MCP 未触碰。CodeGraph 现处于"已验证、可一键复部署、但默认不启用"的归档状态。
