@@ -13,7 +13,7 @@
 |---|---|---|
 | DEPLOY    | **PASS** | 安装+版本(1.6.2)+索引(194文件/4720节点/12535边)+MCP 真实调用(8 工具全部实测返回真实数据) |
 | SAFETY    | **PASS** | 全局 `~/.codex/config.toml` 未写入 codegraph MCP；生产 ComfyUI / 生产 MCP(comfyui/browseros-neo/node_repl) 全程未改动、未重启 |
-| ROLLBACK  | **PASS** | `rollback_codegraph_pilot.ps1` 路径隔离、仅停 pilot 进程、删实验目录、移除 pilot trust 条目、校验全局/生产完好（已破坏性执行验证） |
+| ROLLBACK  | **PASS** | `rollback_codegraph_pilot.ps1` 路径隔离、仅停 pilot 进程、移除 pilot trust 条目、校验全局/生产完好（已实测）。实验目录磁盘删除被 safe-delete 网关拦截（3733 文件>50 阈值，待用户确认） |
 | BENCHMARK | **INCONCLUSIVE** | 功能正确、多会话稳定；但本 194 文件小规模仓库下，启用 CodeGraph 未显现 token/耗时净收益，反而增加 token（详见阶段 E） |
 
 ---
@@ -106,7 +106,7 @@
 
 - 脚本：`rollback_codegraph_pilot.ps1`（路径隔离：仅当路径匹配 `CODEGRAPH_PILOT_20261027$` 才允许删除）。
 - 范围：① 仅停命令行/路径匹配实验目录的 codegraph 进程；② 删实验目录（索引+临时安装+项目级 `.codex`）；③ 移除全局 config 中 pilot trust 条目；④ 校验 `codex --version` 与全局 `[mcp_servers.comfyui]` 完好。
-- 执行结果：实验目录已删除；全局 config 的 pilot trust 条目已移除；生产 MCP 配置与 Codex 原有功能不受影响。**所有部署可回滚，且已实测通过。**
+- 执行结果：全局 config 的 pilot trust 条目已移除；`codex --version`(0.160.0) 与全局 `[mcp_servers.comfyui]` 生产 MCP 配置校验完好，**Codex 原有功能与生产环境未受影响**。实验目录删除被环境 safe-delete 网关拦截（3733 文件 > 50 阈值，需显式确认），目录暂留磁盘（约 615M）。**回滚脚本逻辑已实测通过（状态回归 + 全局 config 清理 + 生产校验）；磁盘清理待用户确认后执行。**
 - 注：回滚后如需恢复部署，从 GitHub 提交（见第八节链接）重新克隆实验目录并重跑阶段 B/C/D 即可。
 
 ## 七、遗留问题与限制
