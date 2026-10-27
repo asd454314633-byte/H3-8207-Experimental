@@ -1,0 +1,26 @@
+# Project-level CodeGraph MCP (CodeGraph v1.6.2 Pilot)
+# Added 2026-10-27. SCOPED to this experiment repo only.
+# Global ~/.codex/config.toml is NOT modified.
+#
+# The MCP server uses the verified CodeGraph CLI absolute path
+# (node.exe + lib/dist/bin/codegraph.js), with `serve --mcp`.
+# The server serves the index built in this repo's .codegraph/ directory.
+# Telemetry/update checks are disabled via env kill-switches.
+
+[mcp_servers.codegraph]
+command = 'D:\H3导演台项目目录\_experiments\CODEGRAPH_PILOT_20261027\codegraph-bin\codegraph-win32-x64\node.exe'
+args = ['--liftoff-only', '--disable-warning=ExperimentalWarning', 'D:\H3导演台项目目录\_experiments\CODEGRAPH_PILOT_20261027\codegraph-bin\codegraph-win32-x64\lib\dist\bin\codegraph.js', 'serve', '--mcp']
+env_vars = ['DO_NOT_TRACK', 'CODEGRAPH_NO_UPDATE_CHECK', 'CODEGRAPH_MCP_TOOLS']
+startup_timeout_sec = 120
+tool_timeout_sec = 180
+
+[mcp_servers.codegraph.env]
+DO_NOT_TRACK = '1'
+CODEGRAPH_NO_UPDATE_CHECK = '1'
+# Expose the full tool surface. CodeGraph v1.6.2 defaults to ONLY `explore`
+# (DEFAULT_MCP_TOOLS=['explore'] in lib/dist/mcp/tools.js:1574); this allowlist
+# replaces that default and re-enables all 8 tools. VERIFIED by direct stdio
+# probe (logs/mcp_probe_direct.log): search/callers/impact/status/files/node/
+# explore/callees all return real data for this 194-file repo. (Source contains
+# a tiny-repo gate at threshold 500 files, but it did NOT trim here.)
+CODEGRAPH_MCP_TOOLS = 'search,callers,callees,impact,node,explore,status,files'

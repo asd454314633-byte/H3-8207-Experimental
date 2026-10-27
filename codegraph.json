@@ -1,0 +1,32 @@
+{
+  "exclude": [
+    "third_party/**",
+    "node_modules/**",
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.venv/**",
+    "**/venv/**",
+    ".git/**",
+    "assets/**",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.mp4",
+    "**/*.mov",
+    "**/*.webm",
+    "**/*.safetensors",
+    "**/*.gguf",
+    "**/*.ckpt",
+    "**/*.pt",
+    "**/*.pth",
+    "**/*.onnx",
+    "**/models/**",
+    "**/checkpoints/**",
+    "**/outputs/**",
+    "**/output/**",
+    "**/logs/**",
+    "**/cache/**",
+    "**/.cache/**"
+  ]
+}
