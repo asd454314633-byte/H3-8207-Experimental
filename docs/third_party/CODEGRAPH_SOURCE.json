@@ -1,0 +1,18 @@
+{
+  "schema": "external-source-provenance-v1",
+  "name": "CodeGraph",
+  "upstream_repo": "https://github.com/colbymchenry/codegraph",
+  "tracking_mode": "git-submodule",
+  "submodule_path": "third_party/codegraph",
+  "pinned_release": "v1.6.2",
+  "pinned_commit": "6560052a6f856855d3f71eee838fd66ccfa4285d",
+  "release_published_date": "2026-10-03",
+  "verified_date": "2026-10-27",
+  "license": "MIT",
+  "status": "source-reference-only",
+  "installed": false,
+  "agent_mcp_configured": false,
+  "project_index_created": false,
+  "production_environment_modified": false,
+  "related_docs": "docs/third_party/CODEGRAPH_EVALUATION.md"
+}

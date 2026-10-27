@@ -30,3 +30,6 @@ services/h3_compiler8210/.venv/
 tools/instances/
 restore_history_once.*
 *.registry-backup-*
+
+# CodeGraph local index; never commit runtime index or cache
+.codegraph/
