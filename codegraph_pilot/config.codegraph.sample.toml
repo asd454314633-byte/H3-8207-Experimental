@@ -1,0 +1,38 @@
+# ============================================================================
+# REFERENCE SAMPLE ONLY — DOES NOT AUTO-LOAD
+# ============================================================================
+# 本文件是 CodeGraph v1.6.2 本机部署的「参考样例」，故意不放在自动加载路径
+# `.codex/config.toml` 下，因此 Codex 不会自动启动此 MCP server。
+#
+# 2026-10-27 复核整改：原仓库根 `.codex/config.toml`（含实验目录绝对路径）
+# 会被 `codex exec -C <本仓库>` 自动加载，存在「未来受信任工作区误启动实验
+# 目录 CodeGraph」的部署风险。现将其移出自动加载路径、改为本参考样例，使
+# 正式仓库不再自动生效（见报告第九节）。实验目录本身保留，未删除。
+#
+# 若要在真实工作区激活，请手动执行：
+#   1. 复制本文件为你的仓库根的 `.codex/config.toml`（名称/位置必须精确）。
+#   2. 将下方 `command` / `args` 中的绝对路径改为你本机与安装目录。
+#   3. 确保该仓库已建有 CodeGraph 索引（`.codegraph/codegraph.db`）。
+#   4. `codex exec -C <仓库>` 即可使用 `codegraph_*` 工具。
+#
+# 下方路径指向原始部署机的实验目录，其他机器上不存在——仅为示意。
+# 遥测/更新检查已通过环境变量关闭。
+# ============================================================================
+
+[mcp_servers.codegraph]
+command = 'D:\H3导演台项目目录\_experiments\CODEGRAPH_PILOT_20261027\codegraph-bin\codegraph-win32-x64\node.exe'
+args = ['--liftoff-only', '--disable-warning=ExperimentalWarning', 'D:\H3导演台项目目录\_experiments\CODEGRAPH_PILOT_20261027\codegraph-bin\codegraph-win32-x64\lib\dist\bin\codegraph.js', 'serve', '--mcp']
+env_vars = ['DO_NOT_TRACK', 'CODEGRAPH_NO_UPDATE_CHECK', 'CODEGRAPH_MCP_TOOLS']
+startup_timeout_sec = 120
+tool_timeout_sec = 180
+
+[mcp_servers.codegraph.env]
+DO_NOT_TRACK = '1'
+CODEGRAPH_NO_UPDATE_CHECK = '1'
+# Expose the full tool surface. CodeGraph v1.6.2 defaults to ONLY `explore`
+# (DEFAULT_MCP_TOOLS=['explore'] in lib/dist/mcp/tools.js:1574); this allowlist
+# replaces that default and re-enables all 8 tools. VERIFIED by direct stdio
+# probe (logs/mcp_probe_direct.log): search/callers/impact/status/files/node/
+# explore/callees all return real data for this 194-file repo. (Source contains
+# a tiny-repo gate at threshold 500 files, but it did NOT trim here.)
+CODEGRAPH_MCP_TOOLS = 'search,callers,callees,impact,node,explore,status,files'

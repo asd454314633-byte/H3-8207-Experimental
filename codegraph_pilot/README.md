@@ -5,9 +5,9 @@ CodeGraph v1.6.2 隔离部署与验收产物。验收判定：**DEPLOY=PASS / SA
 
 ## 内容
 
-- `DEPLOY_REPORT.md` — 完整验收报告（阶段 A–E、回滚、8 项必需输出、4 项判定）。
+- `DEPLOY_REPORT.md` — 完整验收报告（阶段 A–E、回滚、复核整改、8 项必需输出、4 项判定）。
 - `codegraph.json` — 索引排除配置（排除 third_party / 二进制 / 模型 / 缓存 / 输出 / 日志）。
-- `.codex/config.toml`（仓库根）— 项目级 Codex MCP 配置（仅本项目作用域，不写全局）。
+- `config.codegraph.sample.toml` — **参考样例（不自动生效）**：原项目级 Codex MCP 配置的样例化版本。2026-10-27 复核后，已从仓库根自动加载路径 `.codex/config.toml` 移出，转为本参考文件，使正式仓库不再自动启动 CodeGraph（见报告第九节）。实验目录保留未删。
 - `mcp_probe_client.js` — 确定性 stdio 探针：直连 `serve --mcp`，验证 8 工具真实返回。
 - `ab_test.sh` — A/B 效益测试（CodeGraph 关/开 各 3 类任务）。
 - `multi_session_test.sh` — 多会话并发稳定性测试。
@@ -26,11 +26,15 @@ CodeGraph v1.6.2 隔离部署与验收产物。验收判定：**DEPLOY=PASS / SA
 
 ## 重新部署
 
+> ⚠️ 安全提醒：仓库根**不再保留**自动加载的 `.codex/config.toml`。本目录的
+> `config.codegraph.sample.toml` 仅是参考样例，需手动复制到目标仓库才会生效。
+
 ```powershell
 # 1. 下载并校验官方 win32-x64 包（SHA256=7455E817EE8032666867A1BADEB799B8A884C5F4FEA9B444E088A02069B6DEEA）
 # 2. 解压到 codegraph-bin/codegraph-win32-x64/
-# 3. 在本仓库根执行：codegraph init -y   （生成 .codegraph/ 索引）
-# 4. 将 .codex/config.toml 复制到目标仓库根的 .codex/config.toml
+# 3. 在目标仓库根执行：codegraph init -y   （生成 .codegraph/ 索引）
+# 4. 将 codegraph_pilot/config.codegraph.sample.toml 复制为目标仓库的 .codex/config.toml
+#    （并改其中的绝对路径为你本机/安装目录）
 # 5. codex exec -C <目标仓库> 即可使用 codegraph_* MCP 工具
 ```
 

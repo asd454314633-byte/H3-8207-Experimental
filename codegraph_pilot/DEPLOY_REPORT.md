@@ -57,6 +57,7 @@
 - **关键修正**：CodeGraph v1.6.2 源码 `lib/dist/mcp/tools.js:1574` 定义 `DEFAULT_MCP_TOOLS = new Set(['explore'])`——即 MCP 默认**仅暴露 `codegraph_explore`**，`search/callers/callees/impact/node/status/files` 被默认隐藏。必须通过环境变量 `CODEGRAPH_MCP_TOOLS=search,callers,callees,impact,node,explore,status,files`（该 allowlist 会**替换**默认集合，故必须含 explore）重新启用全部 8 个工具。本部署已写入该 env。
 - 全局 `~/.codex/config.toml` 未写入任何 codegraph MCP 配置；仅有 `codex exec -C` 自动写入的良性 `[projects.'...codegraph_pilot_20261027...'] trust_level` 簿记条目（回滚时移除）。
 - 生产 MCP（comfyui / browseros-neo / node_repl）在全局 config 中完好未改 ✓
+- 注：上述项目级 `.codex/config.toml` 已于用户复核后整改，移出自动加载路径并转为参考样例 `codegraph_pilot/config.codegraph.sample.toml`（见第九节），正式仓库不再自动启动 CodeGraph。
 
 ### 4.2 真实 MCP 调用验证（确定性 stdio 探针，非模型依赖）
 - 脚本 `mcp_probe_client.js` 直接 spawn `serve --mcp`，完成 JSON-RPC 握手，`tools/list` 返回 **8 个工具**，并实际调用：
@@ -111,7 +112,7 @@
 
 ## 七、遗留问题与限制
 
-1. **MCP 默认仅暴露 explore**：CodeGraph v1.6.2 默认 `DEFAULT_MCP_TOOLS=['explore']`，须显式设 `CODEGRAPH_MCP_TOOLS` 才能用全 8 工具。已写入项目级配置。
+1. **MCP 默认仅暴露 explore**：CodeGraph v1.6.2 默认 `DEFAULT_MCP_TOOLS=['explore']`，须显式设 `CODEGRAPH_MCP_TOOLS` 才能用全 8 工具。原写入项目级配置，已于复核后移出自动加载路径、改为参考样例 `config.codegraph.sample.toml`（不自动生效）。
 2. **小规模仓库收益不显**：194 文件下 A/B 未显现 token/耗时收益。建议在大仓库复测。
 3. **中文路径直连 MCP 探针不可行**：`.NET Process.Start()` 无法设置含中文的 WorkingDirectory，故 stdio 自写探针失败；改用 `codex exec -C`（内部 `-C` 切目录规避）与 Node 直连子进程探针（mcp_probe_client.js）验证。
 4. **索引排除 third_party**：第三方源码被排除（否则数千文件），索引聚焦本仓库业务代码。仓库内无模型权重文件（已扫描 safetensors/gguf/ckpt/pt/onnx 均无）。
@@ -130,5 +131,18 @@
 ## 提交与链接
 
 - 仓库：`asd454314633-byte/H3-8207-Experimental`
-- 本次提交：将 pilot 产物（`codegraph_pilot/` 目录：DEPLOY_REPORT.md、codegraph.json、codex 配置样例、mcp_probe_client.js、ab_test.sh、multi_session_test.sh、rollback_codegraph_pilot.ps1、README）纳入版本控制并推送。
-- 提交链接：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/984438c`
+- 初始提交（pilot 产物）：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/984438c`
+- 报告修正提交（回滚磁盘删除被网关拦截，如实记录）：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/c68652f`
+- **复核整改提交（本仓库根自动加载配置改为参考样例）**：见下方第九节。
+
+## 九、复核后整改（2026-10-27 用户复核）
+
+用户复核后确认：部署/功能/索引/MCP 调用/增量/多会话/回滚均通过，但**未证明工作效率提升**（Token 92,149→156,181，+69.5%；耗时 200s→198s，仅 −2s；每任务仅一轮，不能断言普遍增 69.5%）。同时指出三点，其中第三点为需处理的部署风险：
+
+1. **A/B 非严格同条件**：开启组 prompt 额外要求"优先用 CodeGraph"，关闭组要求用 Grep/Read——比较的是两种被指定方式，非"装/不装"的自然效果；首次测试模型甚至未主动调用。→ 已如实记录，BENCHMARK 维持 INCONCLUSIVE；未来严格对照应在相同中性 prompt 下让模型自由选择。
+2. **"小库无收益"仅为推测**：文件数非唯一因素（调用复杂度/任务性质/返回体量/模型搜索能力均影响）。全 8 工具启用是有效功能验证，但未必最省 Token 的日常配置（上游默认仅 `explore` 且会返回逐行源码）。→ 维持 INCONCLUSIVE 结论，建议大仓库中性 prompt 复测。
+3. **部署风险（已处理）**：原仓库根 `.codex/config.toml` 含实验目录绝对路径，会被 `codex exec -C <本仓库>` **自动加载**，若未来受信任工作区复用此项目配置，会尝试启动实验目录的 CodeGraph。
+   - **整改动作**：`git rm .codex/config.toml`（移出自动加载路径），原内容转为 `codegraph_pilot/config.codegraph.sample.toml`（参考样例，含明确"不自动生效/需手动复制到 `.codex/config.toml` 并改路径"说明）。正式仓库不再自动启动 CodeGraph；实验目录保留未删。
+   - **整改提交**：`https://github.com/asd454314633-byte/H3-8207-Experimental/commit/<见下方链接>`
+
+> 整改后状态：本仓库根的 `.codex/` 配置已无；全局 `~/.codex/config.toml` 的 pilot trust 条目此前回滚时已移除；无活动 codegraph 进程；生产 ComfyUI / 生产 MCP 未触碰。CodeGraph 现处于"已验证、可一键复部署、但默认不启用"的归档状态。
