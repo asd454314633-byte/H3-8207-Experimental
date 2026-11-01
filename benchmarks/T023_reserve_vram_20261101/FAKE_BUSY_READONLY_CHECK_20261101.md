@@ -56,8 +56,8 @@ S4 快段每步也有 45–89GB 流量与功耗满血并存 → 存在正常的�
 
 ### comfy-aimdo 版本核查（只读）
 - 实际部署：**comfy_aimdo 0.5.6**（commit g08b37eec3，aimdo.dll 编译产物）。
-- 预算/驱逐逻辑在闭源 DLL 内（control.py 为 ctypes 薄封装；注释证实存在"measured poll budget"与 simple budget 双项取大机制；**NVML pressure enabled**）。
-- 运行期原生日志为静默（本 generation 全程仅 7 条启动期 aimdo 行，无 fault/vbar 运行日志）→ **无法从日志直接取证运行中驱逐次数**，Issue #128 源码级核验受限（VERIFICATION_LIMITED：闭源 DLL，版本 0.5.6 是否含该问题代码路径无法静态确认）。
+- 预算/驱逐逻辑在 aimdo.dll 内（**更正：DLL 为编译产物但上游提供对应 C 源码，已克隆 commit 08b37eec3 逐行审查，详见 `_experiments/AIMDO_SRC_REVIEW_20261101/AIMDO_056_EVICT_REVIEW.md`**；control.py 为 ctypes 薄封装；注释证实存在"measured poll budget"与 simple budget 双项取大机制；**NVML pressure enabled**）。
+- 运行期原生日志为静默（本 generation 全程仅 7 条启动期 aimdo 行，无 fault/vbar 运行日志）→ **无法从日志直接取证运行中驱逐次数**；源码路径已实证存在（五处无去抖调用点 + 2000ms 预算轮询节流），是否即为本机慢步的直接执行者仍需运行中驱逐计数（UNAVAILABLE）。
 - VBAR 驻留只读接口（get_residency/vbars_analyze）为进程内 API，外部只读不可达 → **VBAR 驻留变化 UNAVAILABLE**。
 - 真实权重驱逐量：无直接只读读数；PCIe 累计字节是其上界代理（含非权重流量）。
 
@@ -67,3 +67,26 @@ S4 快段每步也有 45–89GB 流量与功耗满血并存 → 存在正常的�
 
 ### 待 S6 完成后
 - 补 S5/S6 逐步积分；快/慢与段序的相关性（S1慢→S2快→S3慢→S4快→S5慢…）如继续成立，可支持"段间状态依赖"假说（前段快慢影响下段驻留起点），不作强因果断言。
+
+## 三轮：六段取证完成（10:59-11:05）与 AIMDO 源码审查结论
+
+六段业务运行（1.5GB）最终序列：
+| 段 | 总耗时 | 步时形态 | 采样期 PCIe 总量 |
+|---|---|---|---|
+| S1 | 196.07s | 慢（13.6–18.0s） | （探针未运行，UNAVAILABLE） |
+| S2 | ~fast | 快起步 9.56/8.18/8.57 | （探针未运行） |
+| S3 | 169.53s | 全慢（17.4–19.4s） | **4742.6 GB**（32.8 GB/s） |
+| S4 | 111.48s | 全快（9.0–10.7s） | 486.8 GB（6.4 GB/s） |
+| S5 | 169.66s | 混合：步1-2 极慢(23.8/23.0s)→步4 起转快 | 1727.9 GB（15.1 GB/s；步2 峰值 777.6GB→步4 降至 81–119GB） |
+| S6 | 128.65s | 步时正常（~10.1s）但流量抬高 | 1215.5 GB（15.0 GB/s；144–185GB/步，功耗满血 508W） |
+| 合并 | 2.94s | — | 六段+合并全部成功 |
+
+**形态结论**：快慢不是二元的——存在"流量抬高档"（S6：步时正常但每步 ~160GB）。步时与流量正相关但非线性，功耗是区分"搬运等待型慢步"（<400W）与"高效计算"（>500W）的更锐利指标。
+
+AIMDO 0.5.6 源码审查（完整文档：`_experiments/AIMDO_SRC_REVIEW_20261101/AIMDO_056_EVICT_REVIEW.md`）：
+- 部署 0.5.6 == 上游 commit 08b37eec3 == **Issue #128 报告者的精确验证版本**。
+- 五处无去抖 `vbars_free(budget_deficit(...))` 调用点全部实证（vbar_fault / create_page / vrambuf_grow / aimdo_cuda_malloc / aimdo_cuda_malloc_async）。
+- 2000ms 预算轮询节流实证（`src-win/shmem-detect.c:118`）。
+- `--reserve-vram` 接线实证：`main.py:87` → `simple_vram_headroom` → 进入 `deficit_simple` → **预留越大驱逐压力越大**。
+- v0.6.0/main 五处调用点仍无节流（仅加返回值检查）→ 升级不解决 #128，暂不升级。
+- **首要根因候选锁定为 #128 机制（形态五项吻合+版本精确匹配+代码路径实证）；"具体哪个函数在本机重复驱逐"仍需运行中驱逐计数（UNAVAILABLE）才可定案。**
